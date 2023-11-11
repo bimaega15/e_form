@@ -1,0 +1,12 @@
+{
+    "Autentikasi": true,
+    "Master": true,
+    "Media": true,
+    "Web": true,
+    "Account": true,
+    "Home": true,
+    "Frontend": true,
+    "Website": true,
+    "Setting": true,
+    "Dashboard": true
+}
