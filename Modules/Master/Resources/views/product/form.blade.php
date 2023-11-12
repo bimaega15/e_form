@@ -1,12 +1,12 @@
-@if (isset($roles))
-<form method="post" action="{{ url('setting/roles/'.$roles->id.'?_method=put') }}" id="form-submit">
+@if (isset($unit))
+<form method="post" action="{{ url('master/unit/'.$unit->id.'?_method=put') }}" id="form-submit">
     @else
-    <form method="post" action="{{ route('setting.roles.store') }}" id="form-submit">
+    <form method="post" action="{{ route('master.unit.store') }}" id="form-submit">
         @endif
         <x-modal.modal-body>
             <div class="col-span-12 sm:col-span-12 mb-2">
-                <label for="" class="form-label">Nama Role</label>
-                <input type="text" class="form-control" name="name" placeholder="Nama Roles..." value="{{ isset($roles) ? $roles->name : '' }}">
+                <label for="" class="form-label">Nama unit</label>
+                <input type="text" class="form-control" name="nama_unit" placeholder="Nama unit..." value="{{ isset($unit) ? $unit->nama_unit : '' }}">
             </div>
         </x-modal.modal-body>
 
@@ -22,4 +22,4 @@
         </x-modal.modal-footer>
     </form>
 
-    <script type="text/javascript" src="{{ asset('js/setting/roles/form.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/master/unit/form.js') }}"></script>

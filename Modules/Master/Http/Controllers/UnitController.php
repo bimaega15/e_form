@@ -18,39 +18,30 @@ class UnitController extends Controller
 
             $data = Unit::query();
             return DataTables::eloquent($data)
-                ->addColumn('children_unit', function ($row) {
-                    $output = '<ul>';
-                    $getData = json_decode($row->children_unit, true);
-                    foreach ($getData as $key => $item) {
-                        $output .= '<li>' . $item . '</li>';
-                    }
-                    $output .= '</ul>';
-
-                    return $output;
-                })
                 ->addColumn('is_node', function ($row) {
                     $output = '
-                    <span class="badge badge-success">
-                        <i class="fas fa-check"></i>
-                    </span>';
-                    if ($row->is_node == 0) {
+                <span class="badge badge-success">
+                    <i class="fa-solid fa-check text-success"></i>
+                </span>';
+                    if ($row->is_node == 0 || $row->is_node == null) {
                         $output = '
-                    <span class="badge badge-danger">
-                        <i class="fas fa-times"></i>
-                    </span>';
+                <span class="badge badge-danger">
+                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+                </span>';
                     }
+
                     return $output;
                 })
                 ->addColumn('is_children', function ($row) {
                     $output = '
-                    <span class="badge badge-success">
-                        <i class="fas fa-check"></i>
-                    </span>';
-                    if ($row->is_children == 0) {
+                <span class="badge badge-success">
+                    <i class="fa-solid fa-check text-success"></i>
+                </span>';
+                    if ($row->is_children == 0 || $row->is_children == null) {
                         $output = '
-                    <span class="badge badge-danger">
-                        <i class="fas fa-times"></i>
-                    </span>';
+                <span class="badge badge-danger">
+                    <i class="fa-solid fa-circle-xmark text-danger"></i>
+                </span>';
                     }
                     return $output;
                 })
@@ -59,13 +50,13 @@ class UnitController extends Controller
                     $buttonUpdate = '';
                     $buttonUpdate = '
                     <a href="' . route('master.unit.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
-                        <i class="zmdi zmdi-edit"></i>
+                        <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
                     <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('master/unit/' . $row->id . '?_method=delete') . '">
-                        <i class="zmdi zmdi-delete"></i>
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
 
@@ -78,7 +69,7 @@ class UnitController extends Controller
 
                     return $button;
                 })
-                ->rawColumns(['action', 'children_unit', 'is_node', 'is_children'])
+                ->rawColumns(['action', 'is_node', 'is_children'])
                 ->toJson();
         }
         return view('master::unit.index');

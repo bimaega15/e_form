@@ -1,48 +1,45 @@
 <x-modal.modal-body>
-    <h6>Role: {{$role->name}}</h6>
-    <hr>
-    <div class="card">
-        <div class="card-header">
-            <i class="zmdi zmdi-format-list-bulleted"></i> List Permissions
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>No.</th>
-                            <th>Nama Permission</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($permissions as $index => $item)
-                        <tr>
-                            <td>{{$index + 1}}</td>
-                            <td>{{$item->name}}</td>
-                            <td>
-                                <div class="form-check">
-                                    <input class="form-check-input check-input-roles" type="checkbox" value="{{$item->id}}" id="id_{{$item->id}}" data-id="{{$item->id}}" data-url="{{ url('autentikasi/assignRoles') }}" data-role_id="{{$role->id}}" {{$role->hasPermissionTo($item->name) ? 'checked' : ''}}>
-                                    <label class="form-check-label" for="id_{{$item->id}}">
-                                    </label>
-                                </div>
-                            </td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-
-                </table>
-            </div>
-        </div>
+    <div class="col-span-12 sm:col-span-12 mb-2">
+        <h2 class="intro-y text-lg font-medium">
+            Role: {{$role->name}}
+        </h2>
+        <hr>
     </div>
+    <!-- BEGIN: Data List -->
+    <div class="intro-y col-span-12 overflow-auto lg:overflow-visible">
+        <table class="table table-report -mt-2 w-full" id="dataTable">
+            <thead>
+                <tr>
+                    <th class="whitespace-nowrap">NO.</th>
+                    <th class="whitespace-nowrap">PERMISSION</th>
+                    <th class="text-center whitespace-nowrap">ACTION</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($permissions as $index => $item)
+                <tr>
+                    <td>{{$index + 1}}</td>
+                    <td>{{$item->name}}</td>
+                    <td>
+                        <div class="form-check">
+                            <input class="form-check-input check-input-roles" type="checkbox" value="{{$item->id}}" id="id_{{$item->id}}" data-id="{{$item->id}}" data-url="{{ url('autentikasi/assignRoles') }}" data-role_id="{{$role->id}}" {{$role->hasPermissionTo($item->name) ? 'checked' : ''}}>
+                            <label class="form-check-label" for="id_{{$item->id}}">
+                            </label>
+                        </div>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    <!-- END: Data List -->
 </x-modal.modal-body>
 
 <x-modal.modal-footer>
     <div class="form-group d-flex">
-        <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-dismiss="modal">
-            <i class="zmdi zmdi-close mr-1"></i> Close
+        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">
+            OK
         </button>
-
     </div>
 </x-modal.modal-footer>
-<script type="text/javascript" src="{{ asset('js/autentikasi/assignRoles/form.js') }}"></script>
+<script type="text/javascript" src="{{ asset('js/setting/assignRoles/form.js') }}"></script>

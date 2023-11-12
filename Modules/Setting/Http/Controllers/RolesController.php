@@ -25,20 +25,20 @@ class RolesController extends Controller
                 ->addColumn('action', function ($row) {
                     $buttonUpdate = '';
                     $buttonUpdate = '
-                    <a href="' . route('autentikasi.roles.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
-                        <i class="zmdi zmdi-edit"></i>
+                    <a href="' . route('setting.roles.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
+                        <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
-                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('autentikasi/roles/' . $row->id . '?_method=delete') . '">
-                        <i class="zmdi zmdi-delete"></i>
+                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('setting/roles/' . $row->id . '?_method=delete') . '">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
                     $buttonAuth = '';
                     $buttonAuth = '
-                    <a href="' . route('autentikasi.roles.show', $row->id) . '" class="btn btn-info btn-auth btn-sm">
-                        <i class="zmdi zmdi-lock"></i>
+                    <a href="' . route('setting.roles.show', $row->id) . '" class="btn btn-info btn-auth btn-sm">
+                        <i class="fa-solid fa-lock"></i>
                     </a>
                     ';
                     $button = '

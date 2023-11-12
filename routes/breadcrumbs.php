@@ -11,7 +11,7 @@ Breadcrumbs::for('dashboard', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('roles', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
-    $trail->push('Roles', route('autentikasi.roles.index'));
+    $trail->push('Roles', route('setting.roles.index'));
 });
 
 Breadcrumbs::for('permissions', function (BreadcrumbTrail $trail) {
@@ -57,4 +57,9 @@ Breadcrumbs::for('typeProduct', function (BreadcrumbTrail $trail) {
 Breadcrumbs::for('jabatan', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Jabatan', route('master.jabatan.index'));
+});
+
+Breadcrumbs::for('unit', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Unit', route('master.unit.index'));
 });
