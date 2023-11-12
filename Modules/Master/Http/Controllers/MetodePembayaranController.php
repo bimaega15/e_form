@@ -21,13 +21,13 @@ class MetodePembayaranController extends Controller
                     $buttonUpdate = '';
                     $buttonUpdate = '
                     <a href="' . route('master.metodePembayaran.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
-                        <i class="zmdi zmdi-edit"></i>
+                        <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
                     <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('master/metodePembayaran/' . $row->id . '?_method=delete') . '">
-                        <i class="zmdi zmdi-delete"></i>
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
 

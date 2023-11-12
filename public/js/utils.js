@@ -2,36 +2,11 @@
  * Spinner
  */
 var disableButton = `
-<div class="d-flex justify-content-center align-items-center">
-    <div class="spinner-border mr-1" role="status">
-        <span class="sr-only">Loading...</span>
-    </div>
-    <div>
-        Loading
-    </div>
-</div>
-`;
-var enableButton = `
-<div class="d-flex justify-content-center align-items-center">
-<i class="zmdi zmdi-mail-send mr-1"></i> Simpan
-</div>
-`;
-
-var disableButtonFrontend = `
-<div class="d-flex justify-content-center align-items-center">
-    <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-    <div class="ms-2">
-        Loading
-    </div>
-</div>
-`;
-var enableButtonFrontend = `
-<div class="d-flex justify-content-center align-items-center">
-    <i class="zmdi zmdi-mail-send mr-1"></i> Kirim Pesan
-</div>
-`;
+<svg class="animate-spin h-5 w-5 mr-3 ..." viewBox="0 0 24 24">
+<!-- ... -->
+</svg>
+Processing...`;
+var enableButton = `Submit`;
 
 /**
  * Ajax Error Message Handler
@@ -39,6 +14,10 @@ var enableButtonFrontend = `
  * @param {*} exception
  */
 function ajaxErrorMessage(jqXHR, exception) {
+    $(".modal").css({
+        zIndex: "100",
+    });
+
     var msgerror = "";
     if (jqXHR.status === 0) {
         msgerror = "Koneksi tidak stabil/ terputus.";
@@ -56,22 +35,27 @@ function ajaxErrorMessage(jqXHR, exception) {
         msgerror = "Error.\n" + jqXHR.responseJSON.message;
     }
 
-    swal({
+    Swal.fire({
         title: jqXHR.statusText,
         text: msgerror,
-        type: "error",
+        icon: "error",
         buttonsStyling: false,
         confirmButtonText: "OK",
         customClass: {
             confirmButton: "btn btn-primary",
+            popup: "my-popup-class",
         },
     });
 }
-function notifAlert(title, text, type) {
-    swal({
+function notifAlert(title, text, icon) {
+    $(".modal").css({
+        zIndex: "100",
+    });
+
+    Swal.fire({
         title,
         text,
-        type,
+        icon,
         buttonsStyling: false,
         confirmButtonText: "OK",
         customClass: {
@@ -87,7 +71,8 @@ function notifAlert(title, text, type) {
  * @param {*} columns
  * @returns
  */
-function basicDatatable(tableId, ajaxUrl, columns, videoJs = false) {
+
+function basicDatatable(tableId, ajaxUrl, columns) {
     return tableId
         .on("preXhr.dt", function (e, settings, processing) {})
         .on("xhr.dt", function (e, settings, json, xhr) {
@@ -123,15 +108,8 @@ function basicDatatable(tableId, ajaxUrl, columns, videoJs = false) {
                 if (tableId != null) {
                     datatable = $(tableId).DataTable();
                 }
-                var info = datatable.page.info();
-                if (videoJs == true) {
-                    var data = datatable.rows().data();
-                    data.each(function (rowData, index) {
-                        videojs("my-player-" + rowData.id);
-                    });
-                }
 
-                $('[data-toggle="tooltip"]').tooltip();
+                var info = datatable.page.info();
                 datatable
                     .column(0, { search: "applied", order: "applied" })
                     .nodes()
@@ -157,44 +135,41 @@ function basicDeleteConfirmDatatable(
 ) {
     var text = text ? text : "Benar ingin menghapus data ini?";
 
-    swal(
-        {
-            title: "Konfirmasi",
-            text: text,
-            type: "warning",
-            showCancelButton: true,
-            confirmButtonText: "Ya, hapus",
-            cancelButtonText: "Tidak",
-            dangerMode: true,
-        },
-        function (result) {
-            if (result) {
-                $.ajax({
-                    url: urlDelete,
-                    type: "post",
-                    dataType: "json",
-                    data: data,
-                    beforeSend: function () {},
-                    success: function (data) {
-                        notifAlert("Successfully", data, "success");
-                        if (renderView != null) {
-                            renderView();
-                        }
+    Swal.fire({
+        title: "Konfirmasi",
+        text: text,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Ya, hapus",
+        cancelButtonText: "Tidak",
+        dangerMode: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: urlDelete,
+                type: "post",
+                dataType: "json",
+                data: data,
+                beforeSend: function () {},
+                success: function (data) {
+                    notifAlert("Successfully", data, "success");
+                    if (renderView != null) {
+                        renderView();
+                    }
 
-                        if (loadDataTable) {
-                            if (tableExecute != "") {
-                                datatable = $(tableExecute).DataTable();
-                            }
-                            datatable.ajax.reload(null, false);
+                    if (loadDataTable) {
+                        if (tableExecute != "") {
+                            datatable = $(tableExecute).DataTable();
                         }
-                    },
-                    error: function (jqXHR, exception) {
-                        ajaxErrorMessage(jqXHR, exception);
-                    },
-                });
-            }
+                        datatable.ajax.reload(null, false);
+                    }
+                },
+                error: function (jqXHR, exception) {
+                    ajaxErrorMessage(jqXHR, exception);
+                },
+            });
         }
-    );
+    });
 }
 
 /**
@@ -224,21 +199,8 @@ function renderContentTab(url, params = {}, type = "get", divElement, el) {
     }
 }
 
-/**
- * Remove Space
- * @param {*} text
- */
 function onRemoveSpace(text) {
     text.value = text.value.replace(/\s+/g, "");
-}
-
-function setActiveTab(e) {
-    $(".btn-tab").removeClass("active");
-    $(e).addClass("active");
-}
-
-function blockUiMessage() {
-    return spinner;
 }
 
 function textareaTrim(pane) {

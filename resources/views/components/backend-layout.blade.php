@@ -1,77 +1,87 @@
 <!DOCTYPE html>
 
-<html lang="en">
+<html lang="en" class="light">
+<!-- BEGIN: Head -->
+<!-- Added by HTTrack -->
+<meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta charset="utf-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <link href="{{ asset('backend') }}/dist/images/logo.svg" rel="shortcut icon">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Tinker admin is super flexible, powerful, clean & modern responsive tailwind admin template with unlimited possibilities.">
+    <meta name="keywords" content="admin template, Tinker Admin Template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="author" content="LEFT4CODE">
     <title>@yield('title')</title>
-    <!-- core:css -->
-    <link rel="stylesheet" href="{{ asset('backend/templateBackend/template/') }}/assets/vendors/core/core.css">
-    <!-- endinject -->
-    <!-- plugin css for this page -->
-    <link rel="stylesheet" href="{{ asset('backend/templateBackend/template/') }}/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
-    <!-- end plugin css for this page -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="{{ asset('backend/templateBackend/template/') }}/assets/fonts/feather-font/css/iconfont.css">
-    <link rel="stylesheet" href="{{ asset('backend/templateBackend/template/') }}/assets/vendors/flag-icon-css/css/flag-icon.min.css">
-    <!-- endinject -->
-    <!-- Layout styles -->
-    <link rel="stylesheet" href="{{ asset('backend/templateBackend/template/') }}/assets/css/demo_1/style.css">
-    <!-- End layout styles -->
-    <link rel="shortcut icon" href="{{ asset('backend/templateBackend/template/') }}/assets/images/favicon.png" />
+    <!-- BEGIN: CSS Assets-->
+    <link rel="stylesheet" href="{{ asset('backend') }}/dist/css/app.css" />
+    <!-- END: CSS Assets-->
+
+    <link href="{{ asset('plugins/nestable/jquery-nestable.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('library/select2-develop/dist/css/select2.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/select2-bootstrap-theme-master/dist/select2-bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('library/') }}/DataTables/datatables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <style>
+        .my-popup-class {
+            z-index: 10001;
+        }
+    </style>
 </head>
+<!-- END: Head -->
 
-<body>
-    <div class="main-wrapper">
-
-        <!-- partial:partials/_sidebar.html -->
-        <x-partials.sidebar></x-partials.sidebar>
-        <!-- partial -->
-
-        <div class="page-wrapper">
-
-            <!-- partial:partials/_navbar.html -->
-            <x-partials.navbar></x-partials.navbar>
-            <!-- partial -->
-
-            <div class="page-content">
-                {{ $slot }}
-            </div>
-
-            <!-- partial:partials/_footer.html -->
-            <x-partials.footer></x-partials.footer>
-            <!-- partial -->
-
+<body class="py-5 md:py-0 bg-black/[0.15] dark:bg-transparent">
+    <!-- BEGIN: Mobile Menu -->
+    <x-partials.mobile></x-partials.mobile>
+    <!-- END: Mobile Menu -->
+    <div class="flex mt-[4.7rem] md:mt-0 overflow-hidden">
+        <!-- BEGIN: Side Menu -->
+        <x-partials.navbar></x-partials.navbar>
+        <!-- END: Side Menu -->
+        <!-- BEGIN: Content -->
+        <div class="content">
+            <!-- BEGIN: Top Bar -->
+            <x-partials.topbar></x-partials.topbar>
+            <!-- END: Top Bar -->
+            {{ $slot }}
         </div>
-
-        <x-modal.modal-small />
-        <x-modal.modal-extra-large />
-        <x-modal.modal-large />
-        <x-modal.modal-logout />
-        <x-modal.modal-medium />
+        <!-- END: Content -->
     </div>
+    <!-- BEGIN: Dark Mode Switcher-->
+    <x-partials.darkMode></x-partials.darkMode>
 
-    <!-- core:js -->
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/core/core.js"></script>
-    <!-- endinject -->
-    <!-- plugin js for this page -->
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/chartjs/Chart.min.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/jquery.flot/jquery.flot.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/jquery.flot/jquery.flot.resize.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/apexcharts/apexcharts.min.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/progressbar.js/progressbar.min.js"></script>
-    <!-- end plugin js for this page -->
-    <!-- inject:js -->
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/vendors/feather-icons/feather.min.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/js/template.js"></script>
-    <!-- endinject -->
-    <!-- custom js for this page -->
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/js/dashboard.js"></script>
-    <script src="{{ asset('backend/templateBackend/template/') }}/assets/js/datepicker.js"></script>
-    <!-- end custom js for this page -->
+    <x-modal.modal-small />
+    <x-modal.modal-medium />
+    <x-modal.modal-large />
+    <x-modal.modal-extra-large />
+    <x-modal.modal-logout />
+    <!-- END: Dark Mode Switcher-->
+
+    <!-- BEGIN: JS Assets-->
+    <script src="{{ asset('backend/') }}/developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
+    <script src="{{ asset('backend') }}/dist/js/app.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <!-- END: JS Assets-->
+
+    <script src="{{ asset('plugins/nestable/jquery.nestable.js') }}"></script>
+    <script src="{{ asset('plugins/js/pages/ui/sortable-nestable.js') }}"></script>
+    <script src="{{ asset('library/select2-develop/dist/js/select2.min.js') }}"></script>
+    <script src="{{ asset('js/utils.js') }}"></script>
+    <script src="{{ asset('js/modal.js') }}"></script>
+    <script src="{{ asset('library/') }}/DataTables/datatables.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+    </script>
+
+    @stack('custom_js')
 </body>
 
 </html>

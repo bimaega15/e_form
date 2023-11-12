@@ -14,7 +14,7 @@ class CreatePaymentMethodPostRequest extends FormRequest
     public function rules()
     {
         return [
-            'metode_pembayaran' => 'required',
+            'nama_metode_pembayaran' => 'required',
         ];
     }
 
@@ -22,7 +22,7 @@ class CreatePaymentMethodPostRequest extends FormRequest
     public function messages()
     {
         return [
-            'metode_pembayaran.required' => 'Nama Metode Pembayaran wajib diisi',
+            'nama_metode_pembayaran.required' => 'Nama Metode Pembayaran wajib diisi',
         ];
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Master\Http\Controllers;
+namespace Modules\Setting\Http\Controllers;
 
 use App\Http\Helpers\UtilsHelper;
 use App\Models\DataStatis;
@@ -8,7 +8,7 @@ use App\Models\Setting;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Master\Http\Requests\CreatePostSettingsRequest;
+use Modules\Setting\Http\Requests\CreatePostSettingsRequest;
 
 class SettingsController extends Controller
 {

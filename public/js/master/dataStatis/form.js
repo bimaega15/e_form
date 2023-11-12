@@ -17,6 +17,11 @@ submitButton.addEventListener("click", function (e) {
     submitData();
 });
 
+form.submit(function (e) {
+    e.preventDefault();
+    submitData();
+});
+
 function submitData() {
     var formData = $(form)[0];
     var data = new FormData(formData);

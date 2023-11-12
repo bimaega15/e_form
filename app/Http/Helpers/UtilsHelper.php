@@ -2,26 +2,15 @@
 
 namespace App\Http\Helpers;
 
-use App\Models\Berita;
-use App\Models\Client;
-use App\Models\CounterData;
-use App\Models\Faq;
 use App\Models\Menu;
 use App\Models\Product;
-use App\Models\Produk;
 use App\Models\Setting;
-use App\Models\TentangKami;
-use App\Models\TentangKamiDetail;
-use App\Models\Testimoni;
 use App\Models\User;
-use App\Models\Video;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use File;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 
 class UtilsHelper
 {
@@ -101,6 +90,7 @@ class UtilsHelper
 
         return $hiddenData;
     }
+
     public static function createStructureTree()
     {
         $daftarMenu = Menu::orderBy('no_menu', 'asc')->orderBy('id', 'asc')->get();
@@ -128,6 +118,7 @@ class UtilsHelper
         }
         return $listMenu;
     }
+
     public static function menuFilterById($id)
     {
         $menu = Menu::find($id);
@@ -218,12 +209,12 @@ class UtilsHelper
             $menu_item = UtilsHelper::menuFilterById($item['id']);
             $buttonUpdate = '
                 <a href="' . route('master.menu.edit', $menu_item->id) . '" class="btn btn-warning btn-edit btn-sm" style="padding: 0 5px;">
-                    <i class="zmdi zmdi-edit" style="font-size: 10px;"></i>
+                    <i class="fa-solid fa-pencil"></i>
                 </a>
                 ';
             $buttonDelete = '
                 <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('master/menu/' . $menu_item->id . '?_method=delete') . '" style="padding: 0 5px;">
-                    <i class="zmdi zmdi-delete" style="font-size: 10px;"></i>
+                    <i class="fa-solid fa-trash"></i>
                 </button>
                 ';
 
@@ -232,7 +223,7 @@ class UtilsHelper
                 <li class="dd-item dd3-item" data-id="' . $item['id'] . '">
                     <div class="dd-handle dd3-handle"></div>
                     <div class="dd3-content p-0">
-                        <div class="d-flex justify-content-between align-items-center" style="padding-left: 50px; padding-right: 10px;">
+                        <div class="flex justify-between items-center" style="justify-content: space-between;">
                             <div>
                                 <a href="' . url($menu_item->link_menu) . '">
                                 ' . $menu_item->icon_menu . ' &nbsp; ' . $menu_item->nama_menu . '
@@ -251,7 +242,7 @@ class UtilsHelper
                     <li class="dd-item dd3-item" data-id="' . $item['id'] . '">
                         <div class="dd-handle dd3-handle"></div>
                             <div class="dd3-content p-0">
-                                <div class="d-flex justify-content-between align-items-center" style="padding-left: 15px; padding-right: 10px;">
+                                <div class="flex justify-between items-center" style="justify-content: space-between;">
                                 <div>
                                     <a href="' . url($menu_item->link_menu) . '">
                                     ' . $menu_item->icon_menu . ' &nbsp; ' . $menu_item->nama_menu . '
@@ -330,10 +321,11 @@ class UtilsHelper
 
     public static function insertPermissions()
     {
-        // $countPermissions = Permission::all()->count();
-        // if ($countPermissions > 0) {
-        //     Permission::truncate();
-        // }
+        $countPermissions = Permission::all()->count();
+        if ($countPermissions > 0) {
+            DB::table('permissions')->delete();
+        }
+
         $routes = \Route::getRoutes();
         $routesName = [];
         foreach ($routes as $route) {

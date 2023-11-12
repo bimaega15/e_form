@@ -86,6 +86,11 @@ submitButton.addEventListener("click", function (e) {
     submitData();
 });
 
+form.submit(function (e) {
+    e.preventDefault();
+    submitData();
+});
+
 $(document).on("click", 'input[name="is_node"]', function () {
     if ($(this).is(":checked")) {
         value = 1;
@@ -96,8 +101,8 @@ $(document).on("click", 'input[name="is_node"]', function () {
     if (value == 1) {
         $('input[name="is_children"]').prop("checked", false);
 
-        $("#form-menu_children_id").removeClass("d-none");
-        $("#form-menu_root_id").addClass("d-none");
+        $("#form-menu_children_id").removeClass("hidden");
+        $("#form-menu_root_id").addClass("hidden");
     }
 });
 
@@ -111,8 +116,8 @@ $(document).on("click", 'input[name="is_children"]', function () {
     if (value == 1) {
         $('input[name="is_node"]').prop("checked", false);
 
-        $("#form-menu_children_id").addClass("d-none");
-        $("#form-menu_root_id").removeClass("d-none");
+        $("#form-menu_children_id").addClass("hidden");
+        $("#form-menu_root_id").removeClass("hidden");
     }
 });
 
@@ -183,7 +188,7 @@ function submitData() {
         },
         success: function (data) {
             notifAlert("Successfully", data, "success");
-            $(`#${modal_large}`).modal("toggle");
+            modal_large_js.hide();
         },
         error: function (jqXHR, exception) {
             // Enable button

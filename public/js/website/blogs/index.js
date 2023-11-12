@@ -11,8 +11,8 @@ $(document).ready(function () {
             type: "get",
             dataType: "text",
             beforeSend: function () {
-                $(".loading-svg").removeClass("d-none");
-                $(".preloader").addClass("d-none");
+                $(".loading-svg").removeClass("hidden");
+                $(".preloader").addClass("hidden");
             },
             success: function (data) {
                 $("#output_berita").html(data);
@@ -28,7 +28,7 @@ $(document).ready(function () {
                         1000
                     );
                 }
-                $(".loading-svg").addClass("d-none");
+                $(".loading-svg").addClass("hidden");
             },
         });
     }

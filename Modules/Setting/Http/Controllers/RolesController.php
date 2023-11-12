@@ -1,11 +1,11 @@
 <?php
 
-namespace Modules\Autentikasi\Http\Controllers;
+namespace Modules\Setting\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Autentikasi\Http\Requests\CreatePostRolesRequest;
+use Modules\Setting\Http\Requests\CreatePostRolesRequest;
 use Spatie\Permission\Models\Role;
 use DataTables;
 use Spatie\Permission\Models\Permission;

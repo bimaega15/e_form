@@ -1,6 +1,6 @@
 <?php
 
-namespace Modules\Autentikasi\Http\Controllers;
+namespace Modules\Setting\Http\Controllers;
 
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
