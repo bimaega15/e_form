@@ -1,10 +1,14 @@
 // Define
-
 var form = $("#form-submit");
 var submitButton = document.getElementById("btn_submit");
 
 // Submit button handler
 submitButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    submitData();
+});
+
+form.submit(function (e) {
     e.preventDefault();
     submitData();
 });
@@ -28,8 +32,8 @@ function submitData() {
         },
         success: function (data) {
             notifAlert("Successfully", data, "success");
-            getData();
-            $(`#${modal_large}`).modal("toggle");
+            datatable.ajax.reload();
+            modal_medium_js.hide();
         },
         error: function (jqXHR, exception) {
             // Enable button

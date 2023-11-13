@@ -62,4 +62,21 @@ $(document).ready(function () {
         e.preventDefault();
         handleDelete(this);
     });
+
+    body.on("click", '[data-gallery="photoviewer"]', function (e) {
+        e.preventDefault();
+        var items = [],
+            options = {
+                index: $(".photoviewer").index(this),
+            };
+
+        $('[data-gallery="photoviewer"]').each(function () {
+            items.push({
+                src: $(this).attr("href"),
+                title: $(this).attr("data-title"),
+            });
+        });
+
+        new PhotoViewer(items, options);
+    });
 });

@@ -16,12 +16,12 @@ Breadcrumbs::for('roles', function (BreadcrumbTrail $trail) {
 
 Breadcrumbs::for('permissions', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
-    $trail->push('Permissions', route('autentikasi.permissions.index'));
+    $trail->push('Permissions', route('setting.permissions.index'));
 });
 
 Breadcrumbs::for('settings', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
-    $trail->push('Settings', route('master.settings.index'));
+    $trail->push('Settings', route('setting.settings.index'));
 });
 
 Breadcrumbs::for('profile', function (BreadcrumbTrail $trail) {

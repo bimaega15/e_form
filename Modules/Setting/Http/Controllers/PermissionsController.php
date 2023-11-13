@@ -24,14 +24,14 @@ class PermissionsController extends Controller
                 ->addColumn('action', function ($row) {
                     $buttonUpdate = '';
                     $buttonUpdate = '
-                    <a href="' . route('autentikasi.permissions.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
-                        <i class="zmdi zmdi-edit"></i>
+                    <a href="' . route('setting.permissions.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
+                        <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
-                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('autentikasi/permissions/' . $row->id . '?_method=delete') . '">
-                        <i class="zmdi zmdi-delete"></i>
+                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('setting/permissions/' . $row->id . '?_method=delete') . '">
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
                     $button = '

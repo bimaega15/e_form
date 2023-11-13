@@ -21,11 +21,8 @@
                     <td>{{$index + 1}}</td>
                     <td>{{$item->name}}</td>
                     <td>
-                        <div class="form-check">
-                            <input class="form-check-input check-input-roles" type="checkbox" value="{{$item->id}}" id="id_{{$item->id}}" data-id="{{$item->id}}" data-url="{{ url('autentikasi/assignRoles') }}" data-role_id="{{$role->id}}" {{$role->hasPermissionTo($item->name) ? 'checked' : ''}}>
-                            <label class="form-check-label" for="id_{{$item->id}}">
-                            </label>
-                        </div>
+                        <input type="checkbox" id="id_{{$item->id}}" class="form-checkbox h-5 w-5 text-blue-600 check-input-roles" data-id="{{$item->id}}" data-url="{{ url('setting/assignRoles') }}" data-role_id="{{$role->id}}" value="{{$item->id}}" {{$role->hasPermissionTo($item->name) ? 'checked' : ''}}>
+                        <label class="ml-2 text-gray-700" for="id_{{$item->id}}"></label>
                     </td>
                 </tr>
                 @endforeach

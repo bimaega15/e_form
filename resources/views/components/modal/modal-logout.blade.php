@@ -13,7 +13,7 @@
                <p>Apakah anda yakin ingin keluar dari sistem ?</p>
             </div>
             <div class="modal-footer">
-               <div class="form-group d-flex justify-content-center" style="width: 100%;">
+               <div class="flex justify-center" style="width: 100%;">
                   <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-dismiss="modal">
                      <i class="zmdi zmdi-close mr-1"></i> Close
                   </button>

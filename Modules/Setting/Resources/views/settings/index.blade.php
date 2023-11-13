@@ -1,80 +1,63 @@
 <x-backend-layout>
     @section('title','Settings Page')
-    <section class="content">
-        <div class="block-header">
-            <div class="row">
-                <div class="col-lg-7 col-md-6 col-sm-12">
-                    <h2>Settings Page
-                        <small class="text-muted">Management Data Settings</small>
-                    </h2>
-                </div>
-                <div class="col-lg-5 col-md-6 col-sm-12">
-                    {{ Breadcrumbs::render('settings') }}
-                </div>
-            </div>
-        </div>
-        <div class="container-fluid">
-            <div class="row clearfix">
-                <div class="col-lg-12">
+    @section('title','Settings Controller')
+    <!-- BEGIN: Top Bar -->
+    @section('breadcrumbs')
+    {{ Breadcrumbs::render('settings') }}
+    @endsection
+    <!-- END: Top Bar -->
 
-                    <div class="card">
-                        <div class="header">
-                            <h2><strong>Form Settings</strong>
-                                <small>
-                                    Data Settings
-                                </small>
-                            </h2>
-                        </div>
-                        <div class="body table-responsive">
-                            @if ($settings != null)
-                            <form method="post" action="{{ url('master/settings/'.$settings->id.'?_method=put') }}" id="form-submit">
-                                @else
-                                <form method="post" action="{{ route('master.settings.store') }}" id="form-submit">
-                                    @endif
-                                    <x-modal.modal-body>
+    <h2 class="intro-y text-lg font-medium mt-10">
+        Data Settings
+    </h2>
+    @if ($settings != null)
+    <form method="post" action="{{ url('setting/settings/'.$settings->id.'?_method=put') }}" id="form-submit">
+        @else
+        <form method="post" action="{{ route('setting.settings.store') }}" id="form-submit">
+            @endif
+            <div class="grid grid-cols-12 gap-6 mt-5">
+                <div class="col-span-12 sm:col-span-12 mb-2">
+                    <div id="link-tab" class="p-5">
+                        <div class="preview">
+                            <ul class="nav nav-link-tabs" role="tablist">
+                                <li id="pengaturan_umum_tab" class="nav-item flex-1" role="presentation">
+                                    <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#pengaturan_umum" type="button" role="tab" aria-controls="pengaturan_umum" aria-selected="true"> PENGATURAN UMUM </button>
+                                </li>
+                                <li id="pengaturan_email_tab" class="nav-item flex-1" role="presentation">
+                                    <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#pengaturan_email" type="button" role="tab" aria-controls="pengaturan_email" aria-selected="false"> PENGATURAN EMAIL </button>
+                                </li>
+                            </ul>
+                            <div class="tab-content mt-5">
+                                <div id="pengaturan_umum" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="pengaturan_umum_tab">
+                                    @include('setting::settings.partials.umum')
+                                </div>
 
-                                        <!-- Nav tabs -->
-                                        <ul class="nav nav-tabs" role="tablist">
-                                            <li class="nav-item"><a class="nav-link active" data-toggle="tab" href="#general_setting"> <i class="zmdi zmdi-home"></i> PENGATURAN UMUM </a></li>
-                                            <li class="nav-item"><a class="nav-link" data-toggle="tab" href="#email_setting">
-                                                    <i class="zmdi zmdi-email"></i> PENGATURAN EMAIL
-                                                </a>
-                                            </li>
-                                        </ul>
-
-                                        <!-- Tab panes -->
-                                        <div class="tab-content">
-                                            <div role="tabpanel" class="tab-pane in active" id="general_setting">
-                                                @include('master::settings.partials.umum')
-                                            </div>
-                                            <div role="tabpanel" class="tab-pane" id="email_setting">
-                                                @include('master::settings.partials.email')
-                                            </div>
-                                        </div>
-                                    </x-modal.modal-body>
-
-                                    <x-modal.modal-footer>
-                                        <div class="form-group d-flex">
-                                            <button type="reset" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-dismiss="modal">
-                                                <i class="zmdi zmdi-close mr-1"></i> Close
-                                            </button>
-                                            <button type="submit" class="btn btn-primary mr-2" id="btn_submit"><i class="zmdi zmdi-mail-send mr-1"></i>
-                                                Simpan</button>
-                                        </div>
-                                    </x-modal.modal-footer>
-                                </form>
+                                <div id="pengaturan_email" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="pengaturan_email_tab">
+                                    @include('setting::settings.partials.email')
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+                <div class="col-span-12 sm:col-span12 mb-2">
+                    <div class="flex justify-end">
+                        <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">
+                            Cancel
+                        </button>
+                        <button type="button" class="btn btn-primary w-20" id="btn_submit">
+                            Submit
+                        </button>
+                    </div>
+                </div>
             </div>
-        </div>
-    </section>
+        </form>
 
-    @push('custom_js')
-    <script class="url_datastatis_zonawaktu" data-url="{{ route('master.dataStatis.parentStatis') }}" data-jenisreferensi_datastatis="zona_waktu"></script>
-    <script class="url_settings" data-url="{{ route('master.settings.checkData') }}"></script>
-    <script class="url_root" data-url="{{ url('/') }}"></script>
-    <script class="zona_waktu" data-zonawaktu_settings_id="{{ isset($zonawaktu_settings) ? $zonawaktu_settings->id : '' }}" data-zonawaktu_settings_nama="{{ isset($zonawaktu_settings) ? $zonawaktu_settings->nama_datastatis : '' }}"></script>
-    <script src="{{ asset('js/master/settings/index.js') }}"></script>
-    @endpush
+
+        @push('custom_js')
+        <script class="url_datastatis_zonawaktu" data-url="{{ route('master.dataStatis.parentStatis') }}" data-jenisreferensi_datastatis="zona_waktu"></script>
+        <script class="url_settings" data-url="{{ route('setting.settings.checkData') }}"></script>
+        <script class="url_root" data-url="{{ url('/') }}"></script>
+        <script class="zona_waktu" data-zonawaktu_settings_id="{{ isset($zonawaktu_settings) ? $zonawaktu_settings->id : '' }}" data-zonawaktu_settings_nama="{{ isset($zonawaktu_settings) ? $zonawaktu_settings->nama_datastatis : '' }}"></script>
+        <script src="{{ asset('js/setting/settings/index.js') }}"></script>
+        @endpush
 </x-backend-layout>
