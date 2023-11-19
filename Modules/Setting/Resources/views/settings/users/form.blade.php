@@ -36,14 +36,14 @@
                 <textarea class="form-control" id="alamat_profile" placeholder="Alamat..." name="alamat_profile">{{ isset($profile) ? $profile->alamat_profile : '' }}</textarea>
             </div>
 
-            <div class="form-group">
+            <div class="col-span-12 sm:col-span-12 mb-2">
                 <label for="">Jenis Kelamin</label> <br>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="jeniskelamin_profile" id="jeniskelamin_profilel" value="L" {{ isset($profile) ? $profile->jeniskelamin_profile == 'L' ? 'checked' : '' : '' }}>
+                <div class="form-check mt-2">
+                    <input id="jeniskelamin_profilel" class="form-check-input" type="radio" name="jeniskelamin_profile" value="L" {{ isset($profile) ? $profile->jeniskelamin_profile == 'L' ? 'checked' : '' : '' }}>
                     <label class="form-check-label" for="jeniskelamin_profilel">Laki-laki</label>
                 </div>
-                <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="jeniskelamin_profile" id="jeniskelamin_profilep" value="P" {{ isset($profile) ? $profile->jeniskelamin_profile == 'P' ? 'checked' : '' : '' }}>
+                <div class="form-check mt-2">
+                    <input id="jeniskelamin_profilep" class="form-check-input" type="radio" name="jeniskelamin_profile" value="P" {{ isset($profile) ? $profile->jeniskelamin_profile == 'P' ? 'checked' : '' : '' }}>
                     <label class="form-check-label" for="jeniskelamin_profilep">Perempuan</label>
                 </div>
             </div>
