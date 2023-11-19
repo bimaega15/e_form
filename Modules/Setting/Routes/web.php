@@ -51,4 +51,13 @@ Route::prefix('setting')->group(function () {
         Route::put('/{id}', 'AssignRolesController@update')->name('setting.assignRoles.update');
         Route::delete('/{id}', 'AssignRolesController@destroy')->name('setting.assignRoles.destroy');
     });
+
+    Route::group(['prefix' => 'users'], function () {
+        Route::get('/', 'UsersController@index')->name('setting.users.index');
+        Route::get('/create', 'UsersController@create')->name('setting.users.create');
+        Route::post('/', 'UsersController@store')->name('setting.users.store');
+        Route::get('/{id}/edit', 'UsersController@edit')->name('setting.users.edit');
+        Route::put('/{id}', 'UsersController@update')->name('setting.users.update');
+        Route::delete('/{id}', 'UsersController@destroy')->name('setting.users.destroy');
+    });
 });

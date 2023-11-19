@@ -1,17 +1,17 @@
 <x-backend-layout>
-    @section('title','Data Statis Page')
+    @section('title','Users Page')
     <!-- BEGIN: Top Bar -->
     @section('breadcrumbs')
-    {{ Breadcrumbs::render('dataStatis') }}
+    {{ Breadcrumbs::render('users') }}
     @endsection
     <!-- END: Top Bar -->
 
     <h2 class="intro-y text-lg font-medium mt-10">
-        Data Statis
+        Data Users
     </h2>
     <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-            <button class="btn btn-primary shadow-md mr-2 btn-add" data-url="{{ route('master.dataStatis.create') }}">Tambah Data</button>
+            <button class="btn btn-primary shadow-md mr-2 btn-add" data-url="{{ route('setting.users.create') }}">Tambah Data</button>
         </div>
 
 
@@ -22,9 +22,11 @@
                     <tr>
                         <th class="whitespace-nowrap">NO.</th>
                         <th class="whitespace-nowrap">KODE</th>
-                        <th class="whitespace-nowrap">NAMA DATA</th>
-                        <th class="whitespace-nowrap">JENIS REFERENSI</th>
-                        <th class="whitespace-nowrap">PARENT</th>
+                        <th class="whitespace-nowrap">NAMA</th>
+                        <th class="whitespace-nowrap">EMAIL</th>
+                        <th class="whitespace-nowrap">JABATAN</th>
+                        <th class="whitespace-nowrap">ATASAN</th>
+                        <th class="whitespace-nowrap">GAMBAR</th>
                         <th class="text-center whitespace-nowrap">ACTIONS</th>
                     </tr>
                 </thead>
@@ -38,7 +40,7 @@
 
 
     @push('custom_js')
-    <script class="url_datatable" data-url="{{ route('master.dataStatis.index') }}"></script>
-    <script src="{{ asset('js/master/dataStatis/index.js') }}"></script>
+    <script class="url_datatable" data-url="{{ route('setting.users.index') }}"></script>
+    <script src="{{ asset('js/setting/users/index.js') }}"></script>
     @endpush
 </x-backend-layout>

@@ -63,3 +63,11 @@ Breadcrumbs::for('unit', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Unit', route('master.unit.index'));
 });
+Breadcrumbs::for('dataStatis', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Data Statis', route('master.dataStatis.index'));
+});
+Breadcrumbs::for('users', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Users', route('setting.users.index'));
+});

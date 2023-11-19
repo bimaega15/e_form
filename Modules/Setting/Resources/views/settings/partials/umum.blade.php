@@ -18,8 +18,8 @@
         @if (isset($settings))
         @if ($settings != null)
         <div id="load_icon_settings">
-            <a class="photoviewer" href="{{ asset('upload/settings/logo/'.$settings->icon_settings) }}" data-gallery="photoviewer" data-title="{{ $settings->icon_settings }}" target="_blank">
-                <img src="{{ asset('upload/settings/logo/'.$settings->icon_settings) }}" alt="Upload gambar" height="100px" class="rounded">
+            <a class="photoviewer" href="{{ asset('upload/settings/icon/'.$settings->icon_settings) }}" data-gallery="photoviewer" data-title="{{ $settings->icon_settings }}" target="_blank">
+                <img src="{{ asset('upload/settings/icon/'.$settings->icon_settings) }}" alt="Upload gambar" height="100px" class="rounded">
             </a>
         </div>
         @endif
@@ -31,8 +31,8 @@
         @if (isset($settings))
         @if ($settings != null)
         <div id="load_perusahaan_settings">
-            <a class="photoviewer" href="{{ asset('upload/settings/logo/'.$settings->perusahaan_settings) }}" data-gallery="photoviewer" data-title="{{ $settings->perusahaan_settings }}" target="_blank">
-                <img src="{{ asset('upload/settings/logo/'.$settings->perusahaan_settings) }}" alt="Upload gambar" height="100px" class="rounded">
+            <a class="photoviewer" href="{{ asset('upload/settings/perusahaan/'.$settings->perusahaan_settings) }}" data-gallery="photoviewer" data-title="{{ $settings->perusahaan_settings }}" target="_blank">
+                <img src="{{ asset('upload/settings/perusahaan/'.$settings->perusahaan_settings) }}" alt="Upload gambar" height="100px" class="rounded">
             </a>
         </div>
         @endif

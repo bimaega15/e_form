@@ -6,6 +6,13 @@
     <div class="side-nav__devider my-6"></div>
     <ul>
         <li>
+            <a href="side-menu-light-inbox.html" class="side-menu">
+                <div class="side-menu__icon"> <i data-lucide="inbox"></i> </div>
+                <div class="side-menu__title"> Dashboard </div>
+            </a>
+        </li>
+
+        <li>
             <a href="javascript:;.html" class="side-menu side-menu--active">
                 <div class="side-menu__icon"> <i data-lucide="home"></i> </div>
                 <div class="side-menu__title">
