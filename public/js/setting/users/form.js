@@ -2,6 +2,11 @@
 var form = $("#form-submit");
 var submitButton = document.getElementById("btn_submit");
 
+var urlSelect2 = $(".select2ServerSide").data('url');
+
+select2Standard(".select2", "#form-submit");
+select2Server(".select2ServerSide", "#form-submit", urlSelect2);
+
 // Submit button handler
 submitButton.addEventListener("click", function (e) {
     e.preventDefault();
@@ -28,7 +33,7 @@ function submitData() {
         success: function (data) {
             notifAlert("Successfully", data, "success");
             datatable.ajax.reload();
-            $(`#${modal_large_js}`).modal("toggle");
+            $(`#${modal_large_js}`).hide();
         },
         error: function (jqXHR, exception) {
             // Enable button

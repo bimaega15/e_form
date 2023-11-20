@@ -59,5 +59,15 @@ Route::prefix('setting')->group(function () {
         Route::get('/{id}/edit', 'UsersController@edit')->name('setting.users.edit');
         Route::put('/{id}', 'UsersController@update')->name('setting.users.update');
         Route::delete('/{id}', 'UsersController@destroy')->name('setting.users.destroy');
+        Route::get('/getUsersProfile', 'UsersController@getUsersProfile')->name('setting.users.getUsersProfile');
+    });
+
+    Route::group(['prefix' => 'access'], function () {
+        Route::get('/', 'AccessController@index')->name('setting.access.index');
+        Route::get('/create', 'AccessController@create')->name('setting.access.create');
+        Route::post('/', 'AccessController@store')->name('setting.access.store');
+        Route::get('/{id}/edit', 'AccessController@edit')->name('setting.access.edit');
+        Route::put('/{id}', 'AccessController@update')->name('setting.access.update');
+        Route::delete('/{id}', 'AccessController@destroy')->name('setting.access.destroy');
     });
 });

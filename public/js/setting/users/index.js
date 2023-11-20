@@ -29,8 +29,8 @@ $(document).ready(function () {
                     searchable: true,
                 },
                 {
-                    data: "email_profile",
-                    name: "email_profile",
+                    data: "jabatan.nama_jabatan",
+                    name: "jabatan.nama_jabatan",
                     searchable: true,
                 },
                 {

@@ -3,15 +3,18 @@
 namespace Modules\Setting\Http\Controllers;
 
 use App\Http\Helpers\UtilsHelper;
+use App\Models\CategoryOffice;
+use App\Models\Jabatan;
 use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Modules\Setting\Http\Requests\CreatePostProfileRequest;
-use Modules\Setting\Http\Requests\CreatePutProfileRequest;
 use App\Models\Profile;
+use App\Models\Unit;
 use App\Models\User;
 use DataTables;
 use Illuminate\Support\Facades\Hash;
+use Modules\Setting\Http\Requests\CreatePostProfileRequest;
+use Modules\Setting\Http\Requests\CreatePutProfileRequest;
 
 class UsersController extends Controller
 {
@@ -71,7 +74,7 @@ class UsersController extends Controller
                 ->rawColumns(['action', 'gambar_profile'])
                 ->toJson();
         }
-        return view('setting::settings.users.index');
+        return view('setting::users.index');
     }
 
     /**
@@ -80,7 +83,11 @@ class UsersController extends Controller
      */
     public function create()
     {
-        return view('setting::settings.users.form');
+        $unit = Unit::all();
+        $jabatan = Jabatan::all();
+        $categoryOffice = CategoryOffice::all();
+        $usersIdAtasan = User::with('profile', 'profile.jabatan')->get();
+        return view('setting::users.form', compact('unit', 'jabatan', 'categoryOffice', 'usersIdAtasan'));
     }
 
     /**
@@ -125,7 +132,7 @@ class UsersController extends Controller
      */
     public function show($id)
     {
-        return view('setting::settings.users.form');
+        return view('setting::users.form');
     }
 
     /**
@@ -136,7 +143,7 @@ class UsersController extends Controller
     public function edit($id)
     {
         $profile = Profile::find($id);
-        return view('setting::settings.users.form', compact('profile'));
+        return view('setting::users.form', compact('profile'));
     }
 
     /**
@@ -185,5 +192,44 @@ class UsersController extends Controller
         UtilsHelper::deleteFile($id, 'profile', 'profile', 'gambar_profile');
         Profile::destroy($id);
         return response()->json('Berhasil menghapus data', 200);
+    }
+
+    public function getUsersProfile(Request $request)
+    {
+        $search = $request->input('search');
+        $limit = 10;
+        $page = $request->input('page');
+        $endPage = $page * $limit;
+        $firstPage = $endPage - $limit;
+
+        $data = User::join('profile', 'profile.users_id', '=', 'users.id')
+            ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id');
+        $countData = User::join('profile', 'profile.users_id', '=', 'users.id')
+            ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id')
+            ->get()
+            ->count();
+
+        if ($search != null) {
+            $data->where('nama_profile', 'like', '%' . $search . '%')
+                ->orWhere('nama_jabatan', 'like', '%' . $search . '%');
+        }
+        $data = $data->offset($firstPage)
+            ->limit($limit)
+            ->get();
+
+        $result = [];
+        foreach ($data as $key => $v_data) {
+            $result['results'][] =
+                [
+                    'id' => $v_data->id,
+                    'text' =>  $v_data->nama_profile . ' | ' . $v_data->nama_jabatan,
+                ];
+        }
+        if ($search != null) {
+            $countData = count($result);
+        }
+
+        $result['count_filtered'] = $countData;
+        return $result;
     }
 }

@@ -21,7 +21,12 @@ class CreatePostProfileRequest extends FormRequest
             'jeniskelamin_profile' => 'required',
             'gambar_profile' => 'image|max:2048',
             'password' => "required",
-            'password_confirm' => 'same:password'
+            'password_confirm' => 'same:password',
+            'alamat_profile' => 'required',
+            'code_profile' => 'required|unique:profile,code_profile',
+            'jabatan_id' => 'required',
+            'unit_id' => 'required',
+            'category_office_id' => 'required',
         ];
     }
 
@@ -44,7 +49,14 @@ class CreatePostProfileRequest extends FormRequest
             'jeniskelamin_profile.required' => 'Jenis kelamin wajib diisi',
             'gambar_profile.image' => 'Wajib berupa gambar',
             'gambar_profile.max' => 'Ukuran gambar maksimal 2048mb',
-            'password_confirm.same' => "Konfirmasi password tidak sama"
+            'password_confirm.same' => "Konfirmasi password tidak sama",
+            'alamat_profile.required' => "Alamat profile wajib diisi",
+
+            'code_profile.required' => 'Code profile wajib diisi',
+            'code_profile.unique' => 'Code profile harus unik',
+            'jabatan_id.required' => 'Jabatan wajib diisi',
+            'unit_id.required' => 'Unit wajib diisi',
+            'category_office_id.required' => 'Kategori Office wajib diisi',
         ];
     }
 
