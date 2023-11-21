@@ -12,6 +12,7 @@ use App\Models\Profile;
 use App\Models\Unit;
 use App\Models\User;
 use DataTables;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Modules\Setting\Http\Requests\CreatePostProfileRequest;
 use Modules\Setting\Http\Requests\CreatePutProfileRequest;

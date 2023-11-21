@@ -153,10 +153,12 @@ class UtilsHelper
             if ($item['children'] === null && ($parentId === null || in_array($item['id'], $parentId))) {
                 echo  '
                 <li>
-                    <a href="' . url($menuData->link_menu) . '" class="' . $btnClassSpecified . '">
-                        ' . $menuData->icon_menu . '<span>' . $menuData->nama_menu . '</span>
+                    <a href="' . url($menuData->link_menu) . '" class="side-menu ' . $btnClassSpecified . '">
+                        <div class="side-menu__icon"> ' . $menuData->icon_menu . ' </div>
+                        <div class="side-menu__title"> ' . $menuData->nama_menu . ' </div>
                     </a>
                 </li>
+    
                 ';
             } elseif ($item['children'] !== null && ($parentId === null || in_array($item['id'], $parentId))) {
                 $hasVisibleChildren = false;
@@ -178,17 +180,20 @@ class UtilsHelper
 
                 if ($hasVisibleChildren) {
                     echo '
-                    <li> <a href="' . $menuData->link_menu . '" class="menu-toggle">' . $menuData->icon_menu . '<span>' . $menuData->nama_menu . '</span> </a>
-                        <ul class="ml-menu">
-                    ';
-
+                    <li>
+                        <a href="javascript:;" class="side-menu">
+                            <div class="side-menu__icon"> ' . $menuData->icon_menu . ' </div>
+                            <div class="side-menu__title">
+                                ' . $menuData->nama_menu . '
+                                <div class="side-menu__sub-icon "> <i data-lucide="chevron-down"></i> </div>
+                            </div>
+                        </a>
+                        <ul class="">';
                     $childIds = $item['children'];
                     UtilsHelper::renderSidebar($data, $childIds);
-
                     echo '
                         </ul>
-                    </li>
-                    ';
+                    </li>';
                 }
             }
         }

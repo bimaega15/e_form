@@ -29,7 +29,7 @@
                                             <td>{{$item->name}}</td>
                                             <td>
                                                 <div class="col-span-12 sm:col-span-6 mb-2">
-                                                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600" value="{{$item->id}}" id="id_{{$item->id}}" data-id="{{$item->id}}" data-url="{{ url('account/access') }}" data-users_id="{{$getProfile->id}}" {{$getProfile->hasRole($item->name) ? 'checked' : ''}}>
+                                                    <input type="checkbox" class="form-checkbox h-5 w-5 text-blue-600 check-input-roles" value="{{$item->id}}" id="id_{{$item->id}}" data-id="{{$item->id}}" data-url="{{ url('setting/access') }}" data-users_id="{{$getProfile->id}}" {{$getProfile->hasRole($item->name) ? 'checked' : ''}}>
                                                     <label for="id_{{$item->id}}" class="ml-2 text-gray-700">
                                                     </label>
                                                 </div>
@@ -56,4 +56,4 @@
     </form>
 
 
-    <script type="text/javascript" src="{{ asset('js/account/access/index.js') }}"></script>
+    <script type="text/javascript" src="{{ asset('js/setting/access/index.js') }}"></script>
