@@ -2,6 +2,7 @@ var modal_small = "modal_small";
 var modal_medium = "modal_medium";
 var modal_large = "modal_large";
 var modal_extra_large = "modal_extra_large";
+var modal_logout = "modal_logout";
 
 var modal_small_js = tailwind.Modal.getOrCreateInstance(
     document.querySelector(`#${modal_small}`)
@@ -14,6 +15,9 @@ var modal_large_js = tailwind.Modal.getOrCreateInstance(
 );
 var modal_extra_large_js = tailwind.Modal.getOrCreateInstance(
     document.querySelector(`#${modal_extra_large}`)
+);
+var modal_logout_js = tailwind.Modal.getOrCreateInstance(
+    document.querySelector(`#${modal_logout}`)
 );
 
 function showModalFormSmall(url, param, caption, tipe = "post") {

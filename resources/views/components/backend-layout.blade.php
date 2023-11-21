@@ -80,13 +80,21 @@
 </head>
 <!-- END: Head -->
 
+@php
+$structureTree = UtilsHelp::createStructureTree();
+$hiddenTree = UtilsHelp::handleSidebar($structureTree);
+ob_start();
+UtilsHelp::renderSidebar($structureTree, null, $hiddenTree);
+$outputSidebar = ob_get_clean();
+@endphp
+
 <body class="py-5 md:py-0 bg-black/[0.15] dark:bg-transparent">
     <!-- BEGIN: Mobile Menu -->
-    <x-partials.mobile></x-partials.mobile>
+    <x-partials.mobile sidebar="{!! $outputSidebar !!}"></x-partials.mobile>
     <!-- END: Mobile Menu -->
     <div class="flex mt-[4.7rem] md:mt-0 overflow-hidden">
         <!-- BEGIN: Side Menu -->
-        <x-partials.navbar></x-partials.navbar>
+        <x-partials.navbar sidebar="{!! $outputSidebar !!}"></x-partials.navbar>
         <!-- END: Side Menu -->
         <!-- BEGIN: Content -->
         <div class="content">
@@ -130,6 +138,11 @@
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
             }
         });
+
+        $(document).on('click', '.btn-logout', function(e) {
+            e.preventDefault();
+            modal_logout_js.show();
+        })
     </script>
 
     @stack('custom_js')
