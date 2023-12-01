@@ -90,6 +90,7 @@ Route::prefix('master')->group(function () {
     });
 
     Route::group(['prefix' => 'product'], function () {
+        Route::get('/getAutoCode', 'ProductController@getAutoCode')->name('master.product.getAutoCode');
         Route::get('/', 'ProductController@index')->name('master.product.index');
         Route::get('/create', 'ProductController@create')->name('master.product.create');
         Route::post('/', 'ProductController@store')->name('master.product.store');

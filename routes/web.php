@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\MyProfileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,3 +26,6 @@ Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']
     \UniSharp\LaravelFilemanager\Lfm::routes();
 });
 require __DIR__ . '/auth.php';
+
+Route::get('/myProfile', [MyProfileController::class, 'index'])->name('myProfile.index');
+Route::post('/myProfile/store', [MyProfileController::class, 'store'])->name('myProfile.store');

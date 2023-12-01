@@ -20,4 +20,13 @@ class Profile extends Model
     {
         return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
     }
+
+    public function unit()
+    {
+        return $this->belongsTo(Unit::class, 'unit_id', 'id');
+    }
+    public function categoryOffice()
+    {
+        return $this->belongsTo(CategoryOffice::class, 'category_office_id', 'id');
+    }
 }

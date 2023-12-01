@@ -71,3 +71,7 @@ Breadcrumbs::for('users', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Users', route('setting.users.index'));
 });
+Breadcrumbs::for('product', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Product', route('master.product.index'));
+});

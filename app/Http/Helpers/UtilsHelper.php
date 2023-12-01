@@ -14,9 +14,13 @@ use Spatie\Permission\Models\Permission;
 
 class UtilsHelper
 {
-    public static function myProfile()
+    public static function myProfile($users_id = null)
     {
-        $getUser = User::with('profile')->find(Auth::id());
+        if ($users_id == null) {
+            $users_id = Auth::id();
+        }
+
+        $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
         return $getUser;
     }
     public static function uploadFile($file, $lokasi, $id = null, $table = null, $nameAttribute = null)

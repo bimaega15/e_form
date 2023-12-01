@@ -10,6 +10,7 @@ use Modules\Master\Http\Requests\CreatePostProductRequest;
 use App\Models\Product;
 use App\Models\TypeProduct;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 use Modules\Master\Http\Requests\CreateUpdateProductRequest;
 
 class ProductController extends Controller
@@ -32,13 +33,13 @@ class ProductController extends Controller
                     $buttonUpdate = '';
                     $buttonUpdate = '
                     <a href="' . route('master.product.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
-                        <i class="zmdi zmdi-edit"></i>
+                        <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
                     <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('master/product/' . $row->id . '?_method=delete') . '">
-                        <i class="zmdi zmdi-delete"></i>
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
 
@@ -80,7 +81,6 @@ class ProductController extends Controller
         $data = array_merge(
             $data,
             [
-                'code_product' => UtilsHelper::generateCodeProduct(),
                 'gambar_product' => $gambar_product,
             ],
         );
@@ -144,5 +144,42 @@ class ProductController extends Controller
         UtilsHelper::deleteFile($id, 'products', 'product', 'gambar_product');
         Product::destroy($id);
         return response()->json('Berhasil menghapus data', 200);
+    }
+
+    public function getAutoCode()
+    {
+        try {
+            //code...
+            $number = Product::select(DB::raw('max(code_product) as code_product'))->first();
+            if ($number != '' && $number != null) {
+                $getCodeProduct = ($number->code_product);
+                $getCodeProduct = str_replace('P', '', $getCodeProduct);
+                $getCodeProduct = (int)  $getCodeProduct;
+                $getCodeProduct++;
+                $getAutoNumber = 'P' . sprintf("%03s", $getCodeProduct);
+            } else {
+                $getAutoNumber = 'P001';
+            }
+
+            if ($number) {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Berhasil ambil data',
+                    'result' => $getAutoNumber
+                ], 200);
+            } else {
+                return response()->json([
+                    'status' => 200,
+                    'message' => 'Gagal ambil data',
+                ], 200);
+            }
+        } catch (Exception $e) {
+            //throw $th;
+            return response()->json([
+                'status' => 400,
+                'message' => 'Terjadi kesalahan data',
+                'result' => $e->getMessage()
+            ], 400);
+        }
     }
 }

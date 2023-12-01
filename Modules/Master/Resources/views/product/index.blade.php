@@ -23,7 +23,8 @@
                         <th class="whitespace-nowrap">NO.</th>
                         <th class="whitespace-nowrap">CODE</th>
                         <th class="whitespace-nowrap">NAMA</th>
-                        <th class="whitespace-nowrap">NAMA</th>
+                        <th class="whitespace-nowrap">KAPASITAS</th>
+                        <th class="whitespace-nowrap">QTY</th>
                         <th class="text-center whitespace-nowrap">ACTIONS</th>
                     </tr>
                 </thead>
@@ -37,7 +38,7 @@
 
 
     @push('custom_js')
-    <script class="url_datatable" data-url="{{ route('master.Produk.index') }}"></script>
-    <script src="{{ asset('js/master/Produk/index.js') }}"></script>
+    <script class="url_datatable" data-url="{{ route('master.product.index') }}"></script>
+    <script src="{{ asset('js/master/product/index.js') }}"></script>
     @endpush
 </x-backend-layout>

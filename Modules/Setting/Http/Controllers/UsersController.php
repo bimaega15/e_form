@@ -144,7 +144,11 @@ class UsersController extends Controller
     public function edit($id)
     {
         $profile = Profile::find($id);
-        return view('setting::users.form', compact('profile'));
+        $unit = Unit::all();
+        $jabatan = Jabatan::all();
+        $categoryOffice = CategoryOffice::all();
+        $usersIdAtasan = User::with('profile', 'profile.jabatan')->get();
+        return view('setting::users.form', compact('profile', 'unit', 'jabatan', 'categoryOffice', 'usersIdAtasan'));
     }
 
     /**

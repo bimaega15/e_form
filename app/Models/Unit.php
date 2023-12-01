@@ -10,4 +10,9 @@ class Unit extends Model
     use HasFactory;
     protected $table = 'unit';
     protected $guarded = [];
+
+    public function profile()
+    {
+        return $this->hasMany(Profile::class, 'unit_id', 'id');
+    }
 }

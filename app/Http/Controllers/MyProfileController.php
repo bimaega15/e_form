@@ -12,12 +12,12 @@ use Modules\Account\Http\Requests\CreatePutProfileRequest;
 
 class MyProfileController extends Controller
 {
-
-
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            return view('one.myProfile.outputData')->render();
+            return view('one.myProfile.outputData', [
+                'profile' => UtilsHelper::myProfile(),
+            ])->render();
         }
         return view('one.myProfile.index');
     }

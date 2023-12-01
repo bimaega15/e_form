@@ -1,14 +1,31 @@
 // Define
 var form = $("#form-submit");
 var submitButton = document.getElementById("btn_submit");
-
-var urlSelect2 = $(".select2ServerSide").data('url');
-
-select2Standard(".select2", "#form-submit");
-select2Server(".select2ServerSide", "#form-submit", urlSelect2);
+select2Standard('.select2',`#${modal_large}`);
 
 // Submit button handler
+getCodeProduct();
+function getCodeProduct(){
+    var output = null;
+    $.ajax({
+        url: $('.get_auto_code').data('url'),
+        dataType: 'json',
+        async: false,
+        type: 'get',
+        success: function(data){
+            output = data.result;
+            $('input[name="code_product"]').val(output);
+        }
+    })
+    return output;
+}
+
 submitButton.addEventListener("click", function (e) {
+    e.preventDefault();
+    submitData();
+});
+
+form.submit(function (e) {
     e.preventDefault();
     submitData();
 });
