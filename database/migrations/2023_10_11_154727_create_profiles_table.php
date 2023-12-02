@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('nohp_profile', 35);
             $table->enum('jeniskelamin_profile', ['L', 'P']);
             $table->string('gambar_profile')->nullable();
+            $table->integer('usersid_atasan')->nullable();
 
             $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();

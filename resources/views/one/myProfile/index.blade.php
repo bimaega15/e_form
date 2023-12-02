@@ -11,7 +11,9 @@
     </h2>
     <div class="grid grid-cols-12 gap-6 mt-5">
         <div class="intro-y col-span-12 flex flex-wrap sm:flex-nowrap items-center mt-2">
-            <button class="btn btn-primary shadow-md mr-2 btn-add" data-url="{{ route('myProfile.index') }}">Tambah Data</button>
+            <button class="btn btn-primary shadow-md mr-2 btn-edit" data-url="{{ route('myProfile.edit',$profile->id) }}" data-id="{{ $profile->id }}">
+                Edit Data
+            </button>
         </div>
     </div>
 

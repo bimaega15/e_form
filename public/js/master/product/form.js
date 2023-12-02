@@ -50,7 +50,7 @@ function submitData() {
         success: function (data) {
             notifAlert("Successfully", data, "success");
             datatable.ajax.reload();
-            modal_large_js.hide();
+            modal_extra_large.hide();
         },
         error: function (jqXHR, exception) {
             // Enable button

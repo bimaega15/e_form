@@ -10,4 +10,14 @@ class Product extends Model
     use HasFactory;
     protected $table = 'products';
     protected $guarded = [];
+
+    public function typeProduct()
+    {
+        return $this->belongsTo(TypeProduct::class);
+    }
+
+    public function transactionDetail()
+    {
+        return $this->hasMany(TransactionDetail::class);
+    }
 }

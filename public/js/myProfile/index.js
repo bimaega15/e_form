@@ -30,3 +30,14 @@ body.on("click", '[data-gallery="photoviewer"]', function (e) {
 
     new PhotoViewer(items, options);
 });
+
+body.on("click", ".btn-edit", function (e) {
+    e.preventDefault();
+
+    showModalFormLarge(
+        $(this).data("url"),
+        { id: $(this).data("id") },
+        "Ubah Data",
+        "get"
+    );
+});

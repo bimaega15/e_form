@@ -27,8 +27,8 @@ class UsersController extends Controller
             return DataTables::eloquent($data)
                 ->addColumn('gambar_profile', function ($row) {
                     $output = '
-                <a class="photoviewer" href="' . asset('upload/users/' . $row->gambar_profile) . '" data-gallery="photoviewer" data-title="' . $row->gambar_profile . '" target="_blank">
-                    <img src="' . asset('upload/users/' . $row->gambar_profile) . '" alt="Upload gambar" height="100px" class="rounded">
+                <a class="photoviewer" href="' . asset('upload/profile/' . $row->gambar_profile) . '" data-gallery="photoviewer" data-title="' . $row->gambar_profile . '" target="_blank">
+                    <img src="' . asset('upload/profile/' . $row->gambar_profile) . '" alt="Upload gambar" height="100px" class="rounded">
                 </a>   
                 ';
                     return $output;

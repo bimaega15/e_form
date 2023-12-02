@@ -43,8 +43,8 @@
     @if (isset($profile))
     @if ($profile != null)
     <div id="load_gambar_profile">
-        <a class="photoviewer" href="{{ asset('upload/users/'.$profile->gambar_profile) }}" data-gallery="photoviewer" data-title="{{ $profile->gambar_profile }}" target="_blank">
-            <img src="{{ asset('upload/users/'.$profile->gambar_profile) }}" alt="Upload gambar" height="100px" class="rounded">
+        <a class="photoviewer" href="{{ asset('upload/profile/'.$profile->gambar_profile) }}" data-gallery="photoviewer" data-title="{{ $profile->gambar_profile }}" target="_blank">
+            <img src="{{ asset('upload/profile/'.$profile->gambar_profile) }}" alt="Upload gambar" height="100px" class="rounded">
         </a>
     </div>
     @endif

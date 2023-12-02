@@ -75,3 +75,7 @@ Breadcrumbs::for('product', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Product', route('master.product.index'));
 });
+Breadcrumbs::for('transaction', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Transaksi', route('transaksi.index'));
+});

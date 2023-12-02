@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\UtilsHelper;
+use App\Http\Requests\CreateProfileUpdateRequest;
+use App\Models\CategoryOffice;
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Profile;
+use App\Models\Unit;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
-use Modules\Account\Http\Requests\CreatePutProfileRequest;
 
 class MyProfileController extends Controller
 {
@@ -19,17 +22,22 @@ class MyProfileController extends Controller
                 'profile' => UtilsHelper::myProfile(),
             ])->render();
         }
-        return view('one.myProfile.index');
+        return view('one.myProfile.index', [
+            'profile' => UtilsHelper::myProfile()
+        ]);
     }
 
     public function edit($id)
     {
-        $profile = Profile::with('users')->find($id);
-        return view('one.myProfile.form', compact('profile'));
+        $profile = Profile::where('users_id', $id)->first();
+        $unit = Unit::all();
+        $jabatan = Jabatan::all();
+        $categoryOffice = CategoryOffice::all();
+        $usersIdAtasan = User::with('profile', 'profile.jabatan')->get();
+        return view('one.myProfile.form', compact('profile', 'unit', 'jabatan', 'categoryOffice', 'usersIdAtasan'));
     }
 
-
-    public function update(CreatePutProfileRequest $request, $id)
+    public function update(CreateProfileUpdateRequest $request, $id)
     {
         // users
         $password_db = Hash::make($request->input('password'));

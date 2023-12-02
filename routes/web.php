@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\MyProfileController;
+use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -28,4 +29,8 @@ Route::group(['prefix' => 'laravel-filemanager', 'middleware' => ['web', 'auth']
 require __DIR__ . '/auth.php';
 
 Route::get('/myProfile', [MyProfileController::class, 'index'])->name('myProfile.index');
-Route::post('/myProfile/store', [MyProfileController::class, 'store'])->name('myProfile.store');
+Route::get('/myProfile/{id}/edit', [MyProfileController::class, 'edit'])->name('myProfile.edit');
+Route::put('/myProfile/{id}/update', [MyProfileController::class, 'update'])->name('myProfile.update');
+
+Route::resource('transaksi', TransaksiController::class)->except(['show']);
+Route::get('transaksi/getProduct/{id}', [TransaksiController::class, 'getProduct'])->name('transaksi.getProduct');

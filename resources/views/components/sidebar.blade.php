@@ -1,11 +1,3 @@
-@php
-$structureTree = UtilsHelp::createStructureTree();
-$hiddenTree = UtilsHelp::handleSidebar($structureTree);
-
-ob_start();
-echo UtilsHelp::renderSidebar($structureTree, null, $hiddenTree);
-$outputSidebar = ob_get_clean();
-@endphp
 <aside id="leftsidebar" class="sidebar">
     <div class="menu">
         <ul class="list">
