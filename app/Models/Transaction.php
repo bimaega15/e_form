@@ -16,7 +16,17 @@ class Transaction extends Model
         return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
     }
 
+    public function products()
+    {
+        return $this->hasMany(TransactionDetail::class, 'transaction_id', 'id');
+    }
+
     public function transactionApprovel()
+    {
+        return $this->hasMany(TransactionApprovel::class, 'transaction_id', 'id');
+    }
+
+    public function usersApproval()
     {
         return $this->hasMany(TransactionApprovel::class, 'transaction_id', 'id');
     }

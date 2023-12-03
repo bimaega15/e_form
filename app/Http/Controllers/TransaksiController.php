@@ -24,6 +24,7 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $data = Transaction::query();
             return DataTables::eloquent($data)
@@ -307,12 +308,10 @@ class TransaksiController extends Controller
     // approval
     public function viewApproval($id)
     {
-        $getUsers = User::with('profile', 'profile.jabatan');
         $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
         $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
         $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)->get();
         return view('one.transaksi.viewApproval', [
-            'getUsers' => $getUsers,
             'getTransaction' => $getTransaction,
             'getTransactionRequest' => $getTransactionRequest,
             'getTransactionApprove' => $getTransactionApprove,

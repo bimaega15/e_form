@@ -25,4 +25,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/profile/{id}/updatePassword', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/static', [TransaksiController::class, 'static'])->name('transaksi.static');
+    Route::get('/transaksi/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
+    Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
+    Route::put('/transaksi/{id}/update', [TransaksiController::class, 'update'])->name('transaksi.update');
+    Route::delete('/transaksi/{id}/destroy', [TransaksiController::class, 'destroy'])->name('transaksi.destroy');
+
+    Route::get('/transaksi/{id}/viewApproval', [TransaksiController::class, 'viewApproval'])->name('transaksi.viewApproval');
+    Route::get('/transaksi/{id}/viewHistory', [TransaksiController::class, 'viewHistory'])->name('transaksi.viewHistory');
+    Route::post('/transaksi/forwardApproval', [TransaksiController::class, 'forwardApproval'])->name('transaksi.forwardApproval');
+    Route::post('/transaksi/finishApproval', [TransaksiController::class, 'finishApproval'])->name('transaksi.finishApproval');
 });
