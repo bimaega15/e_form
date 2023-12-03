@@ -204,13 +204,9 @@ class ProfileController extends Controller
             ], 400);
         }
 
-        $password_db = $request->input('password_old');
         $password = $request->input('password');
-        if ($password != null) {
-            $password_db = Hash::make($password);
-        }
         $dataUsers = [
-            'password' => $password_db,
+            'password' => Hash::make($password),
         ];
         $updateUser = User::find($id)->update($dataUsers);
 

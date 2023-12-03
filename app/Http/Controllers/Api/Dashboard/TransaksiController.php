@@ -73,6 +73,7 @@ class TransaksiController extends Controller
                     $query->select('name')->from('users')
                         ->whereRaw('users.id = transaction.users_id_review');
                 }, 'approvalBy')
+                ->limit(5)
                 ->get();
 
 
