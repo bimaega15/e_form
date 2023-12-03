@@ -5,6 +5,7 @@ namespace App\Http\Helpers;
 use App\Models\Menu;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\Transaction;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +20,6 @@ class UtilsHelper
         if ($users_id == null) {
             $users_id = Auth::id();
         }
-
         $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
         return $getUser;
     }
@@ -378,5 +378,48 @@ class UtilsHelper
             }
         }
         return $routeUri;
+    }
+
+    public static function formatDate($tanggal_transaction)
+    {
+        $dateNow = $tanggal_transaction;
+        $tanggal = Carbon::parse($dateNow);
+        $formattedDate = $tanggal->format('j F Y');
+        return $formattedDate;
+    }
+
+    public static function forwardUsers($users_id = null)
+    {
+        if ($users_id == null) {
+            return '-';
+        }
+        $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
+        return $getUser;
+    }
+
+    public static function autoNumberTransaction()
+    {
+        try {
+            //code...
+            $number = Transaction::orderBy('id', 'desc')->first();
+            $getAutoNumber = null;
+            if ($number != '' && $number != null) {
+                $getCodeProduct = ($number->code_transaction);
+                $explode = explode('-', $getCodeProduct);
+                $explodeEnd = end($explode);
+                $getCodeProduct = $explodeEnd;
+                $getCodeProduct = (int)  $getCodeProduct;
+                $getCodeProduct++;
+                $dateNow = date('Y-m-d');
+                $getAutoNumber = 'REQ-' . $dateNow . '-' . sprintf("%03s", $getCodeProduct);
+            } else {
+                $dateNow = date('Y-m-d');
+                $getAutoNumber = 'REQ-' . $dateNow . '-' . '001';
+            }
+
+            return $getAutoNumber;
+        } catch (Exception $e) {
+            return null;
+        }
     }
 }

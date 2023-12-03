@@ -31,7 +31,7 @@
 
         <x-modal.modal-footer>
             <div class="form-group d-flex">
-                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-dismiss="modal">
+                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-tw-dismiss="modal" href="javascript:;">
                     <i class="zmdi zmdi-close mr-1"></i> Close
                 </button>
                 <button type="submit" class="btn btn-primary mr-2" id="btn_submit"><i class="zmdi zmdi-mail-send mr-1"></i>

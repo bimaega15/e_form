@@ -10,4 +10,9 @@ class MetodePembayaran extends Model
     use HasFactory;
     protected $table = 'metode_pembayaran';
     protected $guarded = [];
+
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'metode_pembayaran_id', 'id');
+    }
 }

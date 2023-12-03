@@ -12,7 +12,7 @@
 </div>
 <div class="col-span-12 sm:col-span-12 mb-2">
     <label for="" class="form-label">NIK</label>
-    <input type="text" class="form-control" name="nik_profile" placeholder="NIK..." value="{{ isset($profile) ? $profile->nik_profile : '' }}">
+    <input type="number" class="form-control" name="nik_profile" placeholder="NIK..." value="{{ isset($profile) ? $profile->nik_profile : '' }}">
 </div>
 <div class="col-span-12 sm:col-span-12 mb-2">
     <label for="" class="form-label">Nama</label>

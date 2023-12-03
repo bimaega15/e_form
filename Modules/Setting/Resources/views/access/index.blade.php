@@ -48,8 +48,8 @@
 
         <x-modal.modal-footer>
             <div class="form-group d-flex">
-                <button type="button" class="btn btn-secondary d-flex align-items-center justify-content-center mr-2" data-dismiss="modal">
-                    <i class="zmdi zmdi-close mr-1"></i> Close
+                <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">
+                    OK
                 </button>
             </div>
         </x-modal.modal-footer>

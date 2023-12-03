@@ -8,4 +8,16 @@ use Illuminate\Database\Eloquent\Model;
 class TransactionApprovel extends Model
 {
     use HasFactory;
+    protected $table = 'transaction_approvel';
+    protected $guarded = [];
+
+    public function transaction()
+    {
+        return $this->belongsTo(Transaction::class, 'transaction_id', 'id');
+    }
+
+    public function users()
+    {
+        return $this->belongsTo(User::class, 'users_id', 'id');
+    }
 }

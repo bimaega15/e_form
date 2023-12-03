@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Helpers\UtilsHelper;
 use App\Models\Profile;
 use App\Models\RoleUser;
 use App\Models\User;
@@ -148,8 +149,8 @@ class ProfileController extends Controller
                 'result' => $validator->errors()
             ], 400);
         }
-        $file = $request->file('gambar_profile');
-        $gambar_profile = $this->uploadFile($file, $id);
+        $getProfile = Profile::where('users_id', $id)->first();
+        $gambar_profile = UtilsHelper::uploadFile($request->file('gambar_profile'), 'profile', $getProfile->id, 'profile', 'gambar_profile');
         $dataBiodata = [
             'gambar_profile' => $gambar_profile,
         ];
@@ -166,47 +167,6 @@ class ProfileController extends Controller
                 'status' => 400,
                 'message' => 'Gagal update data',
             ], 400);
-        }
-    }
-
-    private function uploadFile($file, $users_id = null)
-    {
-        if ($file != null) {
-            // delete file
-            $this->deleteFile($users_id);
-            // nama file
-            $fileExp =  explode('.', $file->getClientOriginalName());
-            $name = $fileExp[0];
-            $ext = $fileExp[1];
-            $name = time() . '-' . str_replace(' ', '-', $name) . '.' . $ext;
-
-            // isi dengan nama folder tempat kemana file diupload
-            $tujuan_upload =  public_path() . '/upload/profile/';
-
-            // upload file
-            $file->move($tujuan_upload, $name);
-        } else {
-            if ($users_id == null) {
-                $name = 'default.png';
-            } else {
-                $user = Profile::where('users_id', $users_id)->first();
-                $name = $user->gambar_profile;
-            }
-        }
-
-        return $name;
-    }
-
-    private function deleteFile($users_id = null)
-    {
-        if ($users_id != null) {
-            $profile = Profile::where('users_id', '=', $users_id)->first();
-            $gambar = public_path() . '/upload/profile/' . $profile->gambar_profile;
-            if (file_exists($gambar)) {
-                if ($profile->gambar_profile != 'default.png') {
-                    File::delete($gambar);
-                }
-            }
         }
     }
 

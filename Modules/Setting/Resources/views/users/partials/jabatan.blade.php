@@ -41,10 +41,5 @@
     <label for="" class="form-label">Atasan</label>
     <select name="usersid_atasan" id="" class="form-select select2ServerSide" style="width: 100%;" data-url="{{ route('setting.users.getUsersProfile') }}">
         <option value="">-- Pilih Atasan --</option>
-        @foreach ($usersIdAtasan as $item)
-        <option value="{{ $item->id }}" {{ isset($profile) ? $profile->usersid_atasan == $item->id ? 'selected' : '' : '' }}>
-            {{$item->profile->nama_profile }} | {{$item->profile->jabatan->nama_jabatan }}
-        </option>
-        @endforeach
     </select>
 </div>

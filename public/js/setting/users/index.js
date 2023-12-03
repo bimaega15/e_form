@@ -55,6 +55,20 @@ $(document).ready(function () {
         showModalFormLarge($(this).data("url"), {}, "Tambah Data", "get");
     });
 
+    function getProfileUsers(id)
+    {
+        let getUrl = $('.url_root').data('url');
+        $.ajax({
+            url: `${getUrl}/setting/users/getUsersIdProfile/${id}/usersId`,
+            dataType: 'json',
+            type: 'get',
+            success: function(data){
+                $('select[name="usersid_atasan"]')
+                .append(new Option(`${data.nama_profile} | ${data.jabatan.nama_jabatan}`, data.users_id, true, true))
+                .trigger("change");
+            }
+        })
+    }
     // handle btn edit
     body.on("click", ".btn-edit", function (e) {
         e.preventDefault();
@@ -65,6 +79,9 @@ $(document).ready(function () {
             "Ubah Data",
             "get"
         );
+
+        let id =  $(this).data("usersid_atasan");
+        getProfileUsers(id);
     });
 
     // handle btn delete

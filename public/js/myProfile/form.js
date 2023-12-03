@@ -4,8 +4,8 @@ var submitButton = document.getElementById("btn_submit");
 
 var urlSelect2 = $(".select2ServerSide").data('url');
 
-select2Standard(".select2", "#form-submit");
-select2Server(".select2ServerSide", "#form-submit", urlSelect2);
+select2Standard(".select2", `#${modal_large}`);
+select2Server(".select2ServerSide", `#${modal_large}`, urlSelect2);
 
 // Submit button handler
 submitButton.addEventListener("click", function (e) {

@@ -28,8 +28,8 @@ $('select[name="zonawaktu_settings"]')
     .append(new Option(zona_waktu_name, zona_waktu_id, true, true))
     .trigger("change");
 
-select2Standard(".select2", "#form-submit");
-select2Server(".select2ServerSide", "#form-submit", setUrlSelect2, {
+select2Standard(".select2", "");
+select2Server(".select2ServerSide", "", setUrlSelect2, {
     jenisreferensi_datastatis: setUrlJenisReferensi,
 });
 textareaTrim($('textarea[name="alamat_settings"]'));

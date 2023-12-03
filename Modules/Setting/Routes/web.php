@@ -60,6 +60,7 @@ Route::prefix('setting')->group(function () {
         Route::put('/{id}', 'UsersController@update')->name('setting.users.update');
         Route::delete('/{id}', 'UsersController@destroy')->name('setting.users.destroy');
         Route::get('/getUsersProfile', 'UsersController@getUsersProfile')->name('setting.users.getUsersProfile');
+        Route::get('/getUsersIdProfile/{id}/usersId', 'UsersController@getUsersIdProfile')->name('setting.users.getUsersIdProfile');
     });
 
     Route::group(['prefix' => 'access'], function () {

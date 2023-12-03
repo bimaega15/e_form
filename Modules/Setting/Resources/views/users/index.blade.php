@@ -41,6 +41,7 @@
 
     @push('custom_js')
     <script class="url_datatable" data-url="{{ route('setting.users.index') }}"></script>
+    <script class="url_root" data-url="{{ url('/') }}"></script>
     <script src="{{ asset('js/setting/users/index.js') }}"></script>
     @endpush
 </x-backend-layout>

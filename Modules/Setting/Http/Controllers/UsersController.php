@@ -35,7 +35,7 @@ class UsersController extends Controller
                 })
                 ->addColumn('usersid_atasan', function ($row) {
                     $output = '-';
-                    if ($row->usersid_atasan != null) {
+                    if ($row->usersid_atasan != null && $row->usersid_atasan != '') {
                         $getUsers = User::with('profile', 'profile.jabatan')->find($row->usersid_atasan);
                         $output = $getUsers->profile->nama_profile . ' | ' . $getUsers->profile->jabatan->nama_jabatan;
                     }
@@ -45,13 +45,13 @@ class UsersController extends Controller
                 ->addColumn('action', function ($row) {
                     $buttonUpdate = '';
                     $buttonUpdate = '
-                    <a href="' . route('setting.users.edit', $row->id) . '" class="btn btn-warning btn-edit btn-sm">
+                    <a data-id="' . $row->users_id . '" data-usersid_atasan="' . $row->usersid_atasan . '" href="' . route('setting.users.edit', $row->users_id) . '" class="btn btn-warning btn-edit btn-sm">
                     <i class="fa-solid fa-pencil"></i>
                     </a>
                     ';
                     $buttonDelete = '';
                     $buttonDelete = '
-                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('setting/users/' . $row->id . '?_method=delete') . '">
+                    <button type="button" class="btn-delete btn btn-danger btn-sm" data-url="' . url('setting/users/' . $row->users_id . '?_method=delete') . '">
                     <i class="fa-solid fa-trash"></i>
                     </button>
                     ';
@@ -99,7 +99,6 @@ class UsersController extends Controller
     public function store(CreatePostProfileRequest $request)
     {
         // users
-
         $data =  [
             'email' => $request->input('email_profile'),
             'name' => $request->input('nama_profile'),
@@ -143,7 +142,7 @@ class UsersController extends Controller
      */
     public function edit($id)
     {
-        $profile = Profile::find($id);
+        $profile = Profile::where('users_id', $id)->first();
         $unit = Unit::all();
         $jabatan = Jabatan::all();
         $categoryOffice = CategoryOffice::all();
@@ -194,8 +193,9 @@ class UsersController extends Controller
     public function destroy($id)
     {
         //
-        UtilsHelper::deleteFile($id, 'profile', 'profile', 'gambar_profile');
-        Profile::destroy($id);
+        $getProfile = Profile::where('users_id', $id)->first();
+        UtilsHelper::deleteFile($getProfile->id, 'profile', 'profile', 'gambar_profile');
+        User::destroy($id);
         return response()->json('Berhasil menghapus data', 200);
     }
 
@@ -226,7 +226,7 @@ class UsersController extends Controller
         foreach ($data as $key => $v_data) {
             $result['results'][] =
                 [
-                    'id' => $v_data->id,
+                    'id' => $v_data->users_id,
                     'text' =>  $v_data->nama_profile . ' | ' . $v_data->nama_jabatan,
                 ];
         }
@@ -236,5 +236,10 @@ class UsersController extends Controller
 
         $result['count_filtered'] = $countData;
         return $result;
+    }
+    public function getUsersIdProfile($id)
+    {
+        $getProfile = Profile::with('jabatan')->where('users_id', $id)->first();
+        return response()->json($getProfile, 200);
     }
 }

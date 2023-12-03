@@ -19,6 +19,7 @@ class CreateTransaksiRequest extends FormRequest
             'metode_pembayaran_id' => 'required',
             'expired_transaction' => 'required',
             'purpose_transaction' => 'required',
+            'attachment_transaction' => 'max:2048',
 
             'products_id' => 'required',
             'qty_detail' => 'required',
@@ -42,6 +43,7 @@ class CreateTransaksiRequest extends FormRequest
             'metode_pembayaran_id.required' => 'Metode pembayaran wajib diisi',
             'expired_transaction.required' => 'Tanggal expired wajib diisi',
             'purpose_transaction.required' => 'Tujuan transaksi wajib diisi',
+            'attachment_transaction.max' => 'Maximal file 2mb berupa gambar',
 
             'products_id.required' => 'Produk wajib diisi',
             'qty_detail.required' => 'Qty wajib diisi',

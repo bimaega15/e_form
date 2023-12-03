@@ -26,6 +26,7 @@
                         <th class="whitespace-nowrap">CODE</th>
                         <th class="whitespace-nowrap">NAMA</th>
                         <th class="whitespace-nowrap">KAPASITAS</th>
+                        <th class="whitespace-nowrap">REMARKS</th>
                         <th class="whitespace-nowrap">QTY</th>
                         <th class="whitespace-nowrap">HARGA</th>
                         <th class="whitespace-nowrap">SUB TOTAL</th>
@@ -39,6 +40,9 @@
                         <th class="whitespace-nowrap">{{ $item->products->code_product }}</th>
                         <th class="whitespace-nowrap">{{ $item->products->name_product }}</th>
                         <th class="whitespace-nowrap">{{ $item->products->capacity_product }}</th>
+                        <th class="whitespace-nowrap">
+                            <input type="text" class="form-control remarks_detail" placeholder="Remarks" name="remarks_detail" value="{{ $item->remarks_detail }}" />
+                        </th>
                         <th class="whitespace-nowrap">
                             <input type="number" class="form-control quantity_product" placeholder="Qty" name="quantity_product" value="{{ $item->qty_detail }}" />
                         </th>

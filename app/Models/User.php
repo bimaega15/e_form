@@ -42,4 +42,13 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class, 'users_id', 'id');
     }
+    public function transaction()
+    {
+        return $this->hasMany(Transaction::class, 'users_id', 'id');
+    }
+
+    public function transactionApprovel()
+    {
+        return $this->hasMany(TransactionApprovel::class, 'users_id', 'id');
+    }
 }

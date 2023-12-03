@@ -14,19 +14,18 @@
             <button class="btn btn-primary shadow-md mr-2 btn-add" data-url="{{ route('transaksi.create') }}">Tambah Data</button>
         </div>
 
-
         <!-- BEGIN: Data List -->
         <div class="intro-y col-span-12 overflow-auto">
             <table class="table table-report -mt-2" id="dataTable">
                 <thead>
                     <tr>
                         <th class="whitespace-nowrap">NO.</th>
+                        <th class="whitespace-nowrap">STATUS</th>
                         <th class="whitespace-nowrap">CODE</th>
                         <th class="whitespace-nowrap">TANGGAL PENGAJUAN</th>
                         <th class="whitespace-nowrap">TANGGAL KADALUARSA</th>
                         <th class="whitespace-nowrap">PAYMENT TERMS</th>
                         <th class="whitespace-nowrap">METODE PEMBAYARAN</th>
-                        <th class="whitespace-nowrap">STATUS</th>
                         <th class="whitespace-nowrap">TOTAL PRODUCT</th>
                         <th class="whitespace-nowrap">TOTAL TRANSAKSI</th>
                         <th class="text-center whitespace-nowrap">ACTIONS</th>

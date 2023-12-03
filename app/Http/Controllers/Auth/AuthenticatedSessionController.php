@@ -20,7 +20,6 @@ class AuthenticatedSessionController extends Controller
     public function create(): View
     {
         // UtilsHelper::insertPermissions();
-
         return view('auth.login');
     }
 

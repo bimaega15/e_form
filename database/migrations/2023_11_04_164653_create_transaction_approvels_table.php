@@ -17,7 +17,7 @@ return new class extends Migration
             $table->increments('id');
             $table->integer('transaction_id')->unsigned();
             $table->integer('users_id')->unsigned();
-            $table->date('tanggal_approvel');
+            $table->dateTime('tanggal_approvel');
             $table->text('keterangan_approvel')->nullable();
             $table->timestamps();
 
