@@ -4,7 +4,8 @@
             <h4 class="mb-3 mb-md-0">Welcome to Dashboard</h4>
         </div>
         <div class="d-flex align-items-center flex-wrap text-nowrap">
-            <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex" id="dashboardDate">
+            <div class="input-group date datepicker dashboard-date mr-2 mb-2 mb-md-0 d-md-none d-xl-flex"
+                id="dashboardDate">
                 <span class="input-group-addon bg-transparent"><i data-feather="calendar" class=" text-primary"></i></span>
                 <input type="text" class="form-control">
             </div>
@@ -32,15 +33,26 @@
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">New Customers</h6>
                                 <div class="dropdown mb-2">
-                                    <button class="btn p-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn p-0" type="button" id="dropdownMenuButton"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="eye" class="icon-sm mr-2"></i> <span
+                                                class="">View</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                                class="">Edit</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="trash" class="icon-sm mr-2"></i> <span
+                                                class="">Delete</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="printer" class="icon-sm mr-2"></i> <span
+                                                class="">Print</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="download" class="icon-sm mr-2"></i> <span
+                                                class="">Download</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -67,15 +79,26 @@
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">New Orders</h6>
                                 <div class="dropdown mb-2">
-                                    <button class="btn p-0" type="button" id="dropdownMenuButton1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn p-0" type="button" id="dropdownMenuButton1"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="eye" class="icon-sm mr-2"></i> <span
+                                                class="">View</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                                class="">Edit</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="trash" class="icon-sm mr-2"></i> <span
+                                                class="">Delete</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="printer" class="icon-sm mr-2"></i> <span
+                                                class="">Print</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="download" class="icon-sm mr-2"></i> <span
+                                                class="">Download</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -102,15 +125,26 @@
                             <div class="d-flex justify-content-between align-items-baseline">
                                 <h6 class="card-title mb-0">Growth</h6>
                                 <div class="dropdown mb-2">
-                                    <button class="btn p-0" type="button" id="dropdownMenuButton2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <button class="btn p-0" type="button" id="dropdownMenuButton2"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                                     </button>
                                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton2">
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                        <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="eye" class="icon-sm mr-2"></i> <span
+                                                class="">View</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                                class="">Edit</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="trash" class="icon-sm mr-2"></i> <span
+                                                class="">Delete</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="printer" class="icon-sm mr-2"></i> <span
+                                                class="">Print</span></a>
+                                        <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                                data-feather="download" class="icon-sm mr-2"></i> <span
+                                                class="">Download</span></a>
                                     </div>
                                 </div>
                             </div>
@@ -142,21 +176,34 @@
                     <div class="d-flex justify-content-between align-items-baseline mb-4 mb-md-3">
                         <h6 class="card-title mb-0">Revenue</h6>
                         <div class="dropdown">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton3" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton3">
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="eye" class="icon-sm mr-2"></i> <span
+                                        class="">View</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                        class="">Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="trash" class="icon-sm mr-2"></i> <span
+                                        class="">Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="printer" class="icon-sm mr-2"></i> <span
+                                        class="">Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="download" class="icon-sm mr-2"></i> <span
+                                        class="">Download</span></a>
                             </div>
                         </div>
                     </div>
                     <div class="row align-items-start mb-2">
                         <div class="col-md-7">
-                            <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its normal business activities, usually from the sale of goods and services to customers.</p>
+                            <p class="text-muted tx-13 mb-3 mb-md-0">Revenue is the income that a business has from its
+                                normal business activities, usually from the sale of goods and services to customers.
+                            </p>
                         </div>
                         <div class="col-md-5 d-flex justify-content-md-end">
                             <div class="btn-group mb-3 mb-md-0" role="group" aria-label="Basic example">
@@ -182,19 +229,31 @@
                     <div class="d-flex justify-content-between align-items-baseline mb-2">
                         <h6 class="card-title mb-0">Monthly sales</h6>
                         <div class="dropdown mb-2">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton4" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton4" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton4">
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="eye" class="icon-sm mr-2"></i> <span
+                                        class="">View</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                        class="">Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="trash" class="icon-sm mr-2"></i> <span
+                                        class="">Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="printer" class="icon-sm mr-2"></i> <span
+                                        class="">Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="download" class="icon-sm mr-2"></i> <span
+                                        class="">Download</span></a>
                             </div>
                         </div>
                     </div>
-                    <p class="text-muted mb-4">Sales are activities related to selling or the number of goods or services sold in a given time period.</p>
+                    <p class="text-muted mb-4">Sales are activities related to selling or the number of goods or
+                        services sold in a given time period.</p>
                     <div class="monthly-sales-chart-wrapper">
                         <canvas id="monthly-sales-chart"></canvas>
                     </div>
@@ -207,15 +266,26 @@
                     <div class="d-flex justify-content-between align-items-baseline mb-2">
                         <h6 class="card-title mb-0">Cloud storage</h6>
                         <div class="dropdown mb-2">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton5" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton5" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton5">
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="eye" class="icon-sm mr-2"></i> <span
+                                        class="">View</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                        class="">Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="trash" class="icon-sm mr-2"></i> <span
+                                        class="">Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="printer" class="icon-sm mr-2"></i> <span
+                                        class="">Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="download" class="icon-sm mr-2"></i> <span
+                                        class="">Download</span></a>
                             </div>
                         </div>
                     </div>
@@ -223,13 +293,16 @@
                     <div class="row mt-4 mb-3">
                         <div class="col-6 d-flex justify-content-end">
                             <div>
-                                <label class="d-flex align-items-center justify-content-end tx-10 text-uppercase font-weight-medium">Total storage <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
+                                <label
+                                    class="d-flex align-items-center justify-content-end tx-10 text-uppercase font-weight-medium">Total
+                                    storage <span class="p-1 ml-1 rounded-circle bg-primary-muted"></span></label>
                                 <h5 class="font-weight-bold mb-0 text-right">8TB</h5>
                             </div>
                         </div>
                         <div class="col-6">
                             <div>
-                                <label class="d-flex align-items-center tx-10 text-uppercase font-weight-medium"><span class="p-1 mr-1 rounded-circle bg-primary"></span> Used storage</label>
+                                <label class="d-flex align-items-center tx-10 text-uppercase font-weight-medium"><span
+                                        class="p-1 mr-1 rounded-circle bg-primary"></span> Used storage</label>
                                 <h5 class="font-weight-bold mb-0">6TB</h5>
                             </div>
                         </div>
@@ -247,22 +320,34 @@
                     <div class="d-flex justify-content-between align-items-baseline mb-2">
                         <h6 class="card-title mb-0">Inbox</h6>
                         <div class="dropdown mb-2">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton6" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton6" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton6">
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="eye" class="icon-sm mr-2"></i> <span
+                                        class="">View</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                        class="">Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="trash" class="icon-sm mr-2"></i> <span
+                                        class="">Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="printer" class="icon-sm mr-2"></i> <span
+                                        class="">Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="download" class="icon-sm mr-2"></i> <span
+                                        class="">Download</span></a>
                             </div>
                         </div>
                     </div>
                     <div class="d-flex flex-column">
                         <a href="#" class="d-flex align-items-center border-bottom pb-3">
                             <div class="mr-3">
-                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
+                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35"
+                                    alt="user">
                             </div>
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
@@ -274,7 +359,8 @@
                         </a>
                         <a href="#" class="d-flex align-items-center border-bottom py-3">
                             <div class="mr-3">
-                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
+                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35"
+                                    alt="user">
                             </div>
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
@@ -286,7 +372,8 @@
                         </a>
                         <a href="#" class="d-flex align-items-center border-bottom py-3">
                             <div class="mr-3">
-                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
+                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35"
+                                    alt="user">
                             </div>
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
@@ -298,7 +385,8 @@
                         </a>
                         <a href="#" class="d-flex align-items-center border-bottom py-3">
                             <div class="mr-3">
-                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
+                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35"
+                                    alt="user">
                             </div>
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
@@ -310,7 +398,8 @@
                         </a>
                         <a href="#" class="d-flex align-items-center border-bottom py-3">
                             <div class="mr-3">
-                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35" alt="user">
+                                <img src="https://via.placeholder.com/35x35" class="rounded-circle wd-35"
+                                    alt="user">
                             </div>
                             <div class="w-100">
                                 <div class="d-flex justify-content-between">
@@ -330,15 +419,26 @@
                     <div class="d-flex justify-content-between align-items-baseline mb-2">
                         <h6 class="card-title mb-0">Projects</h6>
                         <div class="dropdown mb-2">
-                            <button class="btn p-0" type="button" id="dropdownMenuButton7" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <button class="btn p-0" type="button" id="dropdownMenuButton7" data-toggle="dropdown"
+                                aria-haspopup="true" aria-expanded="false">
                                 <i class="icon-lg text-muted pb-3px" data-feather="more-horizontal"></i>
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton7">
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="eye" class="icon-sm mr-2"></i> <span class="">View</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="edit-2" class="icon-sm mr-2"></i> <span class="">Edit</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="trash" class="icon-sm mr-2"></i> <span class="">Delete</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="printer" class="icon-sm mr-2"></i> <span class="">Print</span></a>
-                                <a class="dropdown-item d-flex align-items-center" href="#"><i data-feather="download" class="icon-sm mr-2"></i> <span class="">Download</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="eye" class="icon-sm mr-2"></i> <span
+                                        class="">View</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="edit-2" class="icon-sm mr-2"></i> <span
+                                        class="">Edit</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="trash" class="icon-sm mr-2"></i> <span
+                                        class="">Delete</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="printer" class="icon-sm mr-2"></i> <span
+                                        class="">Print</span></a>
+                                <a class="dropdown-item d-flex align-items-center" href="#"><i
+                                        data-feather="download" class="icon-sm mr-2"></i> <span
+                                        class="">Download</span></a>
                             </div>
                         </div>
                     </div>
