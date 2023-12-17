@@ -422,4 +422,25 @@ class UtilsHelper
             return null;
         }
     }
+
+    public static function setJabatan($countTransactionApprove)
+    {
+        $forwardLetter = 'Atasan';
+        switch ($countTransactionApprove) {
+            case 0:
+                $forwardLetter = 'Bod';
+                break;
+            case 1:
+                $forwardLetter = 'Finance';
+                break;
+            case 2:
+                $forwardLetter = 'Direktur';
+                break;
+            default:
+                $forwardLetter = 'Atasan';
+                break;
+        }
+
+        return $forwardLetter;
+    }
 }

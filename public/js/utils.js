@@ -72,7 +72,7 @@ function notifAlert(title, text, icon) {
  * @returns
  */
 
-function basicDatatable(tableId, ajaxUrl, columns) {
+function basicDatatable(tableId, ajaxUrl, columns, dataAjaxUrl={}) {
     return tableId
         .on("preXhr.dt", function (e, settings, processing) {})
         .on("xhr.dt", function (e, settings, json, xhr) {
@@ -86,7 +86,12 @@ function basicDatatable(tableId, ajaxUrl, columns) {
                 caseInsensitive: true,
             },
             searchHighlight: true,
-            ajax: ajaxUrl,
+            ajax: {
+                url: ajaxUrl,
+                type: 'get',
+                dataType: 'json',
+                data: dataAjaxUrl,
+            },
             dom:
                 "<'row'" +
                 "<'col-sm-6 d-flex align-items-center justify-content-start'l>" +

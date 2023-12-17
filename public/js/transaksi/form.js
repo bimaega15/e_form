@@ -7,7 +7,9 @@ var submitButtonFinishApprovel = document.getElementById("btn_submit_finishappro
 select2Standard('.select2',`#${modal_extra_large}`);
 
 var urlSelect2 = $(".select2ServerSide").data('url');
-select2Server(".select2ServerSide", `#${modal_extra_large}`, urlSelect2);
+select2Server(".select2ServerSide", `#${modal_extra_large}`, urlSelect2, {
+    transaction_id: $(".select2ServerSide").data('transaction_id')
+});
 
 // Submit button handler
 if(submitButton != null){
@@ -22,6 +24,19 @@ if(submitButton != null){
     });
 
     function submitData() {
+        let nomorvirtual_transaction = $('input[name="nomorvirtual_transaction"]').val();
+        let accept_transaction = $('input[name="accept_transaction"]').val();
+        let bank_transaction = $('select[name="bank_transaction"]').val();
+        if(nomorvirtual_transaction == '' || nomorvirtual_transaction == undefined){
+            nomorvirtual_transaction = null;
+        }
+        if(accept_transaction == '' || accept_transaction == undefined){
+            accept_transaction = null;
+        }
+        if(bank_transaction == '' || bank_transaction == undefined){
+            bank_transaction = null;
+        }
+
         let code_transaction = $('input[name="code_transaction"]').val();
         let tanggal_transaction = $('input[name="tanggal_transaction"]').val();
         let paidto_transaction = $('input[name="paidto_transaction"]').val();
@@ -35,37 +50,55 @@ if(submitButton != null){
         }
         let valueppn_transaction = $('input[name="valueppn_transaction"]').val();
         let attachment_transaction = $('input[name="attachment_transaction"]').prop('files')[0];
+
+        let metodePembayaranText = $('select[name="metode_pembayaran_id"] option:selected').text().trim().toLowerCase();
+        if(metodePembayaranText !== 'cash'){
+            if(metodePembayaranText === 'transfer'){
+                nomorvirtual_transaction = null;
+            }
+            if(metodePembayaranText === 'virtual account'){
+                accept_transaction = null;
+            }
+        }
         
         let row_data = $('.row_data');
 
-        var arr_quantity_product = [];
-        var arr_price_product = [];
-        var arr_subtotal_product = [];
+        var arr_qty_detail = [];
+        var arr_price_detail = [];
+        var arr_subtotal_detail = [];
         var arr_products_id = [];
         var arr_remarks_detail = [];
+        var arr_matauang_detail = [];
+        var arr_kurs_detail = [];
         $.each(row_data, function(i,v){
-            var quantity_product = $(this).find('.quantity_product').val();
-            var price_product = $(this).find('.price_product').val();
-            var subtotal_product = $(this).find('.subtotal_product').val();
+            var qty_detail = $(this).find('.qty_detail').val();
+            var price_detail = $(this).find('.price_detail').val();
+            var subtotal_detail = $(this).find('.subtotal_detail').val();
             var remarks_detail = $(this).find('.remarks_detail').val();
+            var matauang_detail = $(this).find('.matauang_detail').val();
+            var kurs_detail = $(this).find('.kurs_detail').val();
 
-            arr_quantity_product.push(quantity_product);
-            arr_price_product.push(price_product);
-            arr_subtotal_product.push(subtotal_product);
+            arr_qty_detail.push(qty_detail);
+            arr_price_detail.push(price_detail);
+            arr_subtotal_detail.push(subtotal_detail);
             arr_remarks_detail.push(remarks_detail);
+            arr_matauang_detail.push(matauang_detail);
+            arr_kurs_detail.push(kurs_detail);
             arr_products_id.push($(this).data('id'));
         })
         var totalproduct_transaction = 0;
         var totalprice_transaction = 0;
 
-        totalproduct_transaction = arr_quantity_product.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
-        totalprice_transaction = arr_subtotal_product.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
+        totalproduct_transaction = arr_qty_detail.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
+        totalprice_transaction = arr_subtotal_detail.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
 
         arr_products_id = JSON.stringify(arr_products_id);
-        arr_quantity_product = JSON.stringify(arr_quantity_product);
-        arr_price_product = JSON.stringify(arr_price_product);
-        arr_subtotal_product = JSON.stringify(arr_subtotal_product);
+        arr_qty_detail = JSON.stringify(arr_qty_detail);
+        arr_price_detail = JSON.stringify(arr_price_detail);
+        arr_subtotal_detail = JSON.stringify(arr_subtotal_detail);
         arr_remarks_detail = JSON.stringify(arr_remarks_detail);
+        arr_matauang_detail = JSON.stringify(arr_matauang_detail);
+        arr_kurs_detail = JSON.stringify(arr_kurs_detail);
 
         var tanggalAwal = new Date(tanggal_transaction);
         var tanggalExpired = new Date(expired_transaction);
@@ -86,12 +119,17 @@ if(submitButton != null){
         data.append('isppn_transaction', isppn_transaction);
         data.append('valueppn_transaction', valueppn_transaction);
         data.append('attachment_transaction', attachment_transaction);
+        data.append('nomorvirtual_transaction', nomorvirtual_transaction);
+        data.append('accept_transaction', accept_transaction);
+        data.append('bank_transaction', bank_transaction);
 
         data.append('products_id', arr_products_id);
-        data.append('qty_detail', arr_quantity_product);
-        data.append('price_detail', arr_price_product);
-        data.append('subtotal_detail', arr_subtotal_product);
+        data.append('qty_detail', arr_qty_detail);
+        data.append('price_detail', arr_price_detail);
+        data.append('subtotal_detail', arr_subtotal_detail);
         data.append('remarks_detail', arr_remarks_detail);
+        data.append('matauang_detail', arr_matauang_detail);
+        data.append('kurs_detail', arr_kurs_detail);
 
         $.ajax({
             type: "post",

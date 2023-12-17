@@ -63,7 +63,7 @@ class DataStatisController extends Controller
 
                     return $button;
                 })
-                ->rawColumns(['action', 'jenisreferensi_datastatis', 'parentid_datastatis'])
+                ->rawColumns(['action', 'parentid_datastatis'])
                 ->toJson();
         }
         return view('master::dataStatis.index');

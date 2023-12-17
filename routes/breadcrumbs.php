@@ -79,3 +79,11 @@ Breadcrumbs::for('transaction', function (BreadcrumbTrail $trail) {
     $trail->parent('dashboard');
     $trail->push('Transaksi', route('transaksi.index'));
 });
+Breadcrumbs::for('notes', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Notes', route('master.notes.index'));
+});
+Breadcrumbs::for('laporan', function (BreadcrumbTrail $trail) {
+    $trail->parent('dashboard');
+    $trail->push('Laporan', route('laporan.index'));
+});

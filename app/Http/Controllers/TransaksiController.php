@@ -6,6 +6,7 @@ use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\CreateForwardRequest;
 use App\Http\Requests\CreateTransaksiPutRequest;
 use App\Http\Requests\CreateTransaksiRequest;
+use App\Models\DataStatis;
 use App\Models\MetodePembayaran;
 use App\Models\Product;
 use Illuminate\Contracts\Support\Renderable;
@@ -18,13 +19,14 @@ use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Hash;
 
 class TransaksiController extends Controller
 {
 
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
             $data = Transaction::query();
             return DataTables::eloquent($data)
@@ -32,25 +34,49 @@ class TransaksiController extends Controller
                     $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
                     return $metodePembayaran->nama_metode_pembayaran;
                 })
+                ->addColumn('pengajuan_transaction', function ($row) {
+                    $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
+                    $output = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
+                    return $output;
+                })
                 ->addColumn('status_transaction', function ($row) {
                     $usersIdAtasan = $row->users_id_review;
-                    $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
                     $color = '';
                     $keterangan = '';
-                    $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
                     if ($row->status_transaction == 'menunggu') {
                         $color = 'text-primary font-bold';
-                        $keterangan = 'Menunggu Approval: ' . $profileText;
+                        $keterangan = 'Menunggu Approval';
                     }
                     if ($row->status_transaction == 'ditolak') {
                         $color = 'text-danger font-bold';
-                        $keterangan = 'Ditolak Oleh: ' . $profileText;
+                        $keterangan = 'Ditolak Oleh';
                     }
                     if ($row->status_transaction == 'disetujui') {
                         $color = 'text-success font-bold';
-                        $keterangan = 'Disetujui ' . $profileText;
+                        $keterangan = 'Disetujui';
                     }
                     $output = '<span class="' . $color . '">' . $keterangan . '</span>';
+                    return $output;
+                })
+                ->addColumn('oleh_transaction', function ($row) {
+                    $usersIdAtasan = $row->users_id_review;
+                    $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
+                    $color = '';
+                    $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
+                    if ($row->status_transaction == 'menunggu') {
+                        $color = 'text-primary font-bold';
+                    }
+                    if ($row->status_transaction == 'ditolak') {
+                        $color = 'text-danger font-bold';
+                    }
+                    if ($row->status_transaction == 'disetujui') {
+                        $color = 'text-success font-bold';
+                    }
+                    $output = '<span class="' . $color . '">' . $profileText . '</span>';
+                    return $output;
+                })
+                ->addColumn('code_transaction', function ($row) {
+                    $output = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
                     return $output;
                 })
                 ->addColumn('tanggal_transaction', function ($row) {
@@ -79,66 +105,11 @@ class TransaksiController extends Controller
                     $total = number_format($totalPrice, 0, ',', '.');
                     return $total;
                 })
-                ->addColumn('action', function ($row) {
-                    $usersReview = $row->users_id_review;
-                    $idLogin = Auth::id();
-                    $buttonReview = false;
-
-                    $buttonNext = false;
-                    if ($row->status_transaction == 'menunggu') {
-                        $buttonNext = true;
-                    }
-                    if ($row->status_transaction == 'ditolak') {
-                        $buttonNext = false;
-                    }
-                    if ($row->status_transaction == 'disetujui') {
-                        $buttonNext = false;
-                    }
-
-                    if ($usersReview == $idLogin && $buttonNext) {
-                        $buttonReview = true;
-                    }
-
-                    $listButton = '';
-                    if ($buttonReview) {
-                        $listButton = '
-                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
-                    }
-
-                    $buttonHistory = false;
-                    $listButtonHistory = '';
-                    $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
-                        ->where('users_id', Auth::id())
-                        ->orWhere('users_id_forward', Auth::id())
-                        ->get()->count();
-                    if ($getTransactionApprovel > 0) {
-                        $buttonHistory = true;
-                    }
-
-                    if ($buttonHistory) {
-                        $listButtonHistory = '
-                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
-                        ';
-                    }
-
-                    $output = '
-                <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
-                    <div class="dropdown-menu w-40">
-                        <ul class="dropdown-content">
-                            <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
-                            <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
-                            ' . $listButton . '
-                            ' . $listButtonHistory . '
-                        </ul>
-                    </div>
-                </div>
-                ';
-
-                    return $output;
-                })
-                ->rawColumns(['action', 'status_transaction'])
+                ->rawColumns(['status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction'])
                 ->toJson();
         }
+
+
         return view('one.transaksi.index');
     }
 
@@ -149,9 +120,14 @@ class TransaksiController extends Controller
     public function create()
     {
         $metodePembayaran = MetodePembayaran::all();
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+
         return view('one.transaksi.form', [
             'metodePembayaran' => $metodePembayaran,
-            'product' => Product::all()
+            'product' => Product::all(),
+            'bankPenerima' => $bankPenerima,
+            'mataUang' => $mataUang
         ]);
     }
 
@@ -184,6 +160,10 @@ class TransaksiController extends Controller
             'valueppn_transaction' => $request->input('valueppn_transaction'),
             'attachment_transaction' => $attachment_transaction,
 
+            'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+            'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+            'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
+
         ]);
         $transaction_id = $transaction->id;
 
@@ -192,6 +172,8 @@ class TransaksiController extends Controller
         $price_detail = json_decode($request->input('price_detail'), true);
         $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
         $remarks_detail = json_decode($request->input('remarks_detail'), true);
+        $matauang_detail = json_decode($request->input('matauang_detail'), true);
+        $kurs_detail = json_decode($request->input('kurs_detail'), true);
 
         $dataDetail = [];
         foreach ($products_id as $key => $value) {
@@ -202,6 +184,8 @@ class TransaksiController extends Controller
                 'price_detail' => $price_detail[$key],
                 'subtotal_detail' => $subtotal_detail[$key],
                 'remarks_detail' => $remarks_detail[$key],
+                'matauang_detail' => $matauang_detail[$key],
+                'kurs_detail' => $kurs_detail[$key],
             ];
         }
         TransactionDetail::insert($dataDetail);
@@ -228,7 +212,10 @@ class TransaksiController extends Controller
         $transaction = Transaction::find($id);
         $metodePembayaran = MetodePembayaran::all();
         $product = Product::all();
-        return view('one.transaksi.form', compact('transaction', 'metodePembayaran', 'product'));
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+
+        return view('one.transaksi.form', compact('transaction', 'metodePembayaran', 'product', 'bankPenerima', 'mataUang'));
     }
 
     /**
@@ -256,6 +243,10 @@ class TransaksiController extends Controller
             'isppn_transaction' => $request->input('isppn_transaction'),
             'valueppn_transaction' => $request->input('valueppn_transaction'),
             'attachment_transaction' => $attachment_transaction,
+
+            'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+            'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+            'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
         ]);
         $transactionDetail = TransactionDetail::where('transaction_id', $id)->get()->count();
         if ($transactionDetail > 0) {
@@ -267,6 +258,8 @@ class TransaksiController extends Controller
         $price_detail = json_decode($request->input('price_detail'), true);
         $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
         $remarks_detail = json_decode($request->input('remarks_detail'), true);
+        $matauang_detail = json_decode($request->input('matauang_detail'), true);
+        $kurs_detail = json_decode($request->input('kurs_detail'), true);
 
         $dataDetail = [];
         foreach ($products_id as $key => $value) {
@@ -277,6 +270,8 @@ class TransaksiController extends Controller
                 'price_detail' => $price_detail[$key],
                 'subtotal_detail' => $subtotal_detail[$key],
                 'remarks_detail' => $remarks_detail[$key],
+                'matauang_detail' => $matauang_detail[$key],
+                'kurs_detail' => $kurs_detail[$key],
             ];
         }
         TransactionDetail::insert($dataDetail);
@@ -311,10 +306,30 @@ class TransaksiController extends Controller
         $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
         $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
         $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)->get();
+        $countTransactionApprove = $getTransactionApprove->count();
+        $setJabatan = UtilsHelper::setJabatan($countTransactionApprove);
+
         return view('one.transaksi.viewApproval', [
             'getTransaction' => $getTransaction,
             'getTransactionRequest' => $getTransactionRequest,
             'getTransactionApprove' => $getTransactionApprove,
+            'setJabatan' => $setJabatan
+        ]);
+    }
+
+    public function viewTransactionPengajuan($id)
+    {
+        $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
+
+        return view('one.transaksi.viewTransactionPengajuan', [
+            'getTransaction' => $getTransaction,
+        ]);
+    }
+    public function viewTransactionDetail($id)
+    {
+        $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
+        return view('one.transaksi.viewTransactionDetail', [
+            'getTransactionRequest' => $getTransactionRequest,
         ]);
     }
 
@@ -367,5 +382,18 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
         return response()->json('Berhasil approve form', 201);
+    }
+
+    public function changeBuy(Request $request)
+    {
+        $metode_pembayaran = $request->input('metode_pembayaran');
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        return view('one.transaksi.changeBuy', compact('metode_pembayaran', 'bankPenerima'))->render();
+    }
+
+    public function getMataUang()
+    {
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+        return response()->json($mataUang);
     }
 }
