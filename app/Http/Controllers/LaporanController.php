@@ -28,7 +28,22 @@ class LaporanController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
+            $tanggal_awal = $request->input('tanggal_awal');
+            $tanggal_akhir = $request->input('tanggal_akhir');
+            $is_transaksi_expired = $request->input('is_transaksi_expired');
+
             $data = Transaction::query();
+            if ($tanggal_awal != null) {
+                $data->where('tanggal_transaction', '>=', $tanggal_awal);
+            }
+            if ($tanggal_akhir != null) {
+                $data->where('tanggal_transaction', '<=', $tanggal_akhir);
+            }
+            if ($is_transaksi_expired) {
+                $data->where('status_transaction', '!=', 'disetujui')
+                    ->orWhere('expired_transaction', '<=', Carbon::now()->toDateString());
+            }
+
             return DataTables::eloquent($data)
                 ->addColumn('metode_pembayaran_id', function ($row) {
                     $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
