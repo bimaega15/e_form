@@ -109,4 +109,13 @@ Route::prefix('master')->group(function () {
         Route::put('/{id}', 'MetodePembayaranController@update')->name('master.metodePembayaran.update');
         Route::delete('/{id}', 'MetodePembayaranController@destroy')->name('master.metodePembayaran.destroy');
     });
+
+    Route::group(['prefix' => 'notes'], function () {
+        Route::get('/', 'NoteController@index')->name('master.notes.index');
+        Route::get('/create', 'NoteController@create')->name('master.notes.create');
+        Route::post('/', 'NoteController@store')->name('master.notes.store');
+        Route::get('/{id}/edit', 'NoteController@edit')->name('master.notes.edit');
+        Route::put('/{id}', 'NoteController@update')->name('master.notes.update');
+        Route::delete('/{id}', 'NoteController@destroy')->name('master.notes.destroy');
+    });
 });

@@ -33,7 +33,7 @@
             </div>
             <div class="col-span-12 sm:col-span-12 mb-2">
                 <label for="" class="form-label">Quantity</label>
-                <input type="number" class="form-control" name="quantity_product" placeholder="Quantity..." value="{{ isset($product) ? $product->quantity_product : '' }}">
+                <input type="number" class="form-control" name="qty_detail" placeholder="Quantity..." value="{{ isset($product) ? $product->qty_detail : '' }}">
             </div>
             <div class="col-span-12 sm:col-span-12 mb-2">
                 <label for="" class="form-label">Unit Goods</label>

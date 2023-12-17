@@ -4,6 +4,8 @@ return [
     'jenis_referensi' => [
         'bahasa' => 'Bahasa',
         'zona_waktu' => 'Zona Waktu',
+        'rekening' => 'Rekening',
+        'mata_uang' => 'Mata Uang',
     ],
     'jenis_hari' => [
         'senin' => 'Senin',
@@ -18,4 +20,5 @@ return [
         'L' => 'Laki-laki',
         'P' => 'Perempuan'
     ],
+    'step' => ['atasan','bod','finance', 'direktur'],
 ];

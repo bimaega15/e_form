@@ -9,6 +9,7 @@ use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Profile;
+use App\Models\TransactionApprovel;
 use App\Models\Unit;
 use App\Models\User;
 use DataTables;
@@ -207,6 +208,11 @@ class UsersController extends Controller
         $endPage = $page * $limit;
         $firstPage = $endPage - $limit;
 
+        $transaction_id = $request->input('transaction_id');
+        $getTransactionApprovel = TransactionApprovel::where('transaction_id', $transaction_id)->get()->count();
+        $setJabatan = UtilsHelper::setJabatan($getTransactionApprovel);
+
+
         $data = User::join('profile', 'profile.users_id', '=', 'users.id')
             ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id');
         $countData = User::join('profile', 'profile.users_id', '=', 'users.id')
@@ -214,10 +220,15 @@ class UsersController extends Controller
             ->get()
             ->count();
 
+        if ($setJabatan != null) {
+            $data->where('nama_jabatan', 'like', '%' . $setJabatan . '%');
+        }
+
         if ($search != null) {
             $data->where('nama_profile', 'like', '%' . $search . '%')
                 ->orWhere('nama_jabatan', 'like', '%' . $search . '%');
         }
+
         $data = $data->offset($firstPage)
             ->limit($limit)
             ->get();

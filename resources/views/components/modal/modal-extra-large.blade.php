@@ -1,5 +1,5 @@
 <div class="modal fade" id="modal_extra_large" tabindex="-1" aria-hidden="true">
-   <div class="modal-dialog modal-xl" style="width: 80%;">
+   <div class="modal-dialog modal-xl" style="width: 90%;">
       <div class="modal-content">
          <div class="modal-header">
             <h2 class="font-medium text-base mr-auto modal-title">Modal Title</h2>

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('capacity_product')->nullable();
             $table->string('specification_product')->nullable();
             $table->integer('type_product_id')->unsigned();
-            $table->string('quantity_product')->nullable();
+            $table->string('qty_detail')->nullable();
             $table->string('unit_goods_product')->nullable();
             $table->string('size_product')->nullable();
             $table->string('gross_product')->nullable();
