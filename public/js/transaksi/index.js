@@ -63,7 +63,12 @@ $(document).ready(function () {
                     name: "totalprice_transaction",
                     searchable: true,
                 },
-                { data: "action", orderable: false, searchable: false },
+                {
+                    data: "action",
+                    name: "action",
+                    searchable: false,
+                    orderable: false
+                },
             ]
         );
     }
@@ -168,6 +173,7 @@ $(document).ready(function () {
     function getMataUang()
     {
         var url_root = $('.url_root').data('url');
+        let get_url = `${url_root}/transaksi/getMataUang`;
         var output = null;
         $.ajax({
             url: `${url_root}/transaksi/getMataUang`,

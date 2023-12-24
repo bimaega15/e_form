@@ -44,6 +44,7 @@
                         <th class="whitespace-nowrap">METODE PEMBAYARAN</th>
                         <th class="whitespace-nowrap">TOTAL PRODUCT</th>
                         <th class="whitespace-nowrap">TOTAL TRANSAKSI</th>
+                        <th class="whitespace-nowrap">ACTION</th>
                     </tr>
                 </thead>
                 <tbody>

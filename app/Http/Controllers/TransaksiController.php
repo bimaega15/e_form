@@ -105,7 +105,64 @@ class TransaksiController extends Controller
                     $total = number_format($totalPrice, 0, ',', '.');
                     return $total;
                 })
-                ->rawColumns(['status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction'])
+                ->addColumn('action', function ($row) {
+                    $usersReview = $row->users_id_review;
+                    $idLogin = Auth::id();
+                    $buttonReview = false;
+
+                    $buttonNext = false;
+                    if ($row->status_transaction == 'menunggu') {
+                        $buttonNext = true;
+                    }
+                    if ($row->status_transaction == 'ditolak') {
+                        $buttonNext = false;
+                    }
+                    if ($row->status_transaction == 'disetujui') {
+                        $buttonNext = false;
+                    }
+
+                    if ($usersReview == $idLogin && $buttonNext) {
+                        $buttonReview = true;
+                    }
+
+                    $listButton = '';
+                    if ($buttonReview) {
+                        $listButton = '
+                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
+                    }
+
+                    $buttonHistory = false;
+                    $listButtonHistory = '';
+                    $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
+                        ->where('users_id', Auth::id())
+                        ->orWhere('users_id_forward', Auth::id())
+                        ->get()->count();
+                    if ($getTransactionApprovel > 0) {
+                        $buttonHistory = true;
+                    }
+
+                    if ($buttonHistory) {
+                        $listButtonHistory = '
+                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
+                        ';
+                    }
+
+                    $output = '
+                <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
+                    <div class="dropdown-menu w-40">
+                        <ul class="dropdown-content">
+                            <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
+                            <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
+                            ' . $listButton . '
+                            ' . $listButtonHistory . '
+                        </ul>
+                    </div>
+                </div>
+                ';
+
+                    return $output;
+                })
+                ->rawColumns(['status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction', 'action'])
                 ->toJson();
         }
 

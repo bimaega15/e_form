@@ -3,24 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Http\Helpers\UtilsHelper;
-use App\Http\Requests\CreateForwardRequest;
-use App\Http\Requests\CreateTransaksiPutRequest;
-use App\Http\Requests\CreateTransaksiRequest;
-use App\Models\DataStatis;
 use App\Models\MetodePembayaran;
-use App\Models\Product;
-use Illuminate\Contracts\Support\Renderable;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use App\Models\Transaction;
 use App\Models\TransactionApprovel;
-use App\Models\TransactionDetail;
 use App\Models\User;
 use Carbon\Carbon;
 use DataTables;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Hash;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\App;
 
 class LaporanController extends Controller
 {
@@ -121,59 +114,9 @@ class LaporanController extends Controller
                     return $total;
                 })
                 ->addColumn('action', function ($row) {
-                    $usersReview = $row->users_id_review;
-                    $idLogin = Auth::id();
-                    $buttonReview = false;
-
-                    $buttonNext = false;
-                    if ($row->status_transaction == 'menunggu') {
-                        $buttonNext = true;
-                    }
-                    if ($row->status_transaction == 'ditolak') {
-                        $buttonNext = false;
-                    }
-                    if ($row->status_transaction == 'disetujui') {
-                        $buttonNext = false;
-                    }
-
-                    if ($usersReview == $idLogin && $buttonNext) {
-                        $buttonReview = true;
-                    }
-
-                    $listButton = '';
-                    if ($buttonReview) {
-                        $listButton = '
-                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
-                    }
-
-                    $buttonHistory = false;
-                    $listButtonHistory = '';
-                    $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
-                        ->where('users_id', Auth::id())
-                        ->orWhere('users_id_forward', Auth::id())
-                        ->get()->count();
-                    if ($getTransactionApprovel > 0) {
-                        $buttonHistory = true;
-                    }
-
-                    if ($buttonHistory) {
-                        $listButtonHistory = '
-                        <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
-                        ';
-                    }
-
                     $output = '
-                <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
-                    <div class="dropdown-menu w-40">
-                        <ul class="dropdown-content">
-                            <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
-                            <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
-                            ' . $listButton . '
-                            ' . $listButtonHistory . '
-                        </ul>
-                    </div>
-                </div>
-                ';
+                    <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate">PDF</a>
+                    ';
 
                     return $output;
                 })
@@ -183,5 +126,34 @@ class LaporanController extends Controller
 
 
         return view('one.laporan.index');
+    }
+
+    public function generatePdf($id)
+    {
+
+        $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran', 'transactionDetail', 'transactionDetail.products', 'transactionApprovel', 'transactionApprovel.users')->find($id);
+        $settings = UtilsHelper::settingApp();
+
+        $logo_settings = public_path('upload/settings/logo/' . $settings->logo_settings);
+        $icon_settings = public_path('upload/settings/icon/' . $settings->icon_settings);
+
+        $logoPath = file_get_contents($logo_settings);
+        $iconPath = file_get_contents($icon_settings);
+
+        $logoBase64Path = base64_encode($logoPath);
+        $iconBase64Path = base64_encode($iconPath);
+
+        $base64ImageStringLogo = 'data:image/jpeg;base64,' . $logoBase64Path;
+        $base64ImageStringIcon = 'data:image/jpeg;base64,' . $iconBase64Path;
+
+        $pdf = App::make('dompdf.wrapper');
+        $pdf = Pdf::loadView('one.laporan.generatePdf', [
+            'getTransaction' => $getTransaction,
+            'settings' => $settings,
+            'base64ImageStringLogo' => $base64ImageStringLogo,
+            'base64ImageStringIcon' => $base64ImageStringIcon,
+        ]);
+        return $pdf->stream();
+        // return $pdf->download('laporan_pengajuan.pdf');
     }
 }

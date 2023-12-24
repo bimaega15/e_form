@@ -63,6 +63,12 @@ $(document).ready(function () {
                     name: "totalprice_transaction",
                     searchable: true,
                 },
+                {
+                    data: "action",
+                    name: "action",
+                    searchable: false,
+                    orderable: false,
+                },
             ]
         );
     }
@@ -161,6 +167,50 @@ $(document).ready(function () {
             }
         );
     })
+
+    body.on("click", ".btn-approval", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            { id: $(this).data("id") },
+            "Form Approval",
+            "get"
+        );
+    });
+
+    body.on("click", ".btn-history", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            { id: $(this).data("id") },
+            "History Pengajuan",
+            "get"
+        );
+    });
+
+    body.on("click", ".btn-detail-pengajuan", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            '',
+            "Detail Pengajuan",
+            "get"
+        );
+    });
+
+    body.on("click", ".btn-detail-transaksi", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            '',
+            "Detail Transaksi",
+            "get"
+        );
+    });
 });
 
 

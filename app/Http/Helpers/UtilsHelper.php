@@ -388,6 +388,14 @@ class UtilsHelper
         return $formattedDate;
     }
 
+    public static function formatDateLaporan($tanggal_transaction)
+    {
+        $dateNow = $tanggal_transaction;
+        $tanggal = Carbon::parse($dateNow);
+        $formattedDate = $tanggal->format('d/m/Y');
+        return $formattedDate;
+    }
+
     public static function forwardUsers($users_id = null)
     {
         if ($users_id == null) {

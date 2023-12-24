@@ -45,3 +45,4 @@ Route::get('transaksi/changeBuy', [TransaksiController::class, 'changeBuy'])->na
 Route::get('transaksi/getMataUang', [TransaksiController::class, 'getMataUang'])->name('transaksi.getMataUang');
 
 Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
+Route::get('laporan/{id}/generatePdf', [LaporanController::class, 'generatePdf'])->name('laporan.generatePdf');
