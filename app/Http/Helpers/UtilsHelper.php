@@ -451,4 +451,55 @@ class UtilsHelper
 
         return $forwardLetter;
     }
+
+    public static function userTtdLaporan($jabatan, $namaProfile, $users_id, $usersid_atasan, $item)
+    {
+        switch ($jabatan) {
+            case 'Bod':
+                return [
+                    'nama_profile' => $namaProfile,
+                    'result' => $item
+                ];
+                break;
+            case 'Finance':
+                return [
+                    'nama_profile' => $namaProfile,
+                    'result' => $item
+                ];
+                break;
+            case 'Direktur':
+                return [
+                    'nama_profile' => $namaProfile,
+                    'result' => $item
+                ];
+                break;
+            default:
+                if ($users_id == $usersid_atasan) {
+                    return [
+                        'nama_profile' => $namaProfile,
+                        'result' => $item
+                    ];
+                } else {
+                    return '-';
+                }
+                break;
+        }
+    }
+
+    public static function transactionApprovelTtd($transactionApprovel, $getTransaction, $dataNamaJabatan)
+    {
+        foreach ($transactionApprovel as $key => $item) {
+            $namaJabatan = ucwords(strtolower($item->users->profile->jabatan->nama_jabatan));
+            if ($dataNamaJabatan == 'Atasan') {
+                $namaJabatan = 'Atasan';
+            }
+            $profile = ($item->users->profile->nama_profile);
+            $users_id = $item->users_id;
+            $rowDataJabatan = UtilsHelper::userTtdLaporan($namaJabatan, $profile, $users_id, $getTransaction->users->profile->usersid_atasan, $item);
+            if ($rowDataJabatan != '-') {
+                $rowData[$namaJabatan] = $rowDataJabatan;
+            }
+        }
+        return isset($rowData[$dataNamaJabatan]) ? $rowData[$dataNamaJabatan] : '-';
+    }
 }

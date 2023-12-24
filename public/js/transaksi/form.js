@@ -70,6 +70,7 @@ if(submitButton != null){
         var arr_remarks_detail = [];
         var arr_matauang_detail = [];
         var arr_kurs_detail = [];
+        var total_subtotal_detail = 0;
         $.each(row_data, function(i,v){
             var qty_detail = $(this).find('.qty_detail').val();
             var price_detail = $(this).find('.price_detail').val();
@@ -85,7 +86,10 @@ if(submitButton != null){
             arr_matauang_detail.push(matauang_detail);
             arr_kurs_detail.push(kurs_detail);
             arr_products_id.push($(this).data('id'));
+
+            total_subtotal_detail += parseFloat(subtotal_detail);
         })
+
         var totalproduct_transaction = 0;
         var totalprice_transaction = 0;
 
@@ -105,6 +109,13 @@ if(submitButton != null){
         var selisihMilidetik = tanggalExpired - tanggalAwal;
         var selisihHari = selisihMilidetik / (1000 * 60 * 60 * 24);
 
+        var totalppn_transaction = 0;
+        if(isppn_transaction == 1){
+            totalppn_transaction = total_subtotal_detail * valueppn_transaction / 100;
+            totalprice_transaction += totalppn_transaction;
+        }
+
+
         var data = new FormData();
         data.append('code_transaction', code_transaction);
         data.append('tanggal_transaction', tanggal_transaction);
@@ -122,6 +133,8 @@ if(submitButton != null){
         data.append('nomorvirtual_transaction', nomorvirtual_transaction);
         data.append('accept_transaction', accept_transaction);
         data.append('bank_transaction', bank_transaction);
+        data.append('subtotal_transaction', total_subtotal_detail);
+        data.append('totalppn_transaction', totalppn_transaction);
 
         data.append('products_id', arr_products_id);
         data.append('qty_detail', arr_qty_detail);

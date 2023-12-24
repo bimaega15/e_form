@@ -131,7 +131,8 @@ class LaporanController extends Controller
     public function generatePdf($id)
     {
 
-        $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran', 'transactionDetail', 'transactionDetail.products', 'transactionApprovel', 'transactionApprovel.users')->find($id);
+        $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran', 'transactionDetail', 'transactionDetail.products', 'transactionApprovel', 'transactionApprovel.users', 'transactionApprovel.users.profile', 'transactionApprovel.users.profile.jabatan')->find($id);
+
         $settings = UtilsHelper::settingApp();
 
         $logo_settings = public_path('upload/settings/logo/' . $settings->logo_settings);
@@ -145,6 +146,7 @@ class LaporanController extends Controller
 
         $base64ImageStringLogo = 'data:image/jpeg;base64,' . $logoBase64Path;
         $base64ImageStringIcon = 'data:image/jpeg;base64,' . $iconBase64Path;
+
 
         $pdf = App::make('dompdf.wrapper');
         $pdf = Pdf::loadView('one.laporan.generatePdf', [

@@ -150,45 +150,48 @@
             <td style="padding-top: 15px;">
                 <table style="width: 100%;" id="table-content">
                     <tr>
-                        <td colspan="6" class="fontGeneral">Description Items</td>
+                        <td colspan="5" class="fontGeneral">Description Items</td>
                     </tr>
                     <tr>
                         <td class="fontGeneral">No.</td>
-                        <td class="fontGeneral">Description Of Gods</td>
                         <td class="fontGeneral">Amount</td>
                         <td class="fontGeneral">Price / Unit</td>
                         <td class="fontGeneral">Total Price</td>
                         <td class="fontGeneral">Remarks</td>
                     </tr>
+                    @php
+                    $no=1;
+                    $totalPrice = 0;
+                    @endphp
+                    @foreach ($getTransaction->transactionDetail as $item)
+                    @php
+                    $totalPrice += $item->subtotal_detail;
+                    @endphp
                     <tr>
-                        <td class="fontGeneral">1</td>
-                        <td class="fontGeneral">Apart (Alat Pemadam Kebakaran)</td>
-                        <td class="fontGeneral">1</td>
-                        <td class="fontGeneral">30,000</td>
-                        <td class="fontGeneral">30,000</td>
-                        <td class="fontGeneral">-</td>
+                        <td class="fontGeneral">{{ $no++ }}</td>
+                        <td class="fontGeneral">{{$item->qty_detail}}</td>
+                        <td class="fontGeneral">Rp. {{ number_format($item->price_detail,0,'.',',') }}</td>
+                        <td class="fontGeneral">Rp. {{ number_format($item->subtotal_detail,0, '.',',') }}</td>
+                        <td class="fontGeneral">{{$item->remarks_detail}}</td>
                     </tr>
+                    @endforeach
                     <tr>
-                        <td class="fontGeneral">1</td>
-                        <td class="fontGeneral">Apart (Alat Pemadam Kebakaran)</td>
-                        <td class="fontGeneral">1</td>
-                        <td class="fontGeneral">30,000</td>
-                        <td class="fontGeneral">30,000</td>
-                        <td class="fontGeneral">-</td>
-                    </tr>
-                    <tr>
-                        <td colspan="4" class="fontWeightBold fontGeneral" style="text-align: right;">Subtotal</td>
-                        <td class="fontWeightBold fontGeneral" style="text-align: right;">830,000</td>
+                        <td colspan="3" class="fontWeightBold fontGeneral" style="text-align: right;">Subtotal</td>
+                        <td class="fontWeightBold fontGeneral" style="text-align: right;">{{ number_format($totalPrice,0,'.',',') }}</td>
                         <td class="fontWeightBold fontGeneral" style="text-align: right;"></td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="fontWeightBold fontGeneral" style="text-align: right;">PPN (10%)</td>
-                        <td class="fontWeightBold fontGeneral" style="text-align: right;">830,000</td>
+                        <td colspan="3" class="fontWeightBold fontGeneral" style="text-align: right;">PPN ({{$getTransaction->isppn_transaction == 1 ? $getTransaction->valueppn_transaction.'%' : '-'}})</td>
+                        <td class="fontWeightBold fontGeneral" style="text-align: right;">
+                            {{ number_format($getTransaction->totalppn_transaction,0,'.',',') }}
+                        </td>
                         <td class="fontWeightBold fontGeneral" style="text-align: right;"></td>
                     </tr>
                     <tr>
-                        <td colspan="4" class="fontWeightBold fontGeneral" style="text-align: right;">Grand Total</td>
-                        <td class="fontWeightBold fontGeneral" style="text-align: right;">830,000</td>
+                        <td colspan="3" class="fontWeightBold fontGeneral" style="text-align: right;">Grand Total</td>
+                        <td class="fontWeightBold fontGeneral" style="text-align: right;">
+                            {{ number_format($getTransaction->totalprice_transaction,0,'.',',') }}
+                        </td>
                         <td class="fontWeightBold fontGeneral" style="text-align: right;"></td>
                     </tr>
                 </table>
@@ -196,7 +199,7 @@
         </tr>
         <tr>
             <td style="padding-top: 40px; padding-bottom: 10px; border-bottom: 1px solid #161A30; text-align: right;" class="fontGeneral">
-                Jakarta, 07-06-2023
+                Jakarta, {{ date('d/m/Y') }}
             </td>
         </tr>
         <tr>
@@ -225,32 +228,48 @@
                     <tr>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
-                                Hendro <br>
-                                07-07-2023
+                                {{ $getTransaction->users->profile->nama_profile }} <br>
+                                {{ UtilsHelp::formatDateLaporan($getTransaction->tanggal_transaction) }}
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
-                                Hendro <br>
-                                07-07-2023
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Atasan')['nama_profile'] }}
+                                <br>
+                                @endif
+
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Atasan')['result']->tanggal_approvel) }}
+                                @endif
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
-                                Hendro <br>
-                                07-07-2023
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Finance')['nama_profile'] }}
+                                <br>
+                                @endif
+
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Finance')['result']->tanggal_approvel) }}
+                                @endif
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
-                                Hendro <br>
-                                07-07-2023
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Direktur')['nama_profile'] }} <br> @endif
+
+                                @if (count($getTransaction->transactionApprovel) > 0)
+                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Direktur')['result']->tanggal_approvel) }}
+                                @endif
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
-                                Hendro <br>
-                                07-07-2023
+                                {{ Auth::user()->profile->nama_profile }} <br>
+                                {{ UtilsHelp::formatDateLaporan(date('Y-m-d')) }}
                             </span>
                         </td>
                     </tr>

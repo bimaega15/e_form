@@ -160,6 +160,12 @@ $(document).ready(function () {
                     name: "totalprice_transaction",
                     searchable: true,
                 },
+                {
+                    data: "action",
+                    name: "action",
+                    searchable: false,
+                    orderable: false,
+                },
             ], {
                 is_transaksi_expired,
                 tanggal_awal: tanggalAwalFormatted,

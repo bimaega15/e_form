@@ -208,6 +208,8 @@ class TransaksiController extends Controller
             'purpose_transaction' => $request->input('purpose_transaction'),
             'totalproduct_transaction' => $request->input('totalproduct_transaction'),
             'totalprice_transaction' => $request->input('totalprice_transaction'),
+            'totalppn_transaction' => $request->input('totalppn_transaction'),
+            'subtotal_transaction' => $request->input('subtotal_transaction'),
             'users_id_review' => $getAtasan->profile->usersid_atasan,
             'status_transaction' => 'menunggu',
             'users_id' => Auth::id(),
@@ -295,6 +297,8 @@ class TransaksiController extends Controller
             'purpose_transaction' => $request->input('purpose_transaction'),
             'totalproduct_transaction' => $request->input('totalproduct_transaction'),
             'totalprice_transaction' => $request->input('totalprice_transaction'),
+            'totalppn_transaction' => $request->input('totalppn_transaction'),
+            'subtotal_transaction' => $request->input('subtotal_transaction'),
 
             'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
             'isppn_transaction' => $request->input('isppn_transaction'),
