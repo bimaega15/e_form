@@ -122,6 +122,15 @@ function basicDatatable(tableId, ajaxUrl, columns, dataAjaxUrl={}) {
                         cell.innerHTML = info.start + i + 1;
                     });
             },
+            rowCallback: function(row, data, index) {
+                if(data.is_expired !== undefined){
+                    if (data.is_expired == 1) {
+                        $('td', row).each(function(i, el) {
+                            $(el).css('background-color', '#FFA1D7');
+                        });
+                    }
+                }
+            }
         });
 }
 

@@ -396,6 +396,14 @@ class UtilsHelper
         return $formattedDate;
     }
 
+    public static function formatHumansDate($tanggal_transaction)
+    {
+        $dateNow = $tanggal_transaction;
+        $tanggal = Carbon::createFromFormat('Y-m-d', $dateNow);
+        $formattedDate = $tanggal->diffForHumans();
+        return $formattedDate;
+    }
+
     public static function forwardUsers($users_id = null)
     {
         if ($users_id == null) {

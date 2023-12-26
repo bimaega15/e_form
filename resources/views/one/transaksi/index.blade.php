@@ -16,6 +16,9 @@
 
         <!-- BEGIN: Data List -->
         <div class="intro-y col-span-12 overflow-auto">
+            <div class="flex justify-end items-center">
+                <span style="width: 15px; height: 15px; background-color: #FFA1D7; margin-right: 10px; border-radius: 5px;"></span> <strong> Pengajuan Expired </strong>
+            </div>
             <table class="table table-report -mt-2" id="dataTable">
                 <thead>
                     <tr>

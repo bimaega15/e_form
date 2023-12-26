@@ -32,9 +32,9 @@ class LaporanController extends Controller
             if ($tanggal_akhir != null) {
                 $data->where('tanggal_transaction', '<=', $tanggal_akhir);
             }
-            if ($is_transaksi_expired) {
+            if ($is_transaksi_expired == 'true') {
                 $data->where('status_transaction', '!=', 'disetujui')
-                    ->orWhere('expired_transaction', '<=', Carbon::now()->toDateString());
+                    ->where('expired_transaction', '<', now());
             }
 
             return DataTables::eloquent($data)
