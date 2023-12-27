@@ -129,36 +129,9 @@
                         </div>
                     </div>
                     <div class="intro-y box p-5 mt-12 sm:mt-5">
-                        <div class="flex flex-col md:flex-row md:items-center">
-                            <div class="flex">
-                                <div>
-                                    <div class="text-primary dark:text-slate-300 text-lg xl:text-xl font-medium">
-                                        165,000</div>
-                                    <div class="mt-0.5 text-slate-500">This Month</div>
-                                </div>
-                                <div class="w-px h-12 border border-r border-dashed border-slate-200 dark:border-darkmode-300 mx-4 xl:mx-5">
-                                </div>
-                                <div>
-                                    <div class="text-slate-500 text-lg xl:text-xl font-medium">40,000</div>
-                                    <div class="mt-0.5 text-slate-500">Last Month</div>
-                                </div>
-                            </div>
-                            <div class="dropdown md:ml-auto mt-5 md:mt-0">
-                                <button class="dropdown-toggle btn btn-outline-secondary font-normal" aria-expanded="false" data-tw-toggle="dropdown"> Filter by Category <i data-lucide="chevron-down" class="w-4 h-4 ml-2"></i> </button>
-                                <div class="dropdown-menu w-40">
-                                    <ul class="dropdown-content overflow-y-auto h-32">
-                                        <li><a href="#" class="dropdown-item">PC & Laptop</a></li>
-                                        <li><a href="#" class="dropdown-item">Smartphone</a></li>
-                                        <li><a href="#" class="dropdown-item">Electronic</a></li>
-                                        <li><a href="#" class="dropdown-item">Photography</a></li>
-                                        <li><a href="#" class="dropdown-item">Sport</a></li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
                         <div class="report-chart">
                             <div class="h-[275px]">
-                                <canvas id="report-line-chart" class="mt-6 -mb-6"></canvas>
+                                <canvas id="report-transactionpermonth-chart" class="mt-6 -mb-6"></canvas>
                             </div>
                         </div>
                     </div>

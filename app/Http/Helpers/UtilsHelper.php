@@ -510,4 +510,99 @@ class UtilsHelper
         }
         return isset($rowData[$dataNamaJabatan]) ? $rowData[$dataNamaJabatan] : '-';
     }
+
+    public static function integerMonth($month)
+    {
+        switch ($month) {
+            case 1:
+                return 'Januari';
+                break;
+            case 2:
+                return 'Februari';
+                break;
+            case 3:
+                return 'Maret';
+                break;
+            case 4:
+                return 'April';
+                break;
+            case 5:
+                return 'Mei';
+                break;
+            case 6:
+                return 'Juni';
+                break;
+            case 7:
+                return 'Juli';
+                break;
+            case 8:
+                return 'Agustus';
+                break;
+            case 9:
+                return 'September';
+                break;
+            case 10:
+                return 'Oktober';
+                break;
+            case 11:
+                return 'November';
+                break;
+            case 12:
+                return 'Desember';
+                break;
+            default:
+                return 'Januari';
+                break;
+        }
+    }
+
+    public static function monthData()
+    {
+        return ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+    }
+
+    public static function stringMonth($month)
+    {
+        switch ($month) {
+            case 'Januari':
+                return 1;
+                break;
+            case 'Februari':
+                return 2;
+                break;
+            case 'Maret':
+                return 3;
+                break;
+            case 'April':
+                return 4;
+                break;
+            case 'Mei':
+                return 5;
+                break;
+            case 'Juni':
+                return 6;
+                break;
+            case 'Juli':
+                return 7;
+                break;
+            case 'Agustus':
+                return 8;
+                break;
+            case 'September':
+                return 9;
+                break;
+            case 'Oktober':
+                return 10;
+                break;
+            case 'November':
+                return 11;
+                break;
+            case 'Desember':
+                return 12;
+                break;
+            default:
+                return 1;
+                break;
+        }
+    }
 }

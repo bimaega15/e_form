@@ -129,6 +129,65 @@ $(document).ready(function () {
                         }
                     });
                 }
+
+                if ($("#report-transactionpermonth-chart").length) {
+                    var ctx = $("#report-transactionpermonth-chart")[0].getContext("2d");
+                    var labels = dataDb.transactionReport.label;
+                    var data = dataDb.transactionReport.output.map(v => v.total);
+    
+                    if ($("#report-transactionpermonth-chart").length) {
+                        var ctx = $("#report-transactionpermonth-chart")[0].getContext("2d");
+                         new Chart(ctx, {
+                          type: "line",
+                          data: {
+                            labels: labels,
+                            datasets: [{
+                              label: 'Grafik Transaksi Per Tahun',
+                              data: data,
+                              borderWidth: 2,
+                              borderColor: 'rgb(6, 78, 59)',
+                              backgroundColor: "transparent",
+                              pointBorderColor: "transparent",
+                              tension: 0.4
+                            }]
+                          },
+                          options: {
+                            maintainAspectRatio: false,
+                            plugins: {
+                              legend: {
+                                display: false
+                              }
+                            },
+                            scales: {
+                              x: {
+                                ticks: {
+                                  font: {
+                                    size: 12
+                                  },
+                                  color: 'rgb(6, 78, 59)'
+                                },
+                                grid: {
+                                  display: false,
+                                  drawBorder: false
+                                }
+                              },
+                              y: {
+                                ticks: {
+                                  font: {
+                                    size: 12
+                                  },
+                                  color: 'rgb(6, 78, 59)',
+                                  callback: function callback(value, index, values) {
+                                    return "$" + value;
+                                  }
+                                },
+                              }
+                            }
+                          }
+                        });
+                      }
+                      
+                }
             },
             error: function(xhr){
                 console.log(xhr.responseText);

@@ -2,6 +2,7 @@
 
 namespace Modules\Dashboard\Http\Controllers;
 
+use App\Http\Helpers\UtilsHelper;
 use App\Models\MetodePembayaran;
 use App\Models\Note;
 use App\Models\Profile;
@@ -14,6 +15,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\Auth;
 use DataTables;
+use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
@@ -68,6 +70,37 @@ class DashboardController extends Controller
                 ->where('expired_transaction', '<', now())
                 ->paginate(10);
 
+            $currentYear = date('Y');
+            $result = DB::table('transaction')
+                ->select(DB::raw('YEAR(tanggal_transaction) as year'), DB::raw('MONTH(tanggal_transaction) as month'), DB::raw('count(tanggal_transaction) as total'))
+                ->whereYear('tanggal_transaction', $currentYear)
+                ->groupBy('year', 'month')
+                ->orderBy('year', 'desc') // Urutkan tahun secara descending
+                ->orderBy('month', 'asc')
+                ->get();
+
+            $dataMonth = UtilsHelper::monthData();
+
+            $outputMonth = [];
+            foreach ($dataMonth as $key => $value) {
+                $integerMonth = UtilsHelper::stringMonth($value);
+                foreach ($result as $row) {
+                    if ($integerMonth == $row->month) {
+                        $outputMonth[] = [
+                            'year' => $row->year,
+                            'month' => UtilsHelper::integerMonth($row->month),
+                            'total' => $row->total,
+                        ];
+                    } else {
+                        $outputMonth[] = [
+                            'year' => $currentYear,
+                            'month' => $value,
+                            'total' => 0,
+                        ];
+                    }
+                }
+            }
+
             return response()->json([
                 'totalWaiting' => $totalWaiting,
                 'totalSuccess' => $totalSuccess,
@@ -97,7 +130,11 @@ class DashboardController extends Controller
                     'totalRejectAccesor' => $totalRejectAccesor,
                     'totalTransactionAccesor' => $totalTransactionAccesor,
                 ],
-                'laporanExpired' => $laporanExpired
+                'laporanExpired' => $laporanExpired,
+                'transactionReport' => [
+                    'label' => $dataMonth,
+                    'output' => $outputMonth
+                ]
             ]);
         }
 
