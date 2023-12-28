@@ -217,6 +217,11 @@ $(document).ready(function () {
             "get"
         );
     });
+
+    body.on('click','.btn-report-excel',function(){
+        var urlExcel = $('.url_excel').data('url');
+        window.location.href = urlExcel;
+    })
 });
 
 

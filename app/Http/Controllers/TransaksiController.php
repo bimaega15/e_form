@@ -125,8 +125,9 @@ class TransaksiController extends Controller
                         $buttonReview = true;
                     }
 
+                    $isAdmin = Auth::user()->hasRole('Admin');
                     $listButton = '';
-                    if ($buttonReview) {
+                    if (($buttonReview || $isAdmin) && ($row->status_transaction != 'disetujui' && $row->status_transaction != 'ditolak') && $row->is_expired != true) {
                         $listButton = '
                         <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
                     }
@@ -141,7 +142,7 @@ class TransaksiController extends Controller
                         $buttonHistory = true;
                     }
 
-                    if ($buttonHistory) {
+                    if ($buttonHistory || $isAdmin) {
                         $listButtonHistory = '
                         <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
                         ';

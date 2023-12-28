@@ -14,6 +14,8 @@ use DataTables;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\App;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class LaporanController extends Controller
 {
@@ -157,5 +159,68 @@ class LaporanController extends Controller
         ]);
         return $pdf->stream();
         // return $pdf->download('laporan_pengajuan.pdf');
+    }
+
+    public function exportExcel()
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(25);
+        $sheet->getColumnDimension('F')->setWidth(25);
+        $sheet->getColumnDimension('G')->setWidth(15);
+        $sheet->getColumnDimension('H')->setWidth(25);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(15);
+
+        $sheet->setCellValue('A1', 'Mengajukan');
+        $sheet->setCellValue('B1', 'Mengajukan');
+        $sheet->setCellValue('C1', 'Status');
+        $sheet->setCellValue('D1', 'Oleh');
+        $sheet->setCellValue('E1', 'Code');
+        $sheet->setCellValue('F1', 'Tanggal Pengajuan');
+        $sheet->setCellValue('G1', 'Tanggal Kadaluarsa');
+        $sheet->setCellValue('H1', 'Payment Terms');
+        $sheet->setCellValue('I1', 'Metode Pembayaran');
+        $sheet->setCellValue('J1', 'Total Product');
+        $sheet->setCellValue('K1', 'Total Transaksi');
+
+        $query = Transaction::all();
+
+        $i = 2;
+        $no = 1;
+        // while ($row = mysqli_fetch_array($query)) {
+        //     $sheet->setCellValue('A' . $i, $no++);
+        //     $sheet->setCellValue('B' . $i, $row['nama']);
+        //     $sheet->setCellValue('C' . $i, $row['kelas']);
+        //     $sheet->setCellValue('D' . $i, $row['alamat']);
+        //     $i++;
+        // }
+        foreach ($query as $key => $item) {
+        }
+
+        $styleArray = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                ],
+            ],
+        ];
+        $sheet->getStyle('A1:J1')->applyFromArray($styleArray);
+
+
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="Laporan_Data_Pengajuan.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        // Menulis ke output
+        $writer->save('php://output');
+        exit;
     }
 }

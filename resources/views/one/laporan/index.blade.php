@@ -27,6 +27,10 @@
             <label for="" class="form-label"></label>
             <button type="button" class="btn btn-primary mt-5 btn-filter">Filter</button>
         </div>
+        <div class="intro-y col-span-5 text-right">
+            <label for="" class="form-label"></label>
+            <button type="button" class="btn btn-primary mt-5 btn-report-excel"> Excel</button>
+        </div>
 
         <!-- BEGIN: Data List -->
         <div class="intro-y col-span-12 overflow-auto">
@@ -59,6 +63,8 @@
     @push('custom_js')
     <script class="url_datatable" data-url="{{ route('laporan.index') }}"></script>
     <script class="url_root" data-url="{{ url('/') }}"></script>
+    <script class="url_excel" data-url="{{ route('laporan.exportExcel') }}"></script>
     <script src="{{ asset('js/laporan/index.js') }}"></script>
+
     @endpush
 </x-backend-layout>

@@ -6,12 +6,15 @@
         <div>
             Tanggal: {{ UtilsHelp::formatDate($getTransaction->tanggal_transaction) }}
         </div>
+        @if ($getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur' || $getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur Jenderal')
         <div>
             <strong class="text-info">Approval: </strong>
             <button class="d-inline-block btn btn-sm btn-primary btn-confirm-approvel mr-2" data-url="{{ route('transaksi.finishApproval') }}" data-transaction_id="{{ $getTransaction->id }}" data-type="disetujui" data-tw-toggle="modal" data-tw-target="#modal-approvel"><i class="fas fa-sticky-note"></i>&nbsp; Selesaikan Approval</button>
 
             <button class="d-inline-block btn btn-sm btn-danger btn-confirm-approvel" data-url="{{ route('transaksi.finishApproval') }}" data-transaction_id="{{ $getTransaction->id }}" data-type="ditolak" data-tw-toggle="modal" data-tw-target="#modal-approvel"><i class="fas fa-sticky-note"></i>&nbsp; Tolak Approval</button>
         </div>
+        @endif
+
 
         @include('one.transaksi.partials_approval.modalDetail')
 

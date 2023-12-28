@@ -46,3 +46,4 @@ Route::get('transaksi/getMataUang', [TransaksiController::class, 'getMataUang'])
 
 Route::get('laporan', [LaporanController::class, 'index'])->name('laporan.index');
 Route::get('laporan/{id}/generatePdf', [LaporanController::class, 'generatePdf'])->name('laporan.generatePdf');
+Route::get('laporan/exportExcel', [LaporanController::class, 'exportExcel'])->name('laporan.exportExcel');
