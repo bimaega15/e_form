@@ -13,6 +13,9 @@
                     <li id="detail_product" class="nav-item flex-1" role="presentation">
                         <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#product" type="button" role="tab" aria-controls="product" aria-selected="false"> DETAIL PRODUCT </button>
                     </li>
+                    <li id="overbooking" class="nav-item flex-1 hidden" role="presentation">
+                        <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#overbooking_tab" type="button" role="tab" aria-controls="overbooking_tab" aria-selected="false"> OVER BOOKING </button>
+                    </li>
                 </ul>
                 <div class="tab-content mt-5">
                     <div id="transaksi" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="pengajuan_transaksi">
@@ -21,6 +24,10 @@
 
                     <div id="product" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="detail_product">
                         @include('one.transaksi.partials.product')
+                    </div>
+
+                    <div id="overbooking_tab" class="tab-pane leading-relaxed hidden" role="tabpanel" aria-labelledby="overbooking">
+                        @include('one.transaksi.partials.overbooking')
                     </div>
                 </div>
             </div>

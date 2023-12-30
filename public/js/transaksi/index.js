@@ -364,6 +364,22 @@ $(document).ready(function () {
            changeBuy(text);
         }
     })
+
+    body.on('click','input[name="overbooking_transaction"]', function(){
+        if($(this).is(":checked")){
+            $('#overbooking').removeClass('hidden');
+            $('#overbooking_tab').removeClass('hidden');
+
+            $('#detail_product').addClass('hidden');
+            $('#product').addClass('hidden');
+        } else {
+            $('#overbooking').addClass('hidden');
+            $('#overbooking_tab').addClass('hidden');
+
+            $('#detail_product').removeClass('hidden');
+            $('#product').removeClass('hidden');
+        }
+    })
 });
 
 

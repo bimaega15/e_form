@@ -178,7 +178,7 @@ class LaporanController extends Controller
         $sheet->getColumnDimension('J')->setWidth(15);
         $sheet->getColumnDimension('K')->setWidth(15);
 
-        $sheet->setCellValue('A1', 'Mengajukan');
+        $sheet->setCellValue('A1', 'No');
         $sheet->setCellValue('B1', 'Mengajukan');
         $sheet->setCellValue('C1', 'Status');
         $sheet->setCellValue('D1', 'Oleh');
@@ -191,17 +191,33 @@ class LaporanController extends Controller
         $sheet->setCellValue('K1', 'Total Transaksi');
 
         $query = Transaction::all();
-
-        $i = 2;
-        $no = 1;
-        // while ($row = mysqli_fetch_array($query)) {
-        //     $sheet->setCellValue('A' . $i, $no++);
-        //     $sheet->setCellValue('B' . $i, $row['nama']);
-        //     $sheet->setCellValue('C' . $i, $row['kelas']);
-        //     $sheet->setCellValue('D' . $i, $row['alamat']);
-        //     $i++;
-        // }
+        $no = 0;
+        $keyNumber = 1;
         foreach ($query as $key => $item) {
+            $no++;
+            $keyNumber++;
+            $mengajukan = $item->users->profile->nama_profile;
+            $status = $item->status_transaction;
+            $oleh = UtilsHelper::myProfile($item->users_id_review)->profile->nama_profile;
+            $code = $item->code_transaction;
+            $tanggalPengajuan = UtilsHelper::formatDateLaporan($item->tanggal_transaction);
+            $tanggalKadaluarsa = UtilsHelper::formatDateLaporan($item->expired_transaction);
+            $paymentTerms = $item->paymentterms_transaction;
+            $metodePembayaran = $item->metodePembayaran->nama_metode_pembayaran;
+            $totalProduct = $item->totalproduct_transaction;
+            $totalTransaction = $item->totalprice_transaction;
+
+            $sheet->setCellValue('A' . $keyNumber, $no);
+            $sheet->setCellValue('B' . $keyNumber, $mengajukan);
+            $sheet->setCellValue('C' . $keyNumber, $status);
+            $sheet->setCellValue('D' . $keyNumber, $oleh);
+            $sheet->setCellValue('E' . $keyNumber, $code);
+            $sheet->setCellValue('F' . $keyNumber, $tanggalPengajuan);
+            $sheet->setCellValue('G' . $keyNumber, $tanggalKadaluarsa);
+            $sheet->setCellValue('H' . $keyNumber, $paymentTerms);
+            $sheet->setCellValue('I' . $keyNumber, $metodePembayaran);
+            $sheet->setCellValue('J' . $keyNumber, $totalProduct);
+            $sheet->setCellValue('K' . $keyNumber, $totalTransaction);
         }
 
         $styleArray = [
@@ -211,7 +227,7 @@ class LaporanController extends Controller
                 ],
             ],
         ];
-        $sheet->getStyle('A1:J1')->applyFromArray($styleArray);
+        $sheet->getStyle('A1:K' . ($no + 1))->applyFromArray($styleArray);
 
 
         $writer = new Xlsx($spreadsheet);

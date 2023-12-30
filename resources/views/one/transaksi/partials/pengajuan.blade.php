@@ -71,7 +71,7 @@
     <input name="purposedivisi_transaction" type="text" class="form-control" value="{{ isset($transaction) ? $transaction->purposedivisi_transaction : '' }}" placeholder="Purpose (Divisi)...">
 </div>
 <div class="grid grid-cols-12 gap-6">
-    <div class="col-span-6 mb-2">
+    <div class="col-span-4 mb-2">
         <label for="" class="form-label">PPN</label>
         <label for="" class="form-label">
             Apakah include PPN ?
@@ -81,7 +81,17 @@
             Iya
         </label>
     </div>
-    <div class="col-span-6 mb-2">
+    <div class="col-span-4 mb-2">
+        <label for="" class="form-label">Overbooking</label>
+        <label for="" class="form-label">
+            Apakah Termasuk Overbooking ?
+        </label> <br>
+        <input type="checkbox" name="overbooking_transaction" id="overbooking_transaction" class="form-checkbox h-5 w-5 text-blue-600" value="1" {{ isset($transaction) ? $transaction->overbooking_transaction != null ? 'checked' : '' : '' }}>
+        <label for="overbooking_transaction" class="ml-2 text-gray-700">
+            Iya
+        </label>
+    </div>
+    <div class="col-span-4 mb-2">
         <label for="" class="form-label">Persen (%) PPN</label>
         <input name="valueppn_transaction" type="number" class="form-control" value="{{ isset($transaction) ? $transaction->valueppn_transaction : '' }}" placeholder="Nilai PPN (%)..." readonly min="0" max="100">
     </div>

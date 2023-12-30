@@ -17,7 +17,7 @@
         "vite": "^4.0.0"
     },
     "dependencies": {
-        "autonumeric": "^4.10.0",
+        "autonumeric": "^4.6.2",
         "bootstrap-timepicker": "^0.5.2",
         "sweetalert2": "^11.7.31",
         "toastr": "^2.1.4",

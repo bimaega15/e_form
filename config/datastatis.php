@@ -20,5 +20,6 @@ return [
         'L' => 'Laki-laki',
         'P' => 'Perempuan'
     ],
-    'step' => ['atasan','bod','finance', 'direktur'],
+    'step' => ['atasan', 'bod', 'finance', 'direktur'],
+    'overbooking' => ['Rekening ke Rekening', 'Rekening ke Tunai', 'Tunai ke Rekening'],
 ];

@@ -40,4 +40,9 @@ class Transaction extends Model
     {
         return $this->belongsTo(MetodePembayaran::class, 'metode_pembayaran_id', 'id');
     }
+
+    public function overBooking()
+    {
+        return $this->hasOne(OverBooking::class, 'transaction_id', 'id');
+    }
 }

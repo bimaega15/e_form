@@ -1,4 +1,11 @@
 // Define
+var nominalBooking = new AutoNumeric("input[name='nominal_booking']", {
+    digitGroupSeparator: ",",
+    decimalPlaces: 0,
+    unformatOnSubmit: true,
+});
+
+
 var form = $("#form-submit");
 var formApprovel = $("#form-submit-approvel");
 var submitButton = document.getElementById("btn_submit");
@@ -60,6 +67,16 @@ if(submitButton != null){
                 accept_transaction = null;
             }
         }
+        let overbooking_transaction = 0;
+        if($('input[name="overbooking_transaction"]').is(":checked")){
+            overbooking_transaction = 1;
+        }
+        let jenis_over_booking = $('select[name="jenis_over_booking"]').val();
+        let darirekening_booking = $('input[name="darirekening_booking"]').val();
+        let pemilikrekening_booking = $('input[name="pemilikrekening_booking"]').val();
+        let tujuanrekening_booking = $('input[name="tujuanrekening_booking"]').val();
+        let pemiliktujuan_booking = $('input[name="pemiliktujuan_booking"]').val();
+        let nominal_booking = nominalBooking.getNumber();
         
         let row_data = $('.row_data');
 
@@ -115,6 +132,16 @@ if(submitButton != null){
             totalprice_transaction += totalppn_transaction;
         }
 
+        if(overbooking_transaction == 1){
+            total_subtotal_detail = nominal_booking;
+            totalprice_transaction = nominal_booking;
+
+            if(isppn_transaction == 1){
+                totalppn_transaction = nominal_booking * valueppn_transaction / 100;
+                totalprice_transaction += totalppn_transaction;
+            }
+        }
+
 
         var data = new FormData();
         data.append('code_transaction', code_transaction);
@@ -135,6 +162,14 @@ if(submitButton != null){
         data.append('bank_transaction', bank_transaction);
         data.append('subtotal_transaction', total_subtotal_detail);
         data.append('totalppn_transaction', totalppn_transaction);
+        data.append('overbooking_transaction', overbooking_transaction);
+
+        data.append('jenis_over_booking', jenis_over_booking);
+        data.append('darirekening_booking', darirekening_booking);
+        data.append('pemilikrekening_booking', pemilikrekening_booking);
+        data.append('tujuanrekening_booking', tujuanrekening_booking);
+        data.append('pemiliktujuan_booking', pemiliktujuan_booking);
+        data.append('nominal_booking', nominal_booking);
 
         data.append('products_id', arr_products_id);
         data.append('qty_detail', arr_qty_detail);
