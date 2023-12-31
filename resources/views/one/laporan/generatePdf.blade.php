@@ -146,6 +146,43 @@
                 </table>
             </td>
         </tr>
+        @if ($getTransaction->overbooking_transaction == 1)
+        <tr>
+            <td style="padding-top: 15px;">
+                <table style="width: 100%;" id="table-content">
+                    <tr>
+                        <td colspan="6" class="fontGeneral text-center fontWeightBold">Overbooking Acccount</td>
+                    </tr>
+                    <tr>
+                        <td>Jenis</td>
+                        <td>:</td>
+                        <td colspan="4">{{ $getTransaction->overBooking->jenis_over_booking }}</td>
+                    </tr>
+                    <tr>
+                        <td>Dari Nomor Rekening</td>
+                        <td>:</td>
+                        <td>{{ $getTransaction->overBooking->darirekening_booking }}</td>
+                        <td>Nama Pemilik Rekening</td>
+                        <td>:</td>
+                        <td>{{ $getTransaction->overBooking->pemilikrekening_booking }}</td>
+                    </tr>
+                    <tr>
+                        <td>Nomor Rekening Tujuan</td>
+                        <td>:</td>
+                        <td>{{ $getTransaction->overBooking->tujuanrekening_booking }}</td>
+                        <td>Nama Pemilik Rekening</td>
+                        <td>:</td>
+                        <td>{{ $getTransaction->overBooking->pemiliktujuan_booking }}</td>
+                    </tr>
+                    <tr>
+                        <td>Nominal</td>
+                        <td>:</td>
+                        <td colspan="4">Rp. {{ number_format($getTransaction->overBooking->nominal_booking, 0,',','.') }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        @else
         <tr>
             <td style="padding-top: 15px;">
                 <table style="width: 100%;" id="table-content">
@@ -197,6 +234,8 @@
                 </table>
             </td>
         </tr>
+        @endif
+
         <tr>
             <td style="padding-top: 40px; padding-bottom: 10px; border-bottom: 1px solid #161A30; text-align: right;" class="fontGeneral">
                 Jakarta, {{ date('d/m/Y') }}

@@ -18,13 +18,21 @@
                     <div class="text-xs text-slate-500 ml-auto">{{ UtilsHelp::formatDate($setApprove->tanggal_approvel) }}</div>
                 </div>
                 <div class="text-slate-500 mt-1">Telah Approve Pengajuan</div>
+                @if ($setApprove->users_id_forward == null)
+                <div class="text-slate-500 mt-1">Diteruskan Oleh -</div>
+                <div class="box px-5 py-3 ml-4 flex-1">
+                    <strong>{{ $setApprove->keterangan_approvel }}</strong>
+                </div>
+                @else
                 @php
                 $usersForward = UtilsHelp::forwardUsers($setApprove->users_id_forward);
                 @endphp
+
                 <div class="text-slate-500 mt-1">Diteruskan Oleh {{ $usersForward->profile->nama_profile }} [{{ $usersForward->profile->jabatan->nama_jabatan }}]</div>
                 <div class="box px-5 py-3 ml-4 flex-1">
                     <strong>{{ $setApprove->keterangan_approvel }}</strong>
                 </div>
+                @endif
             </div>
         </div>
         @endforeach

@@ -45,4 +45,5 @@
     </form>
 
     <script type="text/javascript" src="{{ asset('js/transaksi/form.js') }}"></script>
-    <script class="url_root" data-url="{{ url('/') }}"></script>
+    <script class="data_id" data-id="{{ isset($transaction) ? $transaction->id : '' }}" data-overbooking_transaction="{{ isset($transaction) ? $transaction->overbooking_transaction : '' }}"></script>
+    <script class=" url_root" data-url="{{ url('/') }}"></script>

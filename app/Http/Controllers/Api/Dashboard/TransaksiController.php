@@ -7,6 +7,7 @@ use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\CreateTransaksiPutRequest;
 use App\Http\Requests\CreateTransaksiRequest;
 use App\Models\MetodePembayaran;
+use App\Models\OverBooking;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionApprovel;
@@ -16,6 +17,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
 
@@ -132,6 +134,8 @@ class TransaksiController extends Controller
 
             $getAtasan = User::with('profile')->find(Auth::id());
             $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', null, 'transaction', 'attachment_transaction');
+            $overbooking_transaction = $request->input('overbooking_transaction');
+
             $transaction = Transaction::create([
                 'code_transaction' => $request->input('code_transaction'),
                 'tanggal_transaction' => $request->input('tanggal_transaction'),
@@ -151,27 +155,50 @@ class TransaksiController extends Controller
                 'valueppn_transaction' => $request->input('valueppn_transaction'),
                 'attachment_transaction' => $attachment_transaction,
 
+                'overbooking_transaction' => $overbooking_transaction,
             ]);
             $transaction_id = $transaction->id;
 
-            $products_id = json_decode($request->input('products_id'), true);
-            $qty_detail = json_decode($request->input('qty_detail'), true);
-            $price_detail = json_decode($request->input('price_detail'), true);
-            $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
-            $remarks_detail = json_decode($request->input('remarks_detail'), true);
+            $jenis_over_booking = $request->input('jenis_over_booking');
+            $darirekening_booking = $request->input('darirekening_booking');
+            $pemilikrekening_booking = $request->input('pemilikrekening_booking');
+            $tujuanrekening_booking = $request->input('tujuanrekening_booking');
+            $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
+            $nominal_booking = $request->input('nominal_booking');
 
-            $dataDetail = [];
-            foreach ($products_id as $key => $value) {
-                $dataDetail[] = [
-                    'transaction_id' => $transaction_id,
-                    'products_id' => $products_id[$key],
-                    'qty_detail' => $qty_detail[$key],
-                    'price_detail' => $price_detail[$key],
-                    'subtotal_detail' => $subtotal_detail[$key],
-                    'remarks_detail' => $remarks_detail[$key],
-                ];
+            if ($overbooking_transaction != 1) {
+                $products_id = json_decode($request->input('products_id'), true);
+                $qty_detail = json_decode($request->input('qty_detail'), true);
+                $price_detail = json_decode($request->input('price_detail'), true);
+                $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
+                $remarks_detail = json_decode($request->input('remarks_detail'), true);
+
+                $dataDetail = [];
+                foreach ($products_id as $key => $value) {
+                    $dataDetail[] = [
+                        'transaction_id' => $transaction_id,
+                        'products_id' => $products_id[$key],
+                        'qty_detail' => $qty_detail[$key],
+                        'price_detail' => $price_detail[$key],
+                        'subtotal_detail' => $subtotal_detail[$key],
+                        'remarks_detail' => $remarks_detail[$key],
+                    ];
+                }
+                TransactionDetail::insert($dataDetail);
             }
-            TransactionDetail::insert($dataDetail);
+
+            if ($overbooking_transaction == 1) {
+                $dataOver = [
+                    'transaction_id' => $transaction_id,
+                    'jenis_over_booking' => $jenis_over_booking,
+                    'darirekening_booking' => $darirekening_booking,
+                    'pemilikrekening_booking' => $pemilikrekening_booking,
+                    'tujuanrekening_booking' => $tujuanrekening_booking,
+                    'pemiliktujuan_booking' => $pemiliktujuan_booking,
+                    'nominal_booking' => $nominal_booking,
+                ];
+                OverBooking::create($dataOver);
+            }
             return response()->json([
                 'status' => 201,
                 'message' => 'Berhasil insert data',
@@ -207,6 +234,7 @@ class TransaksiController extends Controller
         $metodePembayaran = MetodePembayaran::all();
         $product = Product::all();
         $users = User::with('profile', 'profile.jabatan', 'profile.unit', 'profile.categoryOffice')->get();
+        $jenisOverBooking = Config::get('datastatis.overbooking');
 
         return response()->json([
             'status' => 200,
@@ -214,7 +242,8 @@ class TransaksiController extends Controller
             'result' => [
                 'metodePembayaran' => $metodePembayaran,
                 'product' => $product,
-                'users' => $users
+                'users' => $users,
+                'jenisOverBooking' => $jenisOverBooking
             ]
         ], 200);
     }
@@ -248,6 +277,8 @@ class TransaksiController extends Controller
         }
 
         try {
+            $overbooking_transaction = $request->input('overbooking_transaction');
+
             $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', $id, 'transaction', 'attachment_transaction');
             Transaction::find($id)->update([
                 'code_transaction' => $request->input('code_transaction'),
@@ -264,30 +295,52 @@ class TransaksiController extends Controller
                 'isppn_transaction' => $request->input('isppn_transaction'),
                 'valueppn_transaction' => $request->input('valueppn_transaction'),
                 'attachment_transaction' => $attachment_transaction,
+
+                'overbooking_transaction' => $overbooking_transaction
             ]);
             $transactionDetail = TransactionDetail::where('transaction_id', $id)->get()->count();
             if ($transactionDetail > 0) {
                 TransactionDetail::where('transaction_id', $id)->delete();
             }
 
-            $products_id = json_decode($request->input('products_id'), true);
-            $qty_detail = json_decode($request->input('qty_detail'), true);
-            $price_detail = json_decode($request->input('price_detail'), true);
-            $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
-            $remarks_detail = json_decode($request->input('remarks_detail'), true);
+            $jenis_over_booking = $request->input('jenis_over_booking');
+            $darirekening_booking = $request->input('darirekening_booking');
+            $pemilikrekening_booking = $request->input('pemilikrekening_booking');
+            $tujuanrekening_booking = $request->input('tujuanrekening_booking');
+            $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
+            $nominal_booking = $request->input('nominal_booking');
+            if ($overbooking_transaction != true) {
+                $products_id = json_decode($request->input('products_id'), true);
+                $qty_detail = json_decode($request->input('qty_detail'), true);
+                $price_detail = json_decode($request->input('price_detail'), true);
+                $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
+                $remarks_detail = json_decode($request->input('remarks_detail'), true);
 
-            $dataDetail = [];
-            foreach ($products_id as $key => $value) {
-                $dataDetail[] = [
+                $dataDetail = [];
+                foreach ($products_id as $key => $value) {
+                    $dataDetail[] = [
+                        'transaction_id' => $id,
+                        'products_id' => $products_id[$key],
+                        'qty_detail' => $qty_detail[$key],
+                        'price_detail' => $price_detail[$key],
+                        'subtotal_detail' => $subtotal_detail[$key],
+                        'remarks_detail' => $remarks_detail[$key],
+                    ];
+                }
+                TransactionDetail::insert($dataDetail);
+            } else {
+                $dataOver = [
                     'transaction_id' => $id,
-                    'products_id' => $products_id[$key],
-                    'qty_detail' => $qty_detail[$key],
-                    'price_detail' => $price_detail[$key],
-                    'subtotal_detail' => $subtotal_detail[$key],
-                    'remarks_detail' => $remarks_detail[$key],
+                    'jenis_over_booking' => $jenis_over_booking,
+                    'darirekening_booking' => $darirekening_booking,
+                    'pemilikrekening_booking' => $pemilikrekening_booking,
+                    'tujuanrekening_booking' => $tujuanrekening_booking,
+                    'pemiliktujuan_booking' => $pemiliktujuan_booking,
+                    'nominal_booking' => $nominal_booking,
                 ];
+                OverBooking::where('transaction_id', $id)->update($dataOver);
             }
-            TransactionDetail::insert($dataDetail);
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Berhasil ubah data',
@@ -330,6 +383,7 @@ class TransaksiController extends Controller
                 'getTransaction' => $getTransaction,
                 'getTransactionRequest' => $getTransactionRequest,
                 'getTransactionApprove' => $getTransactionApprove,
+                'getOverBooking' => $getTransaction->overBooking
             ]
         ], 200);
     }
@@ -343,6 +397,7 @@ class TransaksiController extends Controller
             ->leftJoin('users as forward_users', 'forward_users.id', '=', 'transaction_approvel.users_id_forward')
             ->select('transaction_approvel.*', 'profile.nama_profile as acc_approval', 'forward_users.name as forward_approval', 'jabatan.nama_jabatan as acc_jabatan')
             ->get();
+
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil ambil data',

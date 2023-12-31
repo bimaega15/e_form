@@ -212,8 +212,10 @@ class UsersController extends Controller
         $getTransactionApprovel = TransactionApprovel::where('transaction_id', $transaction_id)->get()->count();
         $setJabatan = UtilsHelper::setJabatan($getTransactionApprovel);
 
+        $myUserId = Auth::id();
 
         $data = User::join('profile', 'profile.users_id', '=', 'users.id')
+            ->where('users.id', '!=', $myUserId)
             ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id');
         $countData = User::join('profile', 'profile.users_id', '=', 'users.id')
             ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id')

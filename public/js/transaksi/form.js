@@ -1,9 +1,4 @@
 // Define
-var nominalBooking = new AutoNumeric("input[name='nominal_booking']", {
-    digitGroupSeparator: ",",
-    decimalPlaces: 0,
-    unformatOnSubmit: true,
-});
 
 
 var form = $("#form-submit");
@@ -11,7 +6,7 @@ var formApprovel = $("#form-submit-approvel");
 var submitButton = document.getElementById("btn_submit");
 var submitButtonApprovel = document.getElementById("btn_submit_approvel");
 var submitButtonFinishApprovel = document.getElementById("btn_submit_finishapprovel");
-select2Standard('.select2',`#${modal_extra_large}`);
+select2Standard('.select2', `#${modal_extra_large}`);
 
 var urlSelect2 = $(".select2ServerSide").data('url');
 select2Server(".select2ServerSide", `#${modal_extra_large}`, urlSelect2, {
@@ -19,7 +14,50 @@ select2Server(".select2ServerSide", `#${modal_extra_large}`, urlSelect2, {
 });
 
 // Submit button handler
-if(submitButton != null){
+if (submitButton != null) {
+    var nominalBooking = new AutoNumeric("#nominal_booking", {
+        digitGroupSeparator: ",",
+        decimalPlaces: 0,
+        unformatOnSubmit: true,
+    });
+
+    loadDataEdit();
+    function loadDataEdit() {
+        var url_root = $('.url_root').data('url');
+        var id = $('.data_id').data('id');
+        var overbooking_transaction = $('.data_id').data('overbooking_transaction');
+
+        if (id != '' && id != null) {
+            if (overbooking_transaction == 1) {
+                $.ajax({
+                    url: `${url_root}/transaksi/${id}/edit`,
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        typeRequest: 'from_json'
+                    },
+                    success: function (data) {
+                        if (data) {
+                            if ($('#overbooking_transaction').is(":checked")) {
+                                $('#overbooking').removeClass('hidden');
+                                $('#overbooking_tab').removeClass('hidden');
+
+                                $('#detail_product').addClass('hidden');
+                                $('#product').addClass('hidden');
+                            } else {
+                                $('#overbooking').addClass('hidden');
+                                $('#overbooking_tab').addClass('hidden');
+
+                                $('#detail_product').removeClass('hidden');
+                                $('#product').removeClass('hidden');
+                            }
+                        }
+                    }
+                })
+            }
+        }
+    }
+
     submitButton.addEventListener("click", function (e) {
         e.preventDefault();
         submitData();
@@ -34,13 +72,13 @@ if(submitButton != null){
         let nomorvirtual_transaction = $('input[name="nomorvirtual_transaction"]').val();
         let accept_transaction = $('input[name="accept_transaction"]').val();
         let bank_transaction = $('select[name="bank_transaction"]').val();
-        if(nomorvirtual_transaction == '' || nomorvirtual_transaction == undefined){
+        if (nomorvirtual_transaction == '' || nomorvirtual_transaction == undefined) {
             nomorvirtual_transaction = null;
         }
-        if(accept_transaction == '' || accept_transaction == undefined){
+        if (accept_transaction == '' || accept_transaction == undefined) {
             accept_transaction = null;
         }
-        if(bank_transaction == '' || bank_transaction == undefined){
+        if (bank_transaction == '' || bank_transaction == undefined) {
             bank_transaction = null;
         }
 
@@ -52,23 +90,23 @@ if(submitButton != null){
         let purpose_transaction = $('input[name="purpose_transaction"]').val();
         let purposedivisi_transaction = $('input[name="purposedivisi_transaction"]').val();
         let isppn_transaction = 0;
-        if($('#isppn_transaction').is(":checked")){
+        if ($('#isppn_transaction').is(":checked")) {
             isppn_transaction = 1;
         }
         let valueppn_transaction = $('input[name="valueppn_transaction"]').val();
         let attachment_transaction = $('input[name="attachment_transaction"]').prop('files')[0];
 
         let metodePembayaranText = $('select[name="metode_pembayaran_id"] option:selected').text().trim().toLowerCase();
-        if(metodePembayaranText !== 'cash'){
-            if(metodePembayaranText === 'transfer'){
+        if (metodePembayaranText !== 'cash') {
+            if (metodePembayaranText === 'transfer') {
                 nomorvirtual_transaction = null;
             }
-            if(metodePembayaranText === 'virtual account'){
+            if (metodePembayaranText === 'virtual account') {
                 accept_transaction = null;
             }
         }
         let overbooking_transaction = 0;
-        if($('input[name="overbooking_transaction"]').is(":checked")){
+        if ($('input[name="overbooking_transaction"]').is(":checked")) {
             overbooking_transaction = 1;
         }
         let jenis_over_booking = $('select[name="jenis_over_booking"]').val();
@@ -77,7 +115,7 @@ if(submitButton != null){
         let tujuanrekening_booking = $('input[name="tujuanrekening_booking"]').val();
         let pemiliktujuan_booking = $('input[name="pemiliktujuan_booking"]').val();
         let nominal_booking = nominalBooking.getNumber();
-        
+
         let row_data = $('.row_data');
 
         var arr_qty_detail = [];
@@ -88,7 +126,7 @@ if(submitButton != null){
         var arr_matauang_detail = [];
         var arr_kurs_detail = [];
         var total_subtotal_detail = 0;
-        $.each(row_data, function(i,v){
+        $.each(row_data, function (i, v) {
             var qty_detail = $(this).find('.qty_detail').val();
             var price_detail = $(this).find('.price_detail').val();
             var subtotal_detail = $(this).find('.subtotal_detail').val();
@@ -110,8 +148,8 @@ if(submitButton != null){
         var totalproduct_transaction = 0;
         var totalprice_transaction = 0;
 
-        totalproduct_transaction = arr_qty_detail.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
-        totalprice_transaction = arr_subtotal_detail.reduce((accumulator,currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
+        totalproduct_transaction = arr_qty_detail.reduce((accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
+        totalprice_transaction = arr_subtotal_detail.reduce((accumulator, currentValue) => parseFloat(accumulator) + parseFloat(currentValue), 0);
 
         arr_products_id = JSON.stringify(arr_products_id);
         arr_qty_detail = JSON.stringify(arr_qty_detail);
@@ -127,16 +165,16 @@ if(submitButton != null){
         var selisihHari = selisihMilidetik / (1000 * 60 * 60 * 24);
 
         var totalppn_transaction = 0;
-        if(isppn_transaction == 1){
+        if (isppn_transaction == 1) {
             totalppn_transaction = total_subtotal_detail * valueppn_transaction / 100;
             totalprice_transaction += totalppn_transaction;
         }
 
-        if(overbooking_transaction == 1){
+        if (overbooking_transaction == 1) {
             total_subtotal_detail = nominal_booking;
             totalprice_transaction = nominal_booking;
 
-            if(isppn_transaction == 1){
+            if (isppn_transaction == 1) {
                 totalppn_transaction = nominal_booking * valueppn_transaction / 100;
                 totalprice_transaction += totalppn_transaction;
             }
@@ -211,7 +249,7 @@ if(submitButton != null){
 }
 
 // Submit button handler
-if(submitButtonApprovel != null){
+if (submitButtonApprovel != null) {
     submitButtonApprovel.addEventListener("click", function (e) {
         e.preventDefault();
         submitDataApprovel();
@@ -257,7 +295,7 @@ if(submitButtonApprovel != null){
     }
 }
 
-if(submitButtonFinishApprovel != null){
+if (submitButtonFinishApprovel != null) {
     submitButtonFinishApprovel.addEventListener("click", function (e) {
         e.preventDefault();
 
@@ -275,7 +313,7 @@ if(submitButtonFinishApprovel != null){
                 type,
                 keterangan_approvel: keterangan_approvel_finish
             },
-            beforeSend: function () {},
+            beforeSend: function () { },
             success: function (data) {
                 notifAlert("Successfully", data, "success");
                 datatable.ajax.reload();

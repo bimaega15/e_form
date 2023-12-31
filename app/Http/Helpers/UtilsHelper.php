@@ -23,6 +23,17 @@ class UtilsHelper
         $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
         return $getUser;
     }
+    public static function getCheckJabatan($users_id)
+    {
+        if ($users_id == null) {
+            return false;
+        }
+
+        $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
+        $setJabatan = $getUser->profile->jabatan->nama_jabatan;
+        $checkJabatan = $setJabatan == 'Direktur' || $setJabatan == 'Direktur Jenderal';
+        return $checkJabatan;
+    }
     public static function uploadFile($file, $lokasi, $id = null, $table = null, $nameAttribute = null)
     {
         if ($file != null) {

@@ -113,6 +113,7 @@ class TransaksiController extends Controller
                     return $total;
                 })
                 ->addColumn('action', function ($row) {
+                    $transactionApprovel = $row->transactionApprovel()->count();
                     $usersReview = $row->users_id_review;
                     $idLogin = Auth::id();
                     $buttonReview = false;
@@ -134,7 +135,8 @@ class TransaksiController extends Controller
 
                     $isAdmin = Auth::user()->hasRole('Admin');
                     $listButton = '';
-                    if (($buttonReview || $isAdmin) && ($row->status_transaction != 'disetujui' && $row->status_transaction != 'ditolak') && $row->is_expired != true) {
+
+                    if (($buttonReview || $isAdmin) && ($row->status_transaction != 'disetujui' && $row->status_transaction != 'ditolak') && $row->is_expired != true || $row->status_transaction == 'direvisi') {
                         $listButton = '
                         <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
                     }
@@ -155,12 +157,33 @@ class TransaksiController extends Controller
                         ';
                     }
 
+                    $buttonDelete = '';
+                    if ($transactionApprovel == null) {
+                        $buttonDelete = '
+                    <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
+                    ';
+                    }
+
+                    $buttonEdit = '';
+                    if ($transactionApprovel == null || $row->status_transaction == 'direvisi') {
+                        $buttonEdit = '
+                        <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
+                    ';
+                    }
+
+                    $generatePdf = '';
+                    if ($row->status_transaction == 'disetujui') {
+                        $generatePdf = '
+                        <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate mt-1">PDF</a>
+                        ';
+                    }
+
                     $output = '
                 <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
                     <div class="dropdown-menu w-40">
                         <ul class="dropdown-content">
-                            <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
-                            <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
+                            ' . $buttonEdit . '
+                            ' . $buttonDelete . '
                             ' . $listButton . '
                             ' . $listButtonHistory . '
                         </ul>
@@ -168,7 +191,10 @@ class TransaksiController extends Controller
                 </div>
                 ';
 
-                    return $output;
+                    return '
+                    <div class="text-center">
+                    ' . $output . ' ' . $generatePdf . '
+                    </div>';
                 })
                 ->rawColumns(['status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction', 'action'])
                 ->toJson();
@@ -302,15 +328,24 @@ class TransaksiController extends Controller
      * @param int $id
      * @return Renderable
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+
+        if ($request->ajax()) {
+            $typeRequest = $request->input('typeRequest');
+            if ($typeRequest == 'from_json') {
+                return response()->json(true);
+            }
+        }
         $transaction = Transaction::find($id);
         $metodePembayaran = MetodePembayaran::all();
         $product = Product::all();
         $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
         $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+        $jenisOverBooking = $this->jenisOverBooking;
 
-        return view('one.transaksi.form', compact('transaction', 'metodePembayaran', 'product', 'bankPenerima', 'mataUang'));
+
+        return view('one.transaksi.form', compact('transaction', 'metodePembayaran', 'product', 'bankPenerima', 'mataUang', 'jenisOverBooking'));
     }
 
     /**
@@ -449,8 +484,12 @@ class TransaksiController extends Controller
     public function viewTransactionDetail($id)
     {
         $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
+        $getOverBooking = OverBooking::where('transaction_id', $id)->first();
+        $getTransaction = Transaction::find($id);
         return view('one.transaksi.viewTransactionDetail', [
             'getTransactionRequest' => $getTransactionRequest,
+            'getOverBooking' => $getOverBooking,
+            'getTransaction' => $getTransaction
         ]);
     }
 

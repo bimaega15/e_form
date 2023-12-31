@@ -1,4 +1,5 @@
 <x-modal.modal-body>
+    @if ($getTransaction->overbooking_transaction != 1)
     <div class="intro-y col-span-12 overflow-auto">
         <table style="width: 100%;" class="table">
             <thead>
@@ -41,6 +42,44 @@
             </tfoot>
         </table>
     </div>
+    @endif
+
+    @if ($getTransaction->overbooking_transaction == 1)
+    <div class="intro-y col-span-12 overflow-auto">
+        <table style="width: 100%;" id="table-content" class="table">
+            <tr>
+                <td colspan="6" class="fontGeneral text-center font-bold" style="padding-bottom: 20px;">Overbooking Acccount</td>
+            </tr>
+            <tr>
+                <td>Jenis</td>
+                <td>:</td>
+                <td colspan="4">{{ $getOverBooking->jenis_over_booking }}</td>
+            </tr>
+            <tr>
+                <td>Dari Nomor Rekening</td>
+                <td>:</td>
+                <td>{{ $getOverBooking->darirekening_booking }}</td>
+                <td>Nama Pemilik Rekening</td>
+                <td>:</td>
+                <td>{{ $getOverBooking->pemilikrekening_booking }}</td>
+            </tr>
+            <tr>
+                <td>Nomor Rekening Tujuan</td>
+                <td>:</td>
+                <td>{{ $getOverBooking->tujuanrekening_booking }}</td>
+                <td>Nama Pemilik Rekening</td>
+                <td>:</td>
+                <td>{{ $getOverBooking->pemiliktujuan_booking }}</td>
+            </tr>
+            <tr>
+                <td>Nominal</td>
+                <td>:</td>
+                <td colspan="4">Rp. {{ number_format($getOverBooking->nominal_booking, 0,',','.') }}</td>
+            </tr>
+        </table>
+    </div>
+    @endif
+
 
 </x-modal.modal-body>
 
