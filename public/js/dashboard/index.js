@@ -1,5 +1,6 @@
 // "use strict";
 var datatableExpired;
+var body = $('body');
 
 $(document).ready(function () {
     function initDatatable() {
@@ -17,7 +18,7 @@ $(document).ready(function () {
                     name: "pengajuan_transaction",
                     searchable: true,
                 },
-               
+
                 {
                     data: "tanggal_transaction",
                     name: "tanggal_transaction",
@@ -33,20 +34,24 @@ $(document).ready(function () {
                     name: "totalprice_transaction",
                     searchable: true,
                 },
+                {
+                    data: "action",
+                    name: "action",
+                    searchable: false,
+                },
             ]
         );
     }
     initDatatable();
 
     loadDashboard();
-    function loadDashboard()
-    {
+    function loadDashboard() {
         var urlRoot = $('.url_root').data('url');
         $.ajax({
             url: `${urlRoot}/dashboard`,
             type: 'get',
             dataType: 'json',
-            success: function(data){
+            success: function (data) {
                 var dataDb = data;
 
                 $('.totalWaiting').html(dataDb.totalWaiting);
@@ -70,7 +75,7 @@ $(document).ready(function () {
                     var data = [dataDb.grafikPegawai.L, dataDb.grafikPegawai.P];
                     var backgroundColors = ["rgb(6, 78, 59)", "rgb(245, 158, 11)"];
                     var hoverBackgroundColors = ["rgb(6, 78, 59)", "rgb(245, 158, 11)"];
-                
+
                     new Chart(ctx, {
                         type: "pie",
                         data: {
@@ -107,7 +112,7 @@ $(document).ready(function () {
                     var data = [dataDb.grafikTransaksi.totalWaiting, dataDb.grafikTransaksi.totalSuccess, dataDb.grafikTransaksi.totalReject, dataDb.grafikTransaksi.totalWaitingAccesor, dataDb.grafikTransaksi.totalSuccessAccesor, dataDb.grafikTransaksi.totalRejectAccesor];
                     var backgroundColors = ["rgb(6, 78, 59)", "rgb(245, 158, 11)", "rgb(250, 204, 21)", "rgb(21, 67, 176)", "rgb(196, 19, 168)", "rgb(255, 75, 75)"];
                     var hoverBackgroundColors = ["rgb(6, 78, 59)", "rgb(245, 158, 11)", "rgb(250, 204, 21)", "rgb(21, 67, 176)", "rgb(196, 19, 168)", "rgb(255, 75, 75)"];
-                
+
                     new Chart(ctx, {
                         type: "pie",
                         data: {
@@ -134,70 +139,69 @@ $(document).ready(function () {
                     var ctx = $("#report-transactionpermonth-chart")[0].getContext("2d");
                     var labels = dataDb.transactionReport.label;
                     var data = dataDb.transactionReport.output.map(v => v.total);
-    
+
                     if ($("#report-transactionpermonth-chart").length) {
                         var ctx = $("#report-transactionpermonth-chart")[0].getContext("2d");
-                         new Chart(ctx, {
-                          type: "line",
-                          data: {
-                            labels: labels,
-                            datasets: [{
-                              label: 'Grafik Transaksi Per Tahun',
-                              data: data,
-                              borderWidth: 2,
-                              borderColor: 'rgb(6, 78, 59)',
-                              backgroundColor: "transparent",
-                              pointBorderColor: "transparent",
-                              tension: 0.4
-                            }]
-                          },
-                          options: {
-                            maintainAspectRatio: false,
-                            plugins: {
-                              legend: {
-                                display: false
-                              }
+                        new Chart(ctx, {
+                            type: "line",
+                            data: {
+                                labels: labels,
+                                datasets: [{
+                                    label: 'Grafik Transaksi Per Tahun',
+                                    data: data,
+                                    borderWidth: 2,
+                                    borderColor: 'rgb(6, 78, 59)',
+                                    backgroundColor: "transparent",
+                                    pointBorderColor: "transparent",
+                                    tension: 0.4
+                                }]
                             },
-                            scales: {
-                              x: {
-                                ticks: {
-                                  font: {
-                                    size: 12
-                                  },
-                                  color: 'rgb(6, 78, 59)'
+                            options: {
+                                maintainAspectRatio: false,
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
                                 },
-                                grid: {
-                                  display: false,
-                                  drawBorder: false
+                                scales: {
+                                    x: {
+                                        ticks: {
+                                            font: {
+                                                size: 12
+                                            },
+                                            color: 'rgb(6, 78, 59)'
+                                        },
+                                        grid: {
+                                            display: false,
+                                            drawBorder: false
+                                        }
+                                    },
+                                    y: {
+                                        ticks: {
+                                            font: {
+                                                size: 12
+                                            },
+                                            color: 'rgb(6, 78, 59)',
+                                            callback: function callback(value, index, values) {
+                                                return "$" + value;
+                                            }
+                                        },
+                                    }
                                 }
-                              },
-                              y: {
-                                ticks: {
-                                  font: {
-                                    size: 12
-                                  },
-                                  color: 'rgb(6, 78, 59)',
-                                  callback: function callback(value, index, values) {
-                                    return "$" + value;
-                                  }
-                                },
-                              }
                             }
-                          }
                         });
-                      }
-                      
+                    }
+
                 }
             },
-            error: function(xhr){
+            error: function (xhr) {
                 console.log(xhr.responseText);
             }
         })
     }
 
     getNotes();
-    function getNotes()
-    {
+    function getNotes() {
         var urlRoot = $('.url_root').data('url');
         $.ajax({
             url: `${urlRoot}/dashboard`,
@@ -206,14 +210,36 @@ $(document).ready(function () {
                 type: 'notes'
             },
             dataType: 'text',
-            success: function(data){
+            success: function (data) {
                 $('#output_notes').html(data);
             },
-            error: function(xhr){
+            error: function (xhr) {
                 console.log(xhr.responseText);
             }
         })
     }
+
+    body.on("click", ".btn-detail-pengajuan", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            '',
+            "Detail Pengajuan",
+            "get"
+        );
+    });
+
+    body.on("click", ".btn-history", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            { id: $(this).data("id") },
+            "History Pengajuan",
+            "get"
+        );
+    });
 });
 
 

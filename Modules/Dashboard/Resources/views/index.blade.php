@@ -155,11 +155,12 @@
                             <table class="table table-report -mt-2" id="dataTableExpired">
                                 <thead>
                                     <tr>
-                                        <th class="whitespace-nowrap">Code</th>
+                                        <th class="whitespace-nowrap">CODE</th>
                                         <th class="whitespace-nowrap">MENGAJUKAN</th>
                                         <th class="whitespace-nowrap">TANGGAL PENGAJUAN</th>
                                         <th class="whitespace-nowrap">TANGGAL KADALUARSA</th>
                                         <th class="whitespace-nowrap">TOTAL TRANSAKSI</th>
+                                        <th class="whitespace-nowrap">ACTION</th>
                                     </tr>
                                 </thead>
                                 <tbody>

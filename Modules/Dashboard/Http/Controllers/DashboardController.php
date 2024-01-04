@@ -25,6 +25,7 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
+
         if ($request->ajax()) {
             $type = $request->input('type');
             if ($type == 'notes') {
@@ -68,6 +69,7 @@ class DashboardController extends Controller
             $laporanExpired = Transaction::query()
                 ->where('status_transaction', '!=', 'disetujui')
                 ->where('expired_transaction', '<', now())
+                ->where('is_expired', 1)
                 ->paginate(10);
 
             $currentYear = date('Y');
@@ -100,6 +102,7 @@ class DashboardController extends Controller
                     }
                 }
             }
+
 
             return response()->json([
                 'totalWaiting' => $totalWaiting,
@@ -146,7 +149,8 @@ class DashboardController extends Controller
         if ($request->ajax()) {
             $data = Transaction::query()
                 ->where('status_transaction', '!=', 'disetujui')
-                ->where('expired_transaction', '<', now());
+                ->where('expired_transaction', '<', now())
+                ->where('is_expired', 1);
 
             return DataTables::eloquent($data)
                 ->addColumn('metode_pembayaran_id', function ($row) {
@@ -225,11 +229,39 @@ class DashboardController extends Controller
                     return $total;
                 })
                 ->addColumn('action', function ($row) {
-                    $output = '
-                    <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate">PDF</a>
-                    ';
+                    $isAdmin = Auth::user()->hasRole('Admin');
 
-                    return $output;
+                    $generatePdf = '';
+                    if ($row->status_transaction == 'disetujui') {
+                        $generatePdf = '
+                        <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate mt-1">PDF</a>
+                        ';
+                    }
+
+                    $buttonHistory = false;
+                    $listButtonHistory = '';
+                    $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
+                        ->where('users_id', Auth::id())
+                        ->orWhere('users_id_forward', Auth::id())
+                        ->get()->count();
+                    if ($getTransactionApprovel > 0) {
+                        $buttonHistory = true;
+                    }
+
+                    if ($buttonHistory || $isAdmin) {
+                        $listButtonHistory = '
+                        <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="btn btn-primary btn-history">History Pengajuan</a>
+                        ';
+                    }
+
+                    if ($listButtonHistory == '' && $generatePdf == '') {
+                        return '-';
+                    }
+
+                    return '
+                    <div class="text-center">
+                    ' . $listButtonHistory . ' ' . $generatePdf . '
+                    </div>';
                 })
                 ->rawColumns(['action', 'status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction'])
                 ->toJson();
