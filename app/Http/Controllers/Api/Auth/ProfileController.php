@@ -137,8 +137,9 @@ class ProfileController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
-            'gambar_profile' => 'image|max:2048',
+            'gambar_profile' => 'required|image|max:2048',
         ], [
+            'required' => ':attribute harus di upload',
             'image' => ':attribute harus berupa gambar',
             'max' => ':attribute tidak boleh lebih dari :max',
         ]);
@@ -174,6 +175,17 @@ class ProfileController extends Controller
     {
         //
         $validator = Validator::make($request->all(), [
+            'password_old' => [function ($attribute, $value, $fail) use ($request, $id) {
+                $password_old = $request->input('password_old');
+                $getUsers = User::find($id);
+
+                if(!Hash::check($password_old, $getUsers->password)){
+                    $fail('Password lama tidak sesuai');
+                }
+                if($password_old == '' || $password_old == null){
+                    $fail('Password lama wajib diisi');
+                }
+            },],
             'password' => [function ($attribute, $value, $fail) use ($request) {
                 $password = $request->input('password');
                 $password_confirm = $request->input('password_confirm');
@@ -181,6 +193,10 @@ class ProfileController extends Controller
                     if ($password_confirm != $password) {
                         $fail('Password tidak sama dengan password confirmation');
                     }
+                }
+
+                if($password == '' || $password == null){
+                    $fail('Password wajib diisi');
                 }
             },],
             'password_confirm' => [function ($attribute, $value, $fail) use ($request) {
@@ -190,6 +206,10 @@ class ProfileController extends Controller
                     if ($password_confirm != $password) {
                         $fail('Password tidak sama dengan password confirmation');
                     }
+                }
+
+                if($password_confirm == '' || $password_confirm == null){
+                    $fail('Konfirmasi password wajib diisi');
                 }
             },],
         ], [

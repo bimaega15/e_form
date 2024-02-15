@@ -6,8 +6,9 @@
         <div>
             Tanggal: {{ UtilsHelp::formatDate($getTransaction->tanggal_transaction) }}
         </div>
+
         @if (
-        ($getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur' || $getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur Jenderal') || UtilsHelp::getCheckJabatan($getTransaction->users_id_review)
+        ($getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur' || $getTransaction->users->profile->jabatan->nama_jabatan == 'Direktur Jenderal') || UtilsHelp::getCheckJabatan($getTransaction->users_id_review) || $getTransaction->status_transaction == 'direvisi'
         )
         <div>
             <strong class="text-info">Approval: </strong>
@@ -27,8 +28,7 @@
 </div>
 
 @if (
-($getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur' && $getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur Jenderal') && UtilsHelp::myProfile($getTransaction->users_id_review)->profile->jabatan->nama_jabatan != 'Direktur'
-)
+($getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur' && $getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur Jenderal') && UtilsHelp::myProfile($getTransaction->users_id_review)->profile->jabatan->nama_jabatan != 'Direktur' && $getTransaction->status_transaction != 'direvisi')
 <div class="col-span-12 sm:col-span-12 mb-2">
     <label for="" class="form-label">Diteruskan Oleh {{ $setJabatan }}</label>
     <select name="users_id_forward" id="" class="form-select select2ServerSide" style="width: 100%;" data-url="{{ route('setting.users.getUsersProfile') }}" data-transaction_id="{{ $getTransaction->id }}">

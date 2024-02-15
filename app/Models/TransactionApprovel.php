@@ -20,4 +20,9 @@ class TransactionApprovel extends Model
     {
         return $this->belongsTo(User::class, 'users_id', 'id');
     }
+
+    public function usersForward()
+    {
+        return $this->belongsTo(User::class, 'users_id_forward', 'id');
+    }
 }

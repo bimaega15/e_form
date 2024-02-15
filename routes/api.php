@@ -3,6 +3,8 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\ProfileController;
 use App\Http\Controllers\Api\Dashboard\TransaksiController;
+use App\Http\Controllers\Api\Product\ProductController;
+use App\Http\Controllers\Api\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -25,6 +27,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/profile/{id}/updatePassword', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
 
     Route::get('/transaksi', [TransaksiController::class, 'index'])->name('transaksi.index');
+    Route::get('/transaksi/paginate', [TransaksiController::class, 'getPaginate'])->name('transaksi.paginate');
     Route::get('/transaksi/static', [TransaksiController::class, 'static'])->name('transaksi.static');
     Route::get('/transaksi/{id}/edit', [TransaksiController::class, 'edit'])->name('transaksi.edit');
     Route::post('/transaksi', [TransaksiController::class, 'store'])->name('transaksi.store');
@@ -35,4 +38,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/transaksi/{id}/viewHistory', [TransaksiController::class, 'viewHistory'])->name('transaksi.viewHistory');
     Route::post('/transaksi/forwardApproval', [TransaksiController::class, 'forwardApproval'])->name('transaksi.forwardApproval');
     Route::post('/transaksi/finishApproval', [TransaksiController::class, 'finishApproval'])->name('transaksi.finishApproval');
+
+
+    Route::get('/produk', [ProductController::class, 'index'])->name('produk.index');
+    Route::get('/setting/users/getUsersProfile', [SettingsController::class, 'getUsersProfile'])->name('settings.users.getUsersProfile');
+
 });

@@ -21,10 +21,10 @@ class CreateTransaksiPutRequest extends FormRequest
             'purpose_transaction' => 'required',
             'attachment_transaction' => 'max:2048',
 
-            'products_id' => 'required',
-            'qty_detail' => 'required',
-            'subtotal_detail' => 'required',
-            'price_detail' => 'required',
+            // 'products_id' => 'required',
+            // 'qty_detail' => 'required',
+            // 'subtotal_detail' => 'required',
+            // 'price_detail' => 'required',
         ];
     }
 
@@ -45,10 +45,10 @@ class CreateTransaksiPutRequest extends FormRequest
             'purpose_transaction.required' => 'Tujuan transaksi wajib diisi',
             'attachment_transaction.max' => 'Maximal file 2mb berupa gambar',
 
-            'products_id.required' => 'Produk wajib diisi',
-            'qty_detail.required' => 'Qty wajib diisi',
-            'subtotal_detail.required' => 'Sub total wajib diisi',
-            'price_detail.required' => 'Harga detail wajib diisi',
+            // 'products_id.required' => 'Produk wajib diisi',
+            // 'qty_detail.required' => 'Qty wajib diisi',
+            // 'subtotal_detail.required' => 'Sub total wajib diisi',
+            // 'price_detail.required' => 'Harga detail wajib diisi',
         ];
     }
 

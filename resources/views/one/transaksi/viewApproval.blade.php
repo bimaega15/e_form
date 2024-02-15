@@ -24,6 +24,9 @@
     </x-modal.modal-body>
 
     <x-modal.modal-footer>
+        @if (
+($getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur' && $getTransaction->users->profile->jabatan->nama_jabatan != 'Direktur Jenderal') && UtilsHelp::myProfile($getTransaction->users_id_review)->profile->jabatan->nama_jabatan != 'Direktur' &&$getTransaction->status_transaction != 'direvisi'
+)
         <div class="form-group d-flex">
             <button type="button" data-tw-dismiss="modal" class="btn btn-outline-secondary w-20 mr-1">
                 Cancel
@@ -32,6 +35,7 @@
                 Submit
             </button>
         </div>
+        @endif
     </x-modal.modal-footer>
 </form>
 

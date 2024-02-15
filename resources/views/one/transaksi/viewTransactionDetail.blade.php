@@ -53,28 +53,29 @@
             <tr>
                 <td>Jenis</td>
                 <td>:</td>
-                <td colspan="4">{{ $getOverBooking->jenis_over_booking }}</td>
+                <td colspan="4">{{ $getOverBooking != null ? $getOverBooking->jenis_over_booking : '-'}}</td>
             </tr>
             <tr>
                 <td>Dari Nomor Rekening</td>
                 <td>:</td>
-                <td>{{ $getOverBooking->darirekening_booking }}</td>
+                <td>{{ $getOverBooking != null ? $getOverBooking->darirekening_booking : '-' }}</td>
                 <td>Nama Pemilik Rekening</td>
                 <td>:</td>
-                <td>{{ $getOverBooking->pemilikrekening_booking }}</td>
+                <td>{{ $getOverBooking != null ? $getOverBooking->pemilikrekening_booking : '-' }}</td>
             </tr>
             <tr>
                 <td>Nomor Rekening Tujuan</td>
                 <td>:</td>
-                <td>{{ $getOverBooking->tujuanrekening_booking }}</td>
+                <td>{{ $getOverBooking != null ? $getOverBooking->tujuanrekening_booking : '-' }}</td>
                 <td>Nama Pemilik Rekening</td>
                 <td>:</td>
-                <td>{{ $getOverBooking->pemiliktujuan_booking }}</td>
+                <td>{{ $getOverBooking != null ? $getOverBooking->pemiliktujuan_booking : '-' }}</td>
             </tr>
+
             <tr>
                 <td>Nominal</td>
                 <td>:</td>
-                <td colspan="4">Rp. {{ number_format($getOverBooking->nominal_booking, 0,',','.') }}</td>
+                <td colspan="4">Rp.  {{ $getOverBooking != null ? number_format($getOverBooking->nominal_booking, 0,',','.') : 0 }}</td>
             </tr>
         </table>
     </div>

@@ -29,8 +29,8 @@ $(document).ready(function () {
                     searchable: true,
                 },
                 {
-                    data: "qty_detail",
-                    name: "qty_detail",
+                    data: "quantity_product",
+                    name: "quantity_product",
                     searchable: true,
                 },
                 { data: "action", orderable: false, searchable: false },
@@ -73,14 +73,14 @@ $(document).ready(function () {
             options = {
                 index: $(".photoviewer").index(this),
             };
-    
+
         $('[data-gallery="photoviewer"]').each(function () {
             items.push({
                 src: $(this).attr("href"),
                 title: $(this).attr("data-title"),
             });
         });
-    
+
         new PhotoViewer(items, options);
     });
 });

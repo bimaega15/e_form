@@ -464,9 +464,12 @@ class TransaksiController extends Controller
         $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)->get();
         $countTransactionApprove = $getTransactionApprove->count();
         $setJabatan = UtilsHelper::setJabatan($countTransactionApprove);
+        $getOverBooking = OverBooking::where('transaction_id', $id)->first();
+
 
         return view('one.transaksi.viewApproval', [
             'getTransaction' => $getTransaction,
+            'getOverBooking' => $getOverBooking,
             'getTransactionRequest' => $getTransactionRequest,
             'getTransactionApprove' => $getTransactionApprove,
             'setJabatan' => $setJabatan

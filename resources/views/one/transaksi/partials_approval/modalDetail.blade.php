@@ -8,6 +8,7 @@
                 <hr>
             </div>
             <div class="modal-body">
+                @if ($getTransaction->overbooking_transaction != 1)
                 <div class="grid grid-cols-12 gap-6">
                     <div class="intro-y col-span-12">
                         <h3 class="mb-2">Detail Request</h3>
@@ -98,7 +99,6 @@
 
                         </table>
                     </div>
-
                     <div class="intro-y col-span-12">
                         <h3 class="mb-2">Detail Product</h3>
                         <hr />
@@ -130,6 +130,44 @@
                         </table>
                     </div>
                 </div>
+                @else
+                <div class="grid grid-cols-12 gap-6">
+                    <div class="intro-y col-span-12 overflow-auto">
+                        <table style="width: 100%;" id="table-content" class="table">
+                            <tr>
+                                <td colspan="6" class="fontGeneral text-center font-bold" style="padding-bottom: 20px;">Overbooking Acccount</td>
+                            </tr>
+                            <tr>
+                                <td>Jenis</td>
+                                <td>:</td>
+                                <td colspan="4">{{ $getOverBooking != null ? $getOverBooking->jenis_over_booking : '-'}}</td>
+                            </tr>
+                            <tr>
+                                <td>Dari Nomor Rekening</td>
+                                <td>:</td>
+                                <td>{{ $getOverBooking != null ? $getOverBooking->darirekening_booking : '-' }}</td>
+                                <td>Nama Pemilik Rekening</td>
+                                <td>:</td>
+                                <td>{{ $getOverBooking != null ? $getOverBooking->pemilikrekening_booking : '-' }}</td>
+                            </tr>
+                            <tr>
+                                <td>Nomor Rekening Tujuan</td>
+                                <td>:</td>
+                                <td>{{ $getOverBooking != null ? $getOverBooking->tujuanrekening_booking : '-' }}</td>
+                                <td>Nama Pemilik Rekening</td>
+                                <td>:</td>
+                                <td>{{ $getOverBooking != null ? $getOverBooking->pemiliktujuan_booking : '-' }}</td>
+                            </tr>
+                
+                            <tr>
+                                <td>Nominal</td>
+                                <td>:</td>
+                                <td colspan="4">Rp.  {{ $getOverBooking != null ? number_format($getOverBooking->nominal_booking, 0,',','.') : 0 }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                @endif
             </div>
         </div>
     </div>

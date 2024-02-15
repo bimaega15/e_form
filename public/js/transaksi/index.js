@@ -67,7 +67,7 @@ $(document).ready(function () {
                     data: "action",
                     name: "action",
                     searchable: false,
-                    orderable: false
+                    orderable: false,
                 },
             ]
         );
@@ -119,7 +119,7 @@ $(document).ready(function () {
 
         showModalFormExtraLarge(
             $(this).attr("href"),
-            '',
+            "",
             "Detail Pengajuan",
             "get"
         );
@@ -130,7 +130,7 @@ $(document).ready(function () {
 
         showModalFormExtraLarge(
             $(this).attr("href"),
-            '',
+            "",
             "Detail Transaksi",
             "get"
         );
@@ -142,24 +142,24 @@ $(document).ready(function () {
             zIndex: "100",
         });
 
-        let transaction_id = $(this).data('transaction_id');
-        let setUrl = $(this).data('url');
-        let type = $(this).data('type');
+        let transaction_id = $(this).data("transaction_id");
+        let setUrl = $(this).data("url");
+        let type = $(this).data("type");
 
-        let setInfo = 'Apakah anda yakin ingin ';
-        if (type == 'disetujui') {
-            setInfo += 'Konfirmasi form pengajuan ini ?';
+        let setInfo = "Apakah anda yakin ingin ";
+        if (type == "disetujui") {
+            setInfo += "Konfirmasi form pengajuan ini ?";
         }
-        if (type == 'ditolak') {
-            setInfo += 'Menolak form pengajuan ini ?';
+        if (type == "ditolak") {
+            setInfo += "Menolak form pengajuan ini ?";
         }
-        if (type == 'direvisi') {
-            setInfo += 'Revisi form pengajuan ini ?';
+        if (type == "direvisi") {
+            setInfo += "Revisi form pengajuan ini ?";
         }
-        $('#output_info_approvel').html(setInfo);
-        $('#btn_submit_finishapprovel').data('transaction_id', transaction_id);
-        $('#btn_submit_finishapprovel').data('url', setUrl);
-        $('#btn_submit_finishapprovel').data('type', type);
+        $("#output_info_approvel").html(setInfo);
+        $("#btn_submit_finishapprovel").data("transaction_id", transaction_id);
+        $("#btn_submit_finishapprovel").data("url", setUrl);
+        $("#btn_submit_finishapprovel").data("type", type);
     });
 
     // handle btn delete
@@ -174,42 +174,47 @@ $(document).ready(function () {
 
     getMataUang();
     function getMataUang() {
-        var url_root = $('.url_root').data('url');
+        var url_root = $(".url_root").data("url");
         let get_url = `${url_root}/transaksi/getMataUang`;
         var output = null;
         $.ajax({
             url: `${url_root}/transaksi/getMataUang`,
-            type: 'get',
-            dataType: 'json',
+            type: "get",
+            dataType: "json",
             async: false,
             success: function (data) {
                 output = data;
-            }
-        })
+            },
+        });
 
         return output;
     }
 
     function getProducts(id) {
-        var url_root = $('.url_root').data('url');
+        var url_root = $(".url_root").data("url");
         $.ajax({
             url: `${url_root}/transaksi/getProduct/${id}`,
-            dataType: 'json',
-            type: 'get',
+            dataType: "json",
+            type: "get",
             success: function (data) {
                 const { result } = data;
 
-                let existingRow = $(`#onLoadTbody .row_data[data-id="${result.id}"]`);
+                let existingRow = $(
+                    `#onLoadTbody .row_data[data-id="${result.id}"]`
+                );
                 if (existingRow.length > 0) {
                     // Row already exists, update the quantity
-                    let existingQty = parseInt(existingRow.find('.qty_detail').val()) || 0;
+                    let existingQty =
+                        parseInt(existingRow.find(".qty_detail").val()) || 0;
                     let newQty = existingQty + 1; // You can modify this based on your requirements
-                    existingRow.find('.qty_detail').val(newQty);
+                    existingRow.find(".qty_detail").val(newQty);
 
                     // Update subtotal based on the new quantity and price
-                    let price = parseFloat(existingRow.find('.price_detail').val()) || 0;
+                    let price =
+                        parseFloat(existingRow.find(".price_detail").val()) ||
+                        0;
                     let subtotal = newQty * price;
-                    existingRow.find('.subtotal_detail').val(subtotal);
+                    existingRow.find(".subtotal_detail").val(subtotal);
                 } else {
                     let mataUang = getMataUang();
                     let output = `
@@ -251,136 +256,172 @@ $(document).ready(function () {
                         </th>
                     </tr>
                     `;
-                    $('#onLoadTbody').append(output);
+                    $("#onLoadTbody").append(output);
 
-                    select2Standard('.select2', `#${modal_extra_large}`);
+                    select2Standard(".select2", `#${modal_extra_large}`);
                 }
-            }
-        })
+            },
+        });
     }
 
-    body.on('click', '.btn-confirm', function () {
-        let products_id = $('.products_id option:selected').val();
+    body.on("click", ".btn-confirm", function () {
+        let products_id = $(".products_id option:selected").val();
         getProducts(products_id);
-    })
+    });
 
-    body.on('input', '.qty_detail', function () {
-        var row_data = $(this).closest('.row_data').data('id');
+    body.on("input", ".qty_detail", function () {
+        var row_data = $(this).closest(".row_data").data("id");
 
         var qty = $(this).val();
-        var price_detail = $('.row_data[data-id="' + row_data + '"] .price_detail').val();
+        var price_detail = $(
+            '.row_data[data-id="' + row_data + '"] .price_detail'
+        ).val();
 
         var error = false;
         if (qty < 0) {
             error = true;
             $(this).val(0);
-            notifAlert("Warning!", 'Jumlah product tidak boleh kecil dari 0', "error");
+            notifAlert(
+                "Warning!",
+                "Jumlah product tidak boleh kecil dari 0",
+                "error"
+            );
         }
         if (price_detail < 0) {
             error = true;
             $('.row_data[data-id="' + row_data + '"] .price_detail').val(0);
-            notifAlert("Warning!", 'Harga product tidak boleh kecil dari 0', "error");
+            notifAlert(
+                "Warning!",
+                "Harga product tidak boleh kecil dari 0",
+                "error"
+            );
         }
 
         var subTotal = 0;
         if (!error) {
             subTotal = qty * price_detail;
-            $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(subTotal);
+            $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(
+                subTotal
+            );
         }
+    });
 
-    })
-
-    body.on('input', '.price_detail', function () {
-        var row_data = $(this).closest('.row_data').data('id');
+    body.on("input", ".price_detail", function () {
+        var row_data = $(this).closest(".row_data").data("id");
 
         var price_detail = $(this).val();
-        var qty_detail = $('.row_data[data-id="' + row_data + '"] .qty_detail').val();
+        var qty_detail = $(
+            '.row_data[data-id="' + row_data + '"] .qty_detail'
+        ).val();
 
         var error = false;
         if (qty_detail < 0) {
             error = true;
             $(this).val(0);
-            notifAlert("Warning!", 'Jumlah product tidak boleh kecil dari 0', "error");
+            notifAlert(
+                "Warning!",
+                "Jumlah product tidak boleh kecil dari 0",
+                "error"
+            );
         }
         if (price_detail < 0) {
             error = true;
             $('.row_data[data-id="' + row_data + '"] .price_detail').val(0);
-            notifAlert("Warning!", 'Harga product tidak boleh kecil dari 0', "error");
+            notifAlert(
+                "Warning!",
+                "Harga product tidak boleh kecil dari 0",
+                "error"
+            );
         }
 
         var subTotal = 0;
         if (!error) {
             subTotal = qty_detail * price_detail;
-            $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(subTotal);
+            $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(
+                subTotal
+            );
         }
-    })
+    });
 
-    body.on('click', '#isppn_transaction', function () {
+    body.on("click", "#isppn_transaction", function () {
         if ($(this).is(":checked")) {
-            $('input[name="valueppn_transaction"]').attr('readonly', false);
+            $('input[name="valueppn_transaction"]').attr("readonly", false);
         } else {
-            $('input[name="valueppn_transaction"]').attr('readonly', true);
+            $('input[name="valueppn_transaction"]').attr("readonly", true);
             $('input[name="valueppn_transaction"]').val(0);
         }
-    })
+    });
 
-    body.on('input', 'input[name="valueppn_transaction"]', function () {
+    body.on("input", 'input[name="valueppn_transaction"]', function () {
         if ($(this).val() > 100) {
-            notifAlert("Warning!", 'Persen PPN tidak boleh lebih dari 100%', "error");
+            notifAlert(
+                "Warning!",
+                "Persen PPN tidak boleh lebih dari 100%",
+                "error"
+            );
             $(this).val(0);
         }
         if ($(this).val() < 0) {
-            notifAlert("Warning!", 'Persen PPN tidak boleh kecil dari 0%', "error");
+            notifAlert(
+                "Warning!",
+                "Persen PPN tidak boleh kecil dari 0%",
+                "error"
+            );
             $(this).val(0);
         }
-    })
+    });
 
-    body.on('click', '.btn-delete-row_data', function (e) {
+    body.on("click", ".btn-delete-row_data", function (e) {
         e.preventDefault();
-        $(this).closest('.row_data').remove();
-    })
+        $(this).closest(".row_data").remove();
+    });
 
     function changeBuy(text) {
-        var urlRoot = $('.url_root').data('url');
+        var urlRoot = $(".url_root").data("url");
         $.ajax({
             url: `${urlRoot}/transaksi/changeBuy`,
-            dataType: 'text',
-            type: 'get',
+            dataType: "text",
+            type: "get",
             data: {
-                metode_pembayaran: text
+                metode_pembayaran: text,
             },
             success: function (data) {
-                $('#output_metode_pembayaran').html(data);
-                select2Standard('.select2', `#${modal_extra_large}`);
+                $("#output_metode_pembayaran").html(data);
+                select2Standard(".select2", `#${modal_extra_large}`);
             },
             error: function (xhr) {
                 console.log(xhr.responseText);
             },
-        })
+        });
     }
 
-    body.on('change', 'select[name="metode_pembayaran_id"]', function () {
-        let text = $(this).find("option:selected").text().trim().toLocaleLowerCase();
-        if (text !== 'cash') {
+    body.on("change", 'select[name="metode_pembayaran_id"]', function () {
+        let text = $(this)
+            .find("option:selected")
+            .text()
+            .trim()
+            .toLocaleLowerCase();
+        if (text !== "cash") {
             changeBuy(text);
-        }
-    })
-
-    body.on('click', 'input[name="overbooking_transaction"]', function () {
-        if ($(this).is(":checked")) {
-            $('#overbooking').removeClass('hidden');
-            $('#overbooking_tab').removeClass('hidden');
-
-            $('#detail_product').addClass('hidden');
-            $('#product').addClass('hidden');
+            $(".no-cash").removeClass("hidden");
         } else {
-            $('#overbooking').addClass('hidden');
-            $('#overbooking_tab').addClass('hidden');
-
-            $('#detail_product').removeClass('hidden');
-            $('#product').removeClass('hidden');
+            $(".no-cash").addClass("hidden");
         }
-    })
+    });
+
+    body.on("click", 'input[name="overbooking_transaction"]', function () {
+        if ($(this).is(":checked")) {
+            $("#overbooking").removeClass("hidden");
+            $("#overbooking_tab").removeClass("hidden");
+
+            $("#detail_product").addClass("hidden");
+            $("#product").addClass("hidden");
+        } else {
+            $("#overbooking").addClass("hidden");
+            $("#overbooking_tab").addClass("hidden");
+
+            $("#detail_product").removeClass("hidden");
+            $("#product").removeClass("hidden");
+        }
+    });
 });
-
-

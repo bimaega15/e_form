@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\CreateTransaksiPutRequest;
 use App\Http\Requests\CreateTransaksiRequest;
+use App\Models\DataStatis;
 use App\Models\MetodePembayaran;
 use App\Models\OverBooking;
 use App\Models\Product;
@@ -18,8 +19,9 @@ use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Support\Facades\Log;
 
 class TransaksiController extends Controller
 {
@@ -53,28 +55,35 @@ class TransaksiController extends Controller
                         ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
                         ->join('profile', 'profile.users_id', '=', 'users.id')
                         ->leftJoin('users as forward_users', 'forward_users.id', '=', 'transaction_approvel.users_id_forward')
-                        ->select('transaction_approvel.id', 'transaction_approvel.transaction_id', 'transaction_approvel.tanggal_approvel as tanggalApprovel', 'transaction_approvel.keterangan_approvel as keteranganApprovel', 'transaction_approvel.status_transaction as statusTransaction', 'transaction_approvel.users_id_forward', 'transaction_approvel.users_id', 'profile.nama_profile as requestPeople', 'forward_users.name as forwardPeople', 'forward_users.email as forwardEmailPeople');
+                        ->leftJoin('profile as forward_profile', 'forward_profile.users_id', '=', 'forward_users.id')
+                        ->leftJoin('jabatan as forward_jabatan', 'forward_jabatan.id', '=', 'forward_profile.jabatan_id')
+                        ->select('transaction_approvel.id', 'transaction_approvel.transaction_id', 'transaction_approvel.tanggal_approvel as tanggalApprovel', 'transaction_approvel.keterangan_approvel as keteranganApprovel', 'transaction_approvel.status_transaction as statusTransaction', 'transaction_approvel.users_id_forward', 'transaction_approvel.users_id', 'profile.nama_profile as requestPeople', 'forward_users.name as forwardPeople', 'forward_users.email as forwardEmailPeople', 'forward_jabatan.nama_jabatan as forwardJabatan', 'profile.gambar_profile as profileApprovel');
                 },
                 'products' => function ($query) {
                     $query->join('products', 'products.id', '=', 'transaction_detail.products_id')
-                        ->select('transaction_detail.id', 'transaction_detail.transaction_id', 'products.name_product as name', 'transaction_detail.qty_detail as qty', 'transaction_detail.price_detail as price', 'transaction_detail.subtotal_detail as totalPrice', 'transaction_detail.remarks_detail as remarks');;
+                        ->select('transaction_detail.id', 'transaction_detail.transaction_id', 'products.name_product as name', 'transaction_detail.qty_detail as qty', 'transaction_detail.price_detail as price', 'transaction_detail.subtotal_detail as totalPrice', 'transaction_detail.remarks_detail as remarks', 'transaction_detail.subtotal_detail as subTotal', 'transaction_detail.matauang_detail as currency', 'transaction_detail.kurs_detail as curs', 'products.code_product', 'products.capacity_product', 'products.id as products_id');
                 },
+                'transactionApprovel', 'transactionApprovel.users', 'transactionApprovel.users.profile',  'transactionApprovel.users.profile.jabatan', 'transactionApprovel.usersForward', 'transactionApprovel.usersForward.profile', 'transactionApprovel.usersForward.profile.jabatan', 'overBooking','usersReview', 'usersReview.profile', 'usersReview.profile.jabatan'
             ])
-                ->join('transaction_approvel', 'transaction_approvel.transaction_id', '=', 'transaction.id')
                 ->join('users', 'users.id', '=', 'transaction.users_id')
                 ->join('profile', 'profile.users_id', '=', 'users.id')
                 ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id')
+                ->join('unit', 'unit.id', '=', 'profile.unit_id')
                 ->join('category_office', 'category_office.id', '=', 'profile.category_office_id')
                 ->join('metode_pembayaran', 'transaction.metode_pembayaran_id', '=', 'metode_pembayaran.id')
                 ->where('transaction.users_id', Auth::id())
-                ->orWhere('transaction_approvel.users_id', Auth::id())
-                ->orWhere('transaction_approvel.users_id_forward', Auth::id())
-                ->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id')
+                ->orWhereIn('transaction.users_id', function ($query) {
+                    $query->select('users_id')
+                        ->from('transaction_approvel')
+                        ->where('users_id', Auth::id());
+                })
+                ->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
                 ->selectSub(function ($query) {
                     // Subquery to get approvalBy from the related table
                     $query->select('name')->from('users')
                         ->whereRaw('users.id = transaction.users_id_review');
                 }, 'approvalBy')
+                ->orderBy('transaction.tanggal_transaction','desc')
                 ->limit(5)
                 ->get();
 
@@ -103,6 +112,27 @@ class TransaksiController extends Controller
         }
     }
 
+    public function getPaginate(Request $request)
+    {
+        try {
+            $transaction = new Transaction();
+            $paginate = $transaction->getTransactionData(
+                $request->input('status_transaction'), 
+            $request->input('search'));
+            return response()->json([
+                'status' => 200,
+                'message' => 'berhasil ambil data',
+                'result' => $paginate
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'status' => 500,
+                'message' => 'Terjadi kesalahan data',
+                'result' => $e->getMessage()
+            ], 500);
+        }
+    }
+
     public function store(Request $request)
     {
         try {
@@ -114,10 +144,6 @@ class TransaksiController extends Controller
                 'expired_transaction' => 'required',
                 'purpose_transaction' => 'required',
                 'attachment_transaction' => 'max:2048',
-                'products_id' => 'required',
-                'qty_detail' => 'required',
-                'subtotal_detail' => 'required',
-                'price_detail' => 'required',
             ], [
                 'required' => ':attribute wajib diisi',
                 'unique' => ':attribute harus unik',
@@ -146,6 +172,8 @@ class TransaksiController extends Controller
                 'purpose_transaction' => $request->input('purpose_transaction'),
                 'totalproduct_transaction' => $request->input('totalproduct_transaction'),
                 'totalprice_transaction' => $request->input('totalprice_transaction'),
+                'totalppn_transaction' => $request->input('totalppn_transaction'),
+                'subtotal_transaction' => $request->input('subtotal_transaction'),
                 'users_id_review' => $getAtasan->profile->usersid_atasan,
                 'status_transaction' => 'menunggu',
                 'users_id' => Auth::id(),
@@ -154,6 +182,10 @@ class TransaksiController extends Controller
                 'isppn_transaction' => $request->input('isppn_transaction'),
                 'valueppn_transaction' => $request->input('valueppn_transaction'),
                 'attachment_transaction' => $attachment_transaction,
+
+                'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+                'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+                'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
 
                 'overbooking_transaction' => $overbooking_transaction,
             ]);
@@ -172,7 +204,9 @@ class TransaksiController extends Controller
                 $price_detail = json_decode($request->input('price_detail'), true);
                 $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
                 $remarks_detail = json_decode($request->input('remarks_detail'), true);
-
+                $matauang_detail = json_decode($request->input('matauang_detail'), true);
+                $kurs_detail = json_decode($request->input('kurs_detail'), true);
+    
                 $dataDetail = [];
                 foreach ($products_id as $key => $value) {
                     $dataDetail[] = [
@@ -182,6 +216,8 @@ class TransaksiController extends Controller
                         'price_detail' => $price_detail[$key],
                         'subtotal_detail' => $subtotal_detail[$key],
                         'remarks_detail' => $remarks_detail[$key],
+                        'matauang_detail' => $matauang_detail[$key],
+                        'kurs_detail' => $kurs_detail[$key],
                     ];
                 }
                 TransactionDetail::insert($dataDetail);
@@ -215,17 +251,11 @@ class TransaksiController extends Controller
 
     public function edit($id)
     {
-        $transaction = Transaction::find($id);
-        $metodePembayaran = MetodePembayaran::all();
-        $product = Product::all();
+        $transaction = new Transaction();
         return response()->json([
             'status' => 200,
             'message' => 'Berhasil ambil data',
-            'result' => [
-                'transaction' => $transaction,
-                'metodePembayaran' => $metodePembayaran,
-                'product' => $product,
-            ]
+            'result' => $transaction->editTransaction($id),
         ], 200);
     }
 
@@ -235,6 +265,9 @@ class TransaksiController extends Controller
         $product = Product::all();
         $users = User::with('profile', 'profile.jabatan', 'profile.unit', 'profile.categoryOffice')->get();
         $jenisOverBooking = Config::get('datastatis.overbooking');
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+        $rekening = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+
 
         return response()->json([
             'status' => 200,
@@ -243,7 +276,9 @@ class TransaksiController extends Controller
                 'metodePembayaran' => $metodePembayaran,
                 'product' => $product,
                 'users' => $users,
-                'jenisOverBooking' => $jenisOverBooking
+                'jenisOverBooking' => $jenisOverBooking,
+                'mataUang' => $mataUang,
+                'rekening' => $rekening
             ]
         ], 200);
     }
@@ -258,10 +293,6 @@ class TransaksiController extends Controller
             'expired_transaction' => 'required',
             'purpose_transaction' => 'required',
             'attachment_transaction' => 'max:2048',
-            'products_id' => 'required',
-            'qty_detail' => 'required',
-            'subtotal_detail' => 'required',
-            'price_detail' => 'required',
         ], [
             'required' => ':attribute wajib diisi',
             'unique' => ':attribute harus unik',
@@ -290,12 +321,17 @@ class TransaksiController extends Controller
                 'purpose_transaction' => $request->input('purpose_transaction'),
                 'totalproduct_transaction' => $request->input('totalproduct_transaction'),
                 'totalprice_transaction' => $request->input('totalprice_transaction'),
+                'totalppn_transaction' => $request->input('totalppn_transaction'),
+                'subtotal_transaction' => $request->input('subtotal_transaction'),
 
                 'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
                 'isppn_transaction' => $request->input('isppn_transaction'),
                 'valueppn_transaction' => $request->input('valueppn_transaction'),
                 'attachment_transaction' => $attachment_transaction,
 
+                'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+                'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+                'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
                 'overbooking_transaction' => $overbooking_transaction
             ]);
             $transactionDetail = TransactionDetail::where('transaction_id', $id)->get()->count();
@@ -309,12 +345,14 @@ class TransaksiController extends Controller
             $tujuanrekening_booking = $request->input('tujuanrekening_booking');
             $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
             $nominal_booking = $request->input('nominal_booking');
-            if ($overbooking_transaction != true) {
+            if ($overbooking_transaction != 1) {
                 $products_id = json_decode($request->input('products_id'), true);
                 $qty_detail = json_decode($request->input('qty_detail'), true);
                 $price_detail = json_decode($request->input('price_detail'), true);
                 $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
                 $remarks_detail = json_decode($request->input('remarks_detail'), true);
+                $matauang_detail = json_decode($request->input('matauang_detail'), true);
+                $kurs_detail = json_decode($request->input('kurs_detail'), true);
 
                 $dataDetail = [];
                 foreach ($products_id as $key => $value) {
@@ -325,6 +363,8 @@ class TransaksiController extends Controller
                         'price_detail' => $price_detail[$key],
                         'subtotal_detail' => $subtotal_detail[$key],
                         'remarks_detail' => $remarks_detail[$key],
+                        'matauang_detail' => $matauang_detail[$key],
+                        'kurs_detail' => $kurs_detail[$key],
                     ];
                 }
                 TransactionDetail::insert($dataDetail);
@@ -347,6 +387,7 @@ class TransaksiController extends Controller
                 'result' => $request->all()
             ], 200);
         } catch (Exception $e) {
+            Log::info($e->getMessage());
             return response()->json([
                 'status' => 500,
                 'message' => 'Terjadi kesalahan data',
