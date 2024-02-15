@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Auth;
 
 class Transaction extends Model
@@ -51,8 +52,13 @@ class Transaction extends Model
         return $this->hasOne(OverBooking::class, 'transaction_id', 'id');
     }
 
-    public function getTransactionData($statusTransaction, $search)
+    public function getTransactionData($statusTransaction, $search, $request)
     {
+        $tanggal_awal = $request->input('tanggal_awal');
+        $tanggal_akhir = $request->input('tanggal_akhir');
+        $is_transaksi_expired = $request->input('is_transaksi_expired');
+        
+
         $data = Transaction::with([
             'usersApproval' => function ($query) {
                 $query
@@ -84,6 +90,16 @@ class Transaction extends Model
                 ->orWhere('transaction.code_transaction', 'like', '%'.$search.'%')
                 ->orWhere('transaction.purpose_transaction', 'like', '%'.$search.'%')
                 ->orWhere('transaction.status_transaction', 'like', '%'.$search.'%');
+            }
+            if ($tanggal_awal != null) {
+                $data->where('transaction.tanggal_transaction', '>=', $tanggal_awal);
+            }
+            if ($tanggal_akhir != null) {
+                $data->where('transaction.tanggal_transaction', '<=', $tanggal_akhir);
+            }
+            if ($is_transaksi_expired == 'true') {
+                $data->where('transaction.status_transaction', '!=', 'disetujui')
+                    ->where('transaction.expired_transaction', '<', now());
             }
             $data = $data->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.users_id_review', 'transaction.is_expired')
             ->selectSub(function ($query) {

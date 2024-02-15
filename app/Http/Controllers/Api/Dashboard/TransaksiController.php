@@ -29,6 +29,10 @@ class TransaksiController extends Controller
     {
         //
         try {
+            $tanggal_awal = $request->input('tanggal_awal');
+            $tanggal_akhir = $request->input('tanggal_akhir');
+            $is_transaksi_expired = $request->input('is_transaksi_expired');
+
             $totalWaiting = Transaction::where('status_transaction', 'menunggu')
                 ->where('users_id', Auth::id())
                 ->get()->count();
@@ -76,8 +80,18 @@ class TransaksiController extends Controller
                     $query->select('users_id')
                         ->from('transaction_approvel')
                         ->where('users_id', Auth::id());
-                })
-                ->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
+                });
+                if ($tanggal_awal != null) {
+                    $dataDashboard->where('transaction.tanggal_transaction', '>=', $tanggal_awal);
+                }
+                if ($tanggal_akhir != null) {
+                    $dataDashboard->where('transaction.tanggal_transaction', '<=', $tanggal_akhir);
+                }
+                if ($is_transaksi_expired == 'true') {
+                    $dataDashboard->where('transaction.status_transaction', '!=', 'disetujui')
+                        ->where('transaction.expired_transaction', '<', now());
+                }
+                $dataDashboard = $dataDashboard->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
                 ->selectSub(function ($query) {
                     // Subquery to get approvalBy from the related table
                     $query->select('name')->from('users')
@@ -118,7 +132,7 @@ class TransaksiController extends Controller
             $transaction = new Transaction();
             $paginate = $transaction->getTransactionData(
                 $request->input('status_transaction'), 
-            $request->input('search'));
+            $request->input('search'), $request);
             return response()->json([
                 'status' => 200,
                 'message' => 'berhasil ambil data',
