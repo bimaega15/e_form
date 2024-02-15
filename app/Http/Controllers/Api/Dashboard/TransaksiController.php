@@ -260,6 +260,11 @@ class TransaksiController extends Controller
                 'message' => 'Terjadi kesalahan data',
                 'result' => $e->getMessage()
             ], 500);
+            Log::info(response()->json([
+                'status' => 500,
+                'message' => 'Terjadi kesalahan data',
+                'result' => $e->getMessage()
+            ], 500));
         }
     }
 
