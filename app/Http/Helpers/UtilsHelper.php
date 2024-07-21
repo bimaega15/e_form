@@ -401,6 +401,9 @@ class UtilsHelper
 
     public static function formatDateLaporan($tanggal_transaction)
     {
+        if($tanggal_transaction == null || $tanggal_transaction == '-'){
+            return '-';
+        }
         $dateNow = $tanggal_transaction;
         $tanggal = Carbon::parse($dateNow);
         $formattedDate = $tanggal->format('d/m/Y');
@@ -507,6 +510,7 @@ class UtilsHelper
 
     public static function transactionApprovelTtd($transactionApprovel, $getTransaction, $dataNamaJabatan)
     {
+        // dd($transactionApprovel, $getTransaction, $dataNamaJabatan);
         foreach ($transactionApprovel as $key => $item) {
             $namaJabatan = ucwords(strtolower($item->users->profile->jabatan->nama_jabatan));
             if ($dataNamaJabatan == 'Atasan') {

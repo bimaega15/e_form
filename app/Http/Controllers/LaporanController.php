@@ -14,6 +14,7 @@ use DataTables;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
@@ -27,7 +28,7 @@ class LaporanController extends Controller
             $tanggal_akhir = $request->input('tanggal_akhir');
             $is_transaksi_expired = $request->input('is_transaksi_expired');
 
-            $data = Transaction::query();
+            $data = Transaction::query()->with('users.profile.jabatan');
             if ($tanggal_awal != null) {
                 $data->where('tanggal_transaction', '>=', $tanggal_awal);
             }
@@ -38,92 +39,116 @@ class LaporanController extends Controller
                 $data->where('status_transaction', '!=', 'disetujui')
                     ->where('expired_transaction', '<', now());
             }
+            $data = $data->groupBy('users_id')
+                ->select('users_id', DB::raw('COUNT(*) as total_transactions'), DB::raw('SUM(subtotal_transaction) as total_subtotal'))->get();
 
-            return DataTables::eloquent($data)
-                ->addColumn('metode_pembayaran_id', function ($row) {
-                    $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
-                    return $metodePembayaran->nama_metode_pembayaran;
-                })
-                ->addColumn('pengajuan_transaction', function ($row) {
-                    $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
-                    $output = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
-                    return $output;
-                })
-                ->addColumn('status_transaction', function ($row) {
-                    $usersIdAtasan = $row->users_id_review;
-                    $color = '';
-                    $keterangan = '';
-                    if ($row->status_transaction == 'menunggu') {
-                        $color = 'text-primary font-bold';
-                        $keterangan = 'Menunggu Approval';
-                    }
-                    if ($row->status_transaction == 'ditolak') {
-                        $color = 'text-danger font-bold';
-                        $keterangan = 'Ditolak Oleh';
-                    }
-                    if ($row->status_transaction == 'disetujui') {
-                        $color = 'text-success font-bold';
-                        $keterangan = 'Disetujui';
-                    }
-                    $output = '<span class="' . $color . '">' . $keterangan . '</span>';
-                    return $output;
-                })
-                ->addColumn('oleh_transaction', function ($row) {
-                    $usersIdAtasan = $row->users_id_review;
-                    $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
-                    $color = '';
-                    $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
-                    if ($row->status_transaction == 'menunggu') {
-                        $color = 'text-primary font-bold';
-                    }
-                    if ($row->status_transaction == 'ditolak') {
-                        $color = 'text-danger font-bold';
-                    }
-                    if ($row->status_transaction == 'disetujui') {
-                        $color = 'text-success font-bold';
-                    }
-                    $output = '<span class="' . $color . '">' . $profileText . '</span>';
-                    return $output;
-                })
-                ->addColumn('code_transaction', function ($row) {
-                    $output = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
-                    return $output;
-                })
-                ->addColumn('tanggal_transaction', function ($row) {
-                    $dateNow = $row->tanggal_transaction;
-                    $tanggal = Carbon::parse($dateNow);
-                    $formattedDate = $tanggal->format('j F Y');
-                    return $formattedDate;
-                })
-                ->addColumn('expired_transaction', function ($row) {
-                    $dateNow = $row->expired_transaction;
-                    $tanggal = Carbon::parse($dateNow);
-                    $formattedDate = $tanggal->format('j F Y');
-                    return $formattedDate;
-                })
-                ->addColumn('totalproduct_transaction', function ($row) {
-                    $total = number_format($row->totalproduct_transaction, 0, ',', '.');
-                    return $total;
-                })
-                ->addColumn('totalprice_transaction', function ($row) {
-                    $ppn = $row->valueppn_transaction;
-                    $totalPrice = 0;
-                    if ($ppn != null) {
-                        $totalPrice = $row->totalprice_transaction * $ppn / 100;
-                    }
-                    $totalPrice = $totalPrice + $row->totalprice_transaction;
-                    $total = number_format($totalPrice, 0, ',', '.');
-                    return $total;
-                })
-                ->addColumn('action', function ($row) {
-                    $output = '
-                    <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate">PDF</a>
-                    ';
+            $resultData = [];
+            foreach ($data as $key => $row) {
+                $pengajuanTransaction = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
+                $resultData[] = [
+                    'detail_transaction' => '
+                        <a class="btn-detail" data-users_id="1" 
+                        data-tanggal_awal="' . $tanggal_awal . '"
+                        data-tanggal_akhir="' . $tanggal_akhir . '" 
+                        data-is_transaksi_expired="' . $is_transaksi_expired . '" 
+                        style="color: rgb(var(--color-primary) / var(--tw-bg-opacity)); cursor: pointer;">
+                            <i class="fas fa-plus-circle fa-2x"></i>
+                        </a>
+                    ',
+                    'pengajuan_transaction' => $pengajuanTransaction,
+                    'total_transactions' => $row->total_transactions,
+                    'total_subtotal' => number_format($row->total_subtotal, 0, '.', ','),
+                ];
+            }
+            return response()->json([
+                'data' => $resultData
+            ], 200);
 
-                    return $output;
-                })
-                ->rawColumns(['action', 'status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction'])
-                ->toJson();
+            // return DataTables::of($data)
+            //     ->addColumn('metode_pembayaran_id', function ($row) {
+            //         $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
+            //         return $metodePembayaran->nama_metode_pembayaran;
+            //     })
+            //     ->addColumn('pengajuan_transaction', function ($row) {
+            //         $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
+            //         $output = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
+            //         return $output;
+            //     })
+            //     ->addColumn('status_transaction', function ($row) {
+            //         $usersIdAtasan = $row->users_id_review;
+            //         $color = '';
+            //         $keterangan = '';
+            //         if ($row->status_transaction == 'menunggu') {
+            //             $color = 'text-primary font-bold';
+            //             $keterangan = 'Menunggu Approval';
+            //         }
+            //         if ($row->status_transaction == 'ditolak') {
+            //             $color = 'text-danger font-bold';
+            //             $keterangan = 'Ditolak Oleh';
+            //         }
+            //         if ($row->status_transaction == 'disetujui') {
+            //             $color = 'text-success font-bold';
+            //             $keterangan = 'Disetujui';
+            //         }
+            //         $output = '<span class="' . $color . '">' . $keterangan . '</span>';
+            //         return $output;
+            //     })
+            //     ->addColumn('oleh_transaction', function ($row) {
+            //         $usersIdAtasan = $row->users_id_review;
+            //         $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
+            //         $color = '';
+            //         $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
+            //         if ($row->status_transaction == 'menunggu') {
+            //             $color = 'text-primary font-bold';
+            //         }
+            //         if ($row->status_transaction == 'ditolak') {
+            //             $color = 'text-danger font-bold';
+            //         }
+            //         if ($row->status_transaction == 'disetujui') {
+            //             $color = 'text-success font-bold';
+            //         }
+            //         $output = '<span class="' . $color . '">' . $profileText . '</span>';
+            //         return $output;
+            //     })
+            //     ->addColumn('code_transaction', function ($row) {
+            //         $output = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
+            //         return $output;
+            //     })
+            //     ->addColumn('tanggal_transaction', function ($row) {
+            //         $dateNow = $row->tanggal_transaction;
+            //         $tanggal = Carbon::parse($dateNow);
+            //         $formattedDate = $tanggal->format('j F Y');
+            //         return $formattedDate;
+            //     })
+            //     ->addColumn('expired_transaction', function ($row) {
+            //         $dateNow = $row->expired_transaction;
+            //         $tanggal = Carbon::parse($dateNow);
+            //         $formattedDate = $tanggal->format('j F Y');
+            //         return $formattedDate;
+            //     })
+            //     ->addColumn('totalproduct_transaction', function ($row) {
+            //         $total = number_format($row->totalproduct_transaction, 0, ',', '.');
+            //         return $total;
+            //     })
+            //     ->addColumn('totalprice_transaction', function ($row) {
+            //         $ppn = $row->valueppn_transaction;
+            //         $totalPrice = 0;
+            //         if ($ppn != null) {
+            //             $totalPrice = $row->totalprice_transaction * $ppn / 100;
+            //         }
+            //         $totalPrice = $totalPrice + $row->totalprice_transaction;
+            //         $total = number_format($totalPrice, 0, ',', '.');
+            //         return $total;
+            //     })
+            //     ->addColumn('action', function ($row) {
+            //         $output = '
+            //         <a data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate">PDF</a>
+            //         ';
+
+            //         return $output;
+            //     })
+            //     ->rawColumns(['action', 'status_transaction', 'pengajuan_transaction', 'oleh_transaction', 'code_transaction'])
+            //     ->toJson();
         }
 
 
@@ -148,7 +173,6 @@ class LaporanController extends Controller
 
         $base64ImageStringLogo = 'data:image/jpeg;base64,' . $logoBase64Path;
         $base64ImageStringIcon = 'data:image/jpeg;base64,' . $iconBase64Path;
-
 
         $pdf = App::make('dompdf.wrapper');
         $pdf = Pdf::loadView('one.laporan.generatePdf', [
@@ -238,5 +262,219 @@ class LaporanController extends Controller
         // Menulis ke output
         $writer->save('php://output');
         exit;
+    }
+
+    public function detailLaporan(Request $request)
+    {
+        $users_id = $request->input('users_id');
+        $tanggal_awal = $request->input('tanggal_awal');
+        $tanggal_akhir = $request->input('tanggal_akhir');
+        $is_transaksi_expired = $request->input('is_transaksi_expired');
+
+        $data = Transaction::query();
+        if ($tanggal_awal != null) {
+            $data->where('tanggal_transaction', '>=', $tanggal_awal);
+        }
+        if ($tanggal_akhir != null) {
+            $data->where('tanggal_transaction', '<=', $tanggal_akhir);
+        }
+        if ($is_transaksi_expired == 'true') {
+            $data->where('status_transaction', '!=', 'disetujui')
+                ->where('expired_transaction', '<', now());
+        }
+        if($users_id != null){
+            $data->where('users_id', $users_id);
+        }
+        $data = $data->get();
+
+        $resultData = [];
+        foreach ($data as $key => $row) {
+            $mergeData = [];
+            $mergeData = array_merge($mergeData, [
+                'id' => $row->id,
+            ]);
+
+            $codeTransaction = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
+            $mergeData = array_merge($mergeData, [
+                'code_transaction' => $codeTransaction,
+            ]);
+
+            $dateNow = $row->tanggal_transaction;
+            $tanggal = Carbon::parse($dateNow);
+            $tanggalTransaction = $tanggal->format('j F Y');
+            $mergeData = array_merge($mergeData, [
+                'tanggal_transaction' => $tanggalTransaction,
+            ]);
+
+            $dateNow = $row->expired_transaction;
+            $tanggal = Carbon::parse($dateNow);
+            $expiredTransaction = $tanggal->format('j F Y');
+            $mergeData = array_merge($mergeData, [
+                'expired_transaction' => $expiredTransaction,
+            ]);
+            $mergeData = array_merge($mergeData, [
+                'paymentterms_transaction' => $row->paymentterms_transaction,
+            ]);
+
+            $totalProductTransaction = number_format($row->totalproduct_transaction, 0, ',', '.');
+            $mergeData = array_merge($mergeData, [
+                'totalproduct_transaction' => $totalProductTransaction,
+            ]);
+
+            $ppn = $row->valueppn_transaction;
+            $totalPrice = 0;
+            if ($ppn != null) {
+                $totalPrice = $row->totalprice_transaction * $ppn / 100;
+            }
+            $totalPrice = $totalPrice + $row->totalprice_transaction;
+            $totalPriceTransaction = number_format($totalPrice, 0, ',', '.');
+            $mergeData = array_merge($mergeData, [
+                'totalprice_transaction' => $totalPriceTransaction,
+            ]);
+
+            $color = '';
+            $keterangan = '';
+            if ($row->status_transaction == 'menunggu') {
+                $color = 'text-primary font-bold';
+                $keterangan = 'Menunggu Approval';
+            }
+            if ($row->status_transaction == 'ditolak') {
+                $color = 'text-danger font-bold';
+                $keterangan = 'Ditolak Oleh';
+            }
+            if ($row->status_transaction == 'disetujui') {
+                $color = 'text-success font-bold';
+                $keterangan = 'Disetujui';
+            }
+            $statusTransaction = '<span class="' . $color . '">' . $keterangan . '</span>';
+            $mergeData = array_merge($mergeData, [
+                'status_transaction' => $statusTransaction,
+            ]);
+
+            $usersIdAtasan = $row->users_id_review;
+            $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
+            $color = '';
+            $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
+            if ($row->status_transaction == 'menunggu') {
+                $color = 'text-primary font-bold';
+            }
+            if ($row->status_transaction == 'ditolak') {
+                $color = 'text-danger font-bold';
+            }
+            if ($row->status_transaction == 'disetujui') {
+                $color = 'text-success font-bold';
+            }
+            $olehTransaction = '<span class="' . $color . '">' . $profileText . '</span>';
+            $mergeData = array_merge($mergeData, [
+                'oleh_transaction' => $olehTransaction,
+            ]);
+
+
+            $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
+            $metodePembayaranId = $metodePembayaran->nama_metode_pembayaran;
+            $mergeData = array_merge($mergeData, [
+                'metode_pembayaran_id' => $metodePembayaranId,
+            ]);
+
+            $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
+            $pengajuanTransaction = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
+            $mergeData = array_merge($mergeData, [
+                'pengajuan_transaction' => $pengajuanTransaction,
+            ]);
+
+
+            $transactionApprovel = $row->transactionApprovel()->count();
+            $usersReview = $row->users_id_review;
+            $idLogin = Auth::id();
+            $buttonReview = false;
+
+            $buttonNext = false;
+            if ($row->status_transaction == 'menunggu') {
+                $buttonNext = true;
+            }
+            if ($row->status_transaction == 'ditolak') {
+                $buttonNext = false;
+            }
+            if ($row->status_transaction == 'disetujui') {
+                $buttonNext = false;
+            }
+
+            if ($usersReview == $idLogin && $buttonNext) {
+                $buttonReview = true;
+            }
+
+            $isAdmin = Auth::user()->hasRole('Admin');
+            $listButton = '';
+
+            if (($buttonReview || $isAdmin) && ($row->status_transaction != 'disetujui' && $row->status_transaction != 'ditolak') && $row->is_expired != true || $row->status_transaction == 'direvisi') {
+                $listButton = '
+                <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
+            }
+
+            $buttonHistory = false;
+            $listButtonHistory = '';
+            $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
+                ->where('users_id', Auth::id())
+                ->orWhere('users_id_forward', Auth::id())
+                ->get()->count();
+            if ($getTransactionApprovel > 0) {
+                $buttonHistory = true;
+            }
+
+            if ($buttonHistory || $isAdmin) {
+                $listButtonHistory = '
+                <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
+                ';
+            }
+
+            $buttonDelete = '';
+            if ($transactionApprovel == null) {
+                $buttonDelete = '
+            <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
+            ';
+            }
+
+            $buttonEdit = '';
+            if ($transactionApprovel == null || $row->status_transaction == 'direvisi') {
+                $buttonEdit = '
+                <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
+            ';
+            }
+
+            $generatePdf = '';
+            if ($row->status_transaction == 'disetujui') {
+                $generatePdf = '
+                <a target="_blank" data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate mt-1">PDF</a>
+                ';
+            }
+
+            $output = '
+        <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
+            <div class="dropdown-menu w-40">
+                <ul class="dropdown-content">
+                    ' . $buttonEdit . '
+                    ' . $buttonDelete . '
+                    ' . $listButton . '
+                    ' . $listButtonHistory . '
+                </ul>
+            </div>
+        </div>
+        ';
+
+            $action = '
+            <div class="text-center">
+            ' . $output . ' ' . $generatePdf . '
+            </div>';
+
+            $mergeData = array_merge($mergeData, [
+                'action' => $action
+            ]);
+
+            array_push($resultData, $mergeData);
+        }
+
+        return response()->json([
+            'data' => $resultData,
+        ], 200);
     }
 }

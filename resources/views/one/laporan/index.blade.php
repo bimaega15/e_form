@@ -38,17 +38,10 @@
                 <thead>
                     <tr>
                         <th class="whitespace-nowrap">NO.</th>
+                        <th class="whitespace-nowrap">DETAIL</th>
                         <th class="whitespace-nowrap">MENGAJUKAN</th>
-                        <th class="whitespace-nowrap">STATUS</th>
-                        <th class="whitespace-nowrap">OLEH</th>
-                        <th class="whitespace-nowrap">CODE</th>
-                        <th class="whitespace-nowrap">TANGGAL PENGAJUAN</th>
-                        <th class="whitespace-nowrap">TANGGAL KADALUARSA</th>
-                        <th class="whitespace-nowrap">PAYMENT TERMS</th>
-                        <th class="whitespace-nowrap">METODE PEMBAYARAN</th>
-                        <th class="whitespace-nowrap">TOTAL PRODUCT</th>
                         <th class="whitespace-nowrap">TOTAL TRANSAKSI</th>
-                        <th class="whitespace-nowrap">ACTION</th>
+                        <th class="whitespace-nowrap">TOTAL NOMINAL</th>
                     </tr>
                 </thead>
                 <tbody>

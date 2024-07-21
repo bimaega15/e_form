@@ -232,7 +232,7 @@ if (submitButton != null) {
             },
             success: function (data) {
                 notifAlert("Successfully", data, "success");
-                datatable.ajax.reload();
+                initDatatable();
                 modal_extra_large_js.hide();
             },
             error: function (jqXHR, exception) {
@@ -279,7 +279,7 @@ if (submitButtonApprovel != null) {
             },
             success: function (data) {
                 notifAlert("Successfully", data, "success");
-                datatable.ajax.reload();
+                initDatatable();
                 modal_extra_large_js.hide();
             },
             error: function (jqXHR, exception) {
@@ -316,7 +316,7 @@ if (submitButtonFinishApprovel != null) {
             beforeSend: function () { },
             success: function (data) {
                 notifAlert("Successfully", data, "success");
-                datatable.ajax.reload();
+                initDatatable();
                 modal_extra_large_js.hide();
 
                 var modal_approvel_finish = tailwind.Modal.getOrCreateInstance(

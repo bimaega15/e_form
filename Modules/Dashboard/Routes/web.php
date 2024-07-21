@@ -11,7 +11,7 @@
 |
 */
 
-Route::prefix('dashboard')->group(function () {
+Route::prefix('dashboard')->middleware('auth')->group(function () {
     Route::get('/', 'DashboardController@index')->name('dashboard.index');
     Route::get('/expired', 'DashboardController@expired')->name('dashboard.expired');
 })->middleware('auth');

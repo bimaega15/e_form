@@ -1,77 +1,40 @@
 // "use strict";
 var datatable;
+var url_root = $(".url_root").data("url");
+var initDatatable = () => {
+    $.ajax({
+        url: `${url_root}/transaksi`,
+        type: "get",
+        dataType: "json",
+        success: function (result) {
+            const { data } = result;
+            $('#dataTable').DataTable().destroy();
 
+            datatable = $('#dataTable').DataTable({
+                data: data,
+                columns: [
+                    { data: null, render: function (data, type, row, meta) {
+                            return meta.row + 1;
+                        }
+                    },
+                    { data: 'pengajuan_transaction' },
+                    { data: 'status_transaction' },
+                    { data: 'oleh_transaction' },
+                    { data: 'code_transaction' },
+                    { data: 'tanggal_transaction' },
+                    { data: 'expired_transaction' },
+                    { data: 'paymentterms_transaction' },
+                    { data: 'metode_pembayaran_id' },
+                    { data: 'totalproduct_transaction' },
+                    { data: 'totalprice_transaction' },
+                    { data: 'action' },
+                ]
+            });
+
+        }
+    })
+}
 $(document).ready(function () {
-    function initDatatable() {
-        datatable = basicDatatable(
-            $("#dataTable"),
-            $(".url_datatable").data("url"),
-            [
-                {
-                    data: null,
-                    orderable: false,
-                    searchable: false,
-                    className: "text-center",
-                },
-                {
-                    data: "pengajuan_transaction",
-                    name: "pengajuan_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "status_transaction",
-                    name: "status_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "oleh_transaction",
-                    name: "oleh_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "code_transaction",
-                    name: "code_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "tanggal_transaction",
-                    name: "tanggal_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "expired_transaction",
-                    name: "expired_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "paymentterms_transaction",
-                    name: "paymentterms_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "metode_pembayaran_id",
-                    name: "metode_pembayaran_id",
-                    searchable: true,
-                },
-                {
-                    data: "totalproduct_transaction",
-                    name: "totalproduct_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "totalprice_transaction",
-                    name: "totalprice_transaction",
-                    searchable: true,
-                },
-                {
-                    data: "action",
-                    name: "action",
-                    searchable: false,
-                    orderable: false,
-                },
-            ]
-        );
-    }
     initDatatable();
 
     var body = $("body");
@@ -164,7 +127,7 @@ $(document).ready(function () {
 
     // handle btn delete
     function handleDelete(element) {
-        basicDeleteConfirmDatatable($(element).data("url"));
+        basicDeleteConfirmDatatable($(element).data("url"), null, null, '', initDatatable, false);
     }
 
     body.on("click", ".btn-delete", function (e) {

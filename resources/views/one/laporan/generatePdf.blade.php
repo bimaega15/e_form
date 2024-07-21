@@ -264,6 +264,34 @@
                         <td class="borderSolidHeader fontGeneral">Atasan Langsung</td>
                         <td class="borderSolidHeader fontGeneral">Finance</td>
                     </tr>
+                    @php
+                        $transactionAtasan = UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Atasan');
+
+                        $tanggalAtasan = '-';
+                        $namaAtasan = '-';
+                        if($transactionAtasan != null && $transactionAtasan != '-'){
+                            $tanggalAtasan = $transactionAtasan['result']->tanggal_approvel;
+                            $namaAtasan = $transactionAtasan['nama_profile'];
+                        }
+
+                        $transactionFinance = UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Finance'));
+
+                        $tanggalFinance = '-';
+                        $namaFinance = '-';
+                        if($transactionFinance != null && $transactionFinance != '-'){
+                            $tanggalFinance = $transactionFinance['result']->tanggal_approvel;
+                            $namaFinance = $transactionFinance['nama_profile'];
+                        }
+
+                        $transactionDirektur = UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Direktur'));
+
+                        $tanggalDirektur = '-';
+                        $namaDirektur = '-';
+                        if($transactionDirektur != null && $transactionDirektur != '-'){
+                            $tanggalDirektur = $transactionDirektur['result']->tanggal_approvel;
+                            $namaDirektur = $transactionDirektur['nama_profile'];
+                        }
+                    @endphp
                     <tr>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
@@ -274,34 +302,34 @@
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Atasan')['nama_profile'] }}
+                                {{ $namaAtasan }}
                                 <br>
                                 @endif
 
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Atasan')['result']->tanggal_approvel) }}
+                                {{ UtilsHelp::formatDateLaporan($tanggalAtasan) }}
                                 @endif
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Finance')['nama_profile'] }}
+                                {{ $namaFinance }}
                                 <br>
                                 @endif
 
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Finance')['result']->tanggal_approvel) }}
+                                {{ UtilsHelp::formatDateLaporan($tanggalFinance) }}
                                 @endif
                             </span>
                         </td>
                         <td class="borderSolidContent fontGeneral text-center">
                             <span>
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Direktur')['nama_profile'] }} <br> @endif
+                                {{ $namaDirektur }} <br> @endif
 
                                 @if (count($getTransaction->transactionApprovel) > 0)
-                                {{ UtilsHelp::formatDateLaporan(UtilsHelp::transactionApprovelTtd($getTransaction->transactionApprovel, $getTransaction, 'Direktur')['result']->tanggal_approvel) }}
+                                {{ UtilsHelp::formatDateLaporan($tanggalDirektur) }}
                                 @endif
                             </span>
                         </td>

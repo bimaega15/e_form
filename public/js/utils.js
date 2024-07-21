@@ -157,6 +157,11 @@ function basicDeleteConfirmDatatable(
         confirmButtonText: "Ya, hapus",
         cancelButtonText: "Tidak",
         dangerMode: true,
+        customClass: {
+            confirmButton: 'btn btn-danger mr-3',
+            cancelButton: 'btn btn-secondary'
+        },
+        buttonsStyling: false
     }).then((result) => {
         if (result.isConfirmed) {
             $.ajax({
