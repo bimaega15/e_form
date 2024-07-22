@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\ServiceProvider;
+use Kreait\Firebase\Factory;
+use Kreait\Firebase\ServiceAccount;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,6 +17,12 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         //
+        $this->app->singleton('firebase', function ($app) {
+            $firebase = (new Factory)
+                ->withServiceAccount(public_path('firebase_credentials.json'));
+
+            return $firebase;
+        });
     }
 
     /**

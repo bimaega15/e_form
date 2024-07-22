@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Dashboard;
 
+use App\Events\Notifikasi;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\CreateTransaksiPutRequest;
@@ -67,7 +68,7 @@ class TransaksiController extends Controller
                     $query->join('products', 'products.id', '=', 'transaction_detail.products_id')
                         ->select('transaction_detail.id', 'transaction_detail.transaction_id', 'products.name_product as name', 'transaction_detail.qty_detail as qty', 'transaction_detail.price_detail as price', 'transaction_detail.subtotal_detail as totalPrice', 'transaction_detail.remarks_detail as remarks', 'transaction_detail.subtotal_detail as subTotal', 'transaction_detail.matauang_detail as currency', 'transaction_detail.kurs_detail as curs', 'products.code_product', 'products.capacity_product', 'products.id as products_id');
                 },
-                'transactionApprovel', 'transactionApprovel.users', 'transactionApprovel.users.profile',  'transactionApprovel.users.profile.jabatan', 'transactionApprovel.usersForward', 'transactionApprovel.usersForward.profile', 'transactionApprovel.usersForward.profile.jabatan', 'overBooking','usersReview', 'usersReview.profile', 'usersReview.profile.jabatan'
+                'transactionApprovel', 'transactionApprovel.users', 'transactionApprovel.users.profile',  'transactionApprovel.users.profile.jabatan', 'transactionApprovel.usersForward', 'transactionApprovel.usersForward.profile', 'transactionApprovel.usersForward.profile.jabatan', 'overBooking', 'usersReview', 'usersReview.profile', 'usersReview.profile.jabatan'
             ])
                 ->join('users', 'users.id', '=', 'transaction.users_id')
                 ->join('profile', 'profile.users_id', '=', 'users.id')
@@ -81,23 +82,23 @@ class TransaksiController extends Controller
                         ->from('transaction_approvel')
                         ->where('users_id', Auth::id());
                 });
-                if ($tanggal_awal != null) {
-                    $dataDashboard->where('transaction.tanggal_transaction', '>=', $tanggal_awal);
-                }
-                if ($tanggal_akhir != null) {
-                    $dataDashboard->where('transaction.tanggal_transaction', '<=', $tanggal_akhir);
-                }
-                if ($is_transaksi_expired == 'true') {
-                    $dataDashboard->where('transaction.status_transaction', '!=', 'disetujui')
-                        ->where('transaction.expired_transaction', '<', now());
-                }
-                $dataDashboard = $dataDashboard->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
+            if ($tanggal_awal != null) {
+                $dataDashboard->where('transaction.tanggal_transaction', '>=', $tanggal_awal);
+            }
+            if ($tanggal_akhir != null) {
+                $dataDashboard->where('transaction.tanggal_transaction', '<=', $tanggal_akhir);
+            }
+            if ($is_transaksi_expired == 'true') {
+                $dataDashboard->where('transaction.status_transaction', '!=', 'disetujui')
+                    ->where('transaction.expired_transaction', '<', now());
+            }
+            $dataDashboard = $dataDashboard->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
                 ->selectSub(function ($query) {
                     // Subquery to get approvalBy from the related table
                     $query->select('name')->from('users')
                         ->whereRaw('users.id = transaction.users_id_review');
                 }, 'approvalBy')
-                ->orderBy('transaction.tanggal_transaction','desc')
+                ->orderBy('transaction.tanggal_transaction', 'desc')
                 ->limit(5)
                 ->get();
 
@@ -131,8 +132,10 @@ class TransaksiController extends Controller
         try {
             $transaction = new Transaction();
             $paginate = $transaction->getTransactionData(
-                $request->input('status_transaction'), 
-            $request->input('search'), $request);
+                $request->input('status_transaction'),
+                $request->input('search'),
+                $request
+            );
             return response()->json([
                 'status' => 200,
                 'message' => 'berhasil ambil data',
@@ -220,7 +223,7 @@ class TransaksiController extends Controller
                 $remarks_detail = json_decode($request->input('remarks_detail'), true);
                 $matauang_detail = json_decode($request->input('matauang_detail'), true);
                 $kurs_detail = json_decode($request->input('kurs_detail'), true);
-    
+
                 $dataDetail = [];
                 foreach ($products_id as $key => $value) {
                     $dataDetail[] = [
@@ -249,6 +252,11 @@ class TransaksiController extends Controller
                 ];
                 OverBooking::create($dataOver);
             }
+
+            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
+            UtilsHelper::sendNotification($pushNotifikasi);
+            // event(new Notifikasi($pushNotifikasi));
+
             return response()->json([
                 'status' => 201,
                 'message' => 'Berhasil insert data',
@@ -400,6 +408,10 @@ class TransaksiController extends Controller
                 OverBooking::where('transaction_id', $id)->update($dataOver);
             }
 
+            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
+            UtilsHelper::sendNotification($pushNotifikasi);
+            // event(new Notifikasi($pushNotifikasi));
+
             return response()->json([
                 'status' => 200,
                 'message' => 'Berhasil ubah data',
@@ -418,6 +430,10 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+
         UtilsHelper::deleteFile($id, 'transaction', 'transaction', 'attachment_transaction');
         Transaction::destroy($id);
         return response()->json('Berhasil menghapus data', 200);
@@ -496,6 +512,11 @@ class TransaksiController extends Controller
             'users_id_review' => $users_id_forward,
             'status_transaction' => 'menunggu'
         ]);
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+
         return response()->json([
             'status' => 201,
             'message' => 'Berhasil approve form',
@@ -522,6 +543,11 @@ class TransaksiController extends Controller
             'users_id_review' => Auth::id(),
             'status_transaction' => $type
         ]);
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+
         return response()->json([
             'status' => 201,
             'message' => 'Berhasil approve form',
