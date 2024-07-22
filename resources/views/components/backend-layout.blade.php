@@ -10,8 +10,10 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="{{ asset('backend') }}/dist/images/logo.svg" rel="shortcut icon">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="Tinker admin is super flexible, powerful, clean & modern responsive tailwind admin template with unlimited possibilities.">
-    <meta name="keywords" content="admin template, Tinker Admin Template, dashboard template, flat admin template, responsive admin template, web app">
+    <meta name="description"
+        content="Tinker admin is super flexible, powerful, clean & modern responsive tailwind admin template with unlimited possibilities.">
+    <meta name="keywords"
+        content="admin template, Tinker Admin Template, dashboard template, flat admin template, responsive admin template, web app">
     <meta name="author" content="LEFT4CODE">
     <title>@yield('title')</title>
     <!-- BEGIN: CSS Assets-->
@@ -24,6 +26,8 @@
     <link rel="stylesheet" href="{{ asset('library/') }}/DataTables/datatables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('library/photoviewer-master/dist/photoviewer.min.css') }}">
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
     <style>
         .my-popup-class {
             z-index: 10001;
@@ -81,12 +85,12 @@
 <!-- END: Head -->
 
 @php
-$structureTree = UtilsHelp::createStructureTree();
-$hiddenTree = UtilsHelp::handleSidebar($structureTree);
+    $structureTree = UtilsHelp::createStructureTree();
+    $hiddenTree = UtilsHelp::handleSidebar($structureTree);
 
-ob_start();
-UtilsHelp::renderSidebar($structureTree, null, $hiddenTree);
-$outputSidebar = ob_get_clean();
+    ob_start();
+    UtilsHelp::renderSidebar($structureTree, null, $hiddenTree);
+    $outputSidebar = ob_get_clean();
 @endphp
 
 <body class="py-5 md:py-0 bg-black/[0.15] dark:bg-transparent">
@@ -117,7 +121,9 @@ $outputSidebar = ob_get_clean();
     <!-- END: Dark Mode Switcher-->
 
     <!-- BEGIN: JS Assets-->
-    <script src="{{ asset('backend/') }}/developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js"></script>
+    <script
+        src="{{ asset('backend/') }}/developers.google.com/maps/documentation/javascript/examples/markerclusterer/markerclusterer.js">
+    </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=[" your-google-map-api"]&libraries=places"></script>
     <script src="{{ asset('backend') }}/dist/js/app.js"></script>
     <script src="{{ asset('plugins/chartjs/Chart.js') }}"></script>

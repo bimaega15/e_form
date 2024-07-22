@@ -1,35 +1,64 @@
 import _ from "lodash";
-window._ = _;
-
-/**
- * We'll load the axios HTTP library which allows us to easily issue requests
- * to our Laravel back-end. This library automatically handles sending the
- * CSRF token as a header based on the value of the "XSRF" token cookie.
- */
-
+import { initializeApp } from "firebase/app";
+import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import axios from "axios";
-window.axios = axios;
+import Alpine from "alpinejs";
 
+
+Alpine.start();
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDn5upER3uAbzD6DzbCi1uvitbx5-Bz2XY",
+    authDomain: "pushnotifikasi-d1aac.firebaseapp.com",
+    projectId: "pushnotifikasi-d1aac",
+    storageBucket: "pushnotifikasi-d1aac.appspot.com",
+    messagingSenderId: "250243402116",
+    appId: "1:250243402116:web:7d3529214fe97ebf9935d1",
+    measurementId: "G-DWYD7H76S6"
+};
+const app = initializeApp(firebaseConfig);
+const messaging = getMessaging(app);
+const vapidKey = import.meta.env.VITE_VAPID_KEY;
+
+function requestPermission() {
+    Notification.requestPermission().then((permission) => {
+        if (permission === "granted") {
+            const getTokenStorage = localStorage.getItem("fcmToken");
+            console.log("Notification permission granted.");
+            if (!getTokenStorage) {
+                getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
+                    console.log("Token received: ", currentToken);
+                    window.localStorage.setItem("fcmToken", currentToken);
+                    axios.post("/firebase/saveToken", {
+                        fcmToken: currentToken,
+                    }).then((response) => {
+                        console.log("Token saved to database.");
+                        console.log(response);
+                    }).catch((err) => {
+                        console.log("Unable to save token to database.", err);
+                    });
+                }).catch((err) => {
+                    console.log('An error occurred while retrieving token. ', err);
+                });
+            }
+
+        } else {
+            console.log("Unable to get permission to notify.");
+        }
+    });
+}
+
+navigator.serviceWorker.register('/firebase-messaging-sw.js')
+    .then((registration) => {
+        requestPermission();
+    });
+
+
+
+window._ = _;
+window.Alpine = Alpine
+window.axios = axios;
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
-/**
- * Echo exposes an expressive API for subscribing to channels and listening
- * for events that are broadcast by Laravel. Echo and event broadcasting
- * allows your team to easily build robust real-time web applications.
- */
-
-// import Echo from 'laravel-echo';
-
-// import Pusher from 'pusher-js';
-// window.Pusher = Pusher;
-
-// window.Echo = new Echo({
-//     broadcaster: 'pusher',
-//     key: import.meta.env.VITE_PUSHER_APP_KEY,
-//     cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER ?? 'mt1',
-//     wsHost: import.meta.env.VITE_PUSHER_HOST ? import.meta.env.VITE_PUSHER_HOST : `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
-//     wsPort: import.meta.env.VITE_PUSHER_PORT ?? 80,
-//     wssPort: import.meta.env.VITE_PUSHER_PORT ?? 443,
-//     forceTLS: (import.meta.env.VITE_PUSHER_SCHEME ?? 'https') === 'https',
-//     enabledTransports: ['ws', 'wss'],
-// });
+window.onMessage = onMessage;
+window.messaging = messaging;

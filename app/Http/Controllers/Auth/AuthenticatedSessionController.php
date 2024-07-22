@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Models\AccessToken;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -47,5 +48,28 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    public function customLogout()
+    {
+        Auth::guard('web')->logout();
+        $fcmToken = session()->get('fcmToken');
+        $accessToken = AccessToken::first();
+        $dataFcmToken = $accessToken->fcm_token;
+        $dataDb = json_decode($dataFcmToken, true) ?? [];
+        if ($dataDb) {
+            foreach ($dataDb as $key => $tokenData) {
+                if ($tokenData['fcm_token'] == $fcmToken) {
+                    $tokenData['status'] = 0;
+                }
+                $dataDb[$key] = $tokenData;
+            }
+
+            $accessToken->update([
+                'fcm_token' => json_encode($dataDb)
+            ]);
+        }
+        session()->flush();
+        return redirect('/')->with('status', 'Anda telah berhasil logout.')->with('clearLocalStorage', true);
     }
 }
