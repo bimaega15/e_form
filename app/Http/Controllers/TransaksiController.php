@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\Notifikasi;
+use App\Events\TestEvent;
 use App\Http\Helpers\UtilsHelper;
 use App\Http\Requests\CreateForwardRequest;
 use App\Http\Requests\CreateTransaksiPutRequest;
@@ -25,7 +27,6 @@ use Illuminate\Support\Facades\Hash;
 
 class TransaksiController extends Controller
 {
-
     public $jenisOverBooking;
     public function __construct()
     {
@@ -34,6 +35,7 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
+        // to notifikasi
         if ($request->ajax()) {
             $data = Transaction::all();
             $resultData = [];
@@ -41,7 +43,7 @@ class TransaksiController extends Controller
                 $mergeData = [];
                 $mergeData = array_merge($mergeData, [
                     'id' => $row->id,
-                ]);               
+                ]);
 
                 $codeTransaction = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
                 $mergeData = array_merge($mergeData, [
@@ -89,11 +91,15 @@ class TransaksiController extends Controller
                 }
                 if ($row->status_transaction == 'ditolak') {
                     $color = 'text-danger font-bold';
-                    $keterangan = 'Ditolak Oleh';
+                    $keterangan = 'Ditolak';
                 }
                 if ($row->status_transaction == 'disetujui') {
                     $color = 'text-success font-bold';
                     $keterangan = 'Disetujui';
+                }
+                if ($row->status_transaction == 'direvisi') {
+                    $color = 'text-info font-bold';
+                    $keterangan = 'Direvisi';
                 }
                 $statusTransaction = '<span class="' . $color . '">' . $keterangan . '</span>';
                 $mergeData = array_merge($mergeData, [
@@ -113,6 +119,9 @@ class TransaksiController extends Controller
                 if ($row->status_transaction == 'disetujui') {
                     $color = 'text-success font-bold';
                 }
+                if ($row->status_transaction == 'direvisi') {
+                    $color = 'text-info font-bold';
+                }
                 $olehTransaction = '<span class="' . $color . '">' . $profileText . '</span>';
                 $mergeData = array_merge($mergeData, [
                     'oleh_transaction' => $olehTransaction,
@@ -128,7 +137,7 @@ class TransaksiController extends Controller
                 $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
                 $pengajuanTransaction = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
                 $mergeData = array_merge($mergeData, [
-                    'pengajuan_transaction' => $pengajuanTransaction,   
+                    'pengajuan_transaction' => $pengajuanTransaction,
                 ]);
 
 
@@ -217,7 +226,7 @@ class TransaksiController extends Controller
 
                 $mergeData = array_merge($mergeData, [
                     'action' => $action
-                    ]);
+                ]);
 
                 array_push($resultData, $mergeData);
             }
@@ -335,6 +344,9 @@ class TransaksiController extends Controller
             ];
             OverBooking::create($dataOver);
         }
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
+        event(new Notifikasi($pushNotifikasi));
 
         return response()->json('Berhasil menambahkan data', 201);
     }
@@ -457,6 +469,10 @@ class TransaksiController extends Controller
             ];
             OverBooking::where('transaction_id', $id)->update($dataOver);
         }
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
+        event(new Notifikasi($pushNotifikasi));
+
         return response()->json('Berhasil mengubah data', 200);
     }
 
@@ -468,8 +484,12 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
+        event(new Notifikasi($pushNotifikasi));
+
         UtilsHelper::deleteFile($id, 'transaction', 'transaction', 'attachment_transaction');
         Transaction::destroy($id);
+
         return response()->json('Berhasil menghapus data', 200);
     }
 
@@ -548,6 +568,10 @@ class TransaksiController extends Controller
             'users_id_review' => $users_id_forward,
             'status_transaction' => 'menunggu'
         ]);
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        event(new Notifikasi($pushNotifikasi));
+
         return response()->json('Berhasil approve form', 201);
     }
 
@@ -570,6 +594,10 @@ class TransaksiController extends Controller
             'users_id_review' => Auth::id(),
             'status_transaction' => $type
         ]);
+
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        event(new Notifikasi($pushNotifikasi));
+
         return response()->json('Berhasil approve form', 201);
     }
 

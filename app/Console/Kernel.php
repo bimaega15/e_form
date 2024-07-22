@@ -16,11 +16,13 @@ class Kernel extends ConsoleKernel
 
     protected $commands = [
         Commands\TransactionExpired::class,
+        Commands\CheckAccessToken::class,
     ];
 
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('transaction_expired:cron')->daily();
+        $schedule->command('check:access-token')->hourly();
     }
 
     /**

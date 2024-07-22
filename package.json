@@ -19,6 +19,9 @@
     "dependencies": {
         "autonumeric": "^4.6.2",
         "bootstrap-timepicker": "^0.5.2",
+        "firebase": "^10.12.4",
+        "laravel-echo": "^1.16.1",
+        "pusher-js": "^8.4.0-rc2",
         "sweetalert2": "^11.7.31",
         "toastr": "^2.1.4",
         "uuid": "^9.0.1"
