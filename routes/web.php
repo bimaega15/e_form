@@ -5,6 +5,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
+use App\Events\TestEvent;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,6 +21,12 @@ use Illuminate\Support\Facades\Route;
 Route::group(['middleware' => ['guest']], function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create']);
 });
+
+Route::get('/broadcast', function () {
+    event(new TestEvent('Hello, WebSocket!'));
+    return 'Event has been broadcast!';
+});
+
 
 
 Route::middleware('auth')->group(function () {

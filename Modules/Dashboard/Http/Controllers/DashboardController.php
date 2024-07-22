@@ -2,6 +2,7 @@
 
 namespace Modules\Dashboard\Http\Controllers;
 
+
 use App\Http\Helpers\UtilsHelper;
 use App\Models\MetodePembayaran;
 use App\Models\Note;
@@ -25,7 +26,6 @@ class DashboardController extends Controller
      */
     public function index(Request $request)
     {
-
         if ($request->ajax()) {
             $type = $request->input('type');
             if ($type == 'notes') {

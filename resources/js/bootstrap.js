@@ -8,8 +8,33 @@ window._ = _;
  */
 
 import axios from "axios";
-window.axios = axios;
+import Echo from 'laravel-echo'
+import Pusher from 'pusher-js';
+import Alpine from "alpinejs";
 
+window.Alpine = Alpine
+window.Pusher = Pusher;
+window.Echo = new Echo({
+    broadcaster: import.meta.env.VITE_BROADCAST_DRIVER,
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true
+});
+
+Alpine.start();
+window.Echo.connector.pusher.connection.bind('connected', function () {
+    console.log('Connected to WebSocket');
+});
+
+window.Echo.connector.pusher.connection.bind('disconnected', function () {
+    console.log('Disconnected from WebSocket');
+});
+
+window.Echo.connector.pusher.connection.bind('error', function (err) {
+    console.error('WebSocket Error:', err);
+});
+
+window.axios = axios;
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
 /**

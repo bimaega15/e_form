@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\DB;
 use File;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
+use Ramsey\Uuid\Uuid;
+
 
 class UtilsHelper
 {
@@ -401,7 +403,7 @@ class UtilsHelper
 
     public static function formatDateLaporan($tanggal_transaction)
     {
-        if($tanggal_transaction == null || $tanggal_transaction == '-'){
+        if ($tanggal_transaction == null || $tanggal_transaction == '-') {
             return '-';
         }
         $dateNow = $tanggal_transaction;
@@ -619,5 +621,55 @@ class UtilsHelper
                 return 1;
                 break;
         }
+    }
+    public static function pushNotifikasiSave($transaction_id, $num = 0)
+    {
+        // to notifikasi
+        $uuidV4 = (string) Uuid::uuid4();
+        $getTransaksi = Transaction::with('users.profile.jabatan', 'usersReview.profile.jabatan')->find($transaction_id, [
+            'id',
+            'code_transaction',
+            'purpose_transaction',
+            'users_id',
+            'status_transaction',
+            'users_id_review',
+            'tanggal_transaction',
+        ]);
+        $namaProfile = $getTransaksi->users->profile->nama_profile . ' ' . '(' . $getTransaksi->users->profile->jabatan->nama_jabatan . ')';
+        $namaApprovel = $getTransaksi->usersReview->profile->nama_profile . ' ' . '(' . $getTransaksi->usersReview->profile->jabatan->nama_jabatan . ')';
+        $purposeTransaction = $getTransaksi->purpose_transaction;
+
+        $message = '';
+        if ($getTransaksi->status_transaction == 'menunggu') {
+            $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
+
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' telah di ' . $statusDibuat . ' oleh ' . $namaProfile . ' dengan tujuan ' . $purposeTransaction . ' dengan status ' . $getTransaksi->status_transaction . ' dan menunggu approval dari ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'ditolak') {
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di tolak oleh ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'disetujui') {
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di setujui oleh ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'selesai') {
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah selesai';
+        }
+        if ($getTransaksi->status_transaction == 'direvisi') {
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah direvisi oleh ' . $namaApprovel;
+        }
+        if ($num == 2) {
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah dihapus oleh ' . $namaProfile;
+        }
+
+        $pushNotifikasi = [
+            'uuid' => $getTransaksi->id,
+            'profile' => $getTransaksi->users->profile,
+            'code' => $getTransaksi->code_transaction,
+            'message' => $message,
+            'num' => $num,
+            'tanggal_transaction' => UtilsHelper::formatDate($getTransaksi->tanggal_transaction),
+            'users_id_view' => Auth::id(),
+        ];
+        return $pushNotifikasi;
     }
 }
