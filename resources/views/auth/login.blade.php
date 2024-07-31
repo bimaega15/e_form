@@ -49,5 +49,15 @@
             </form>
         </div>
     </div>
+<<<<<<< HEAD
 
+=======
+    @push('custom_js')
+        @if (session('clearLocalStorage'))
+            <script>
+                localStorage.clear();
+            </script>
+        @endif
+    @endpush
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
 </x-auth-layout>

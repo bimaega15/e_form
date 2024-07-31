@@ -6,6 +6,12 @@ use App\Http\Controllers\MyProfileController;
 use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 use App\Events\TestEvent;
+<<<<<<< HEAD
+=======
+use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\SendNotifikasiController;
+use App\Http\Helpers\UtilsHelper;
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
 
 /*
 |--------------------------------------------------------------------------
@@ -21,13 +27,19 @@ use App\Events\TestEvent;
 Route::group(['middleware' => ['guest']], function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create']);
 });
+Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->name('saveToken');
+Route::post('customLogout', [AuthenticatedSessionController::class, 'customLogout'])->name('customLogout');
 
+<<<<<<< HEAD
 Route::get('/broadcast', function () {
     event(new TestEvent('Hello, WebSocket!'));
     return 'Event has been broadcast!';
 });
 
 
+=======
+Route::get('/broadcast', [SendNotifikasiController::class, 'broadcast'])->name('broadcast');
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
 
 Route::middleware('auth')->group(function () {
 });
@@ -56,4 +68,8 @@ Route::middleware('auth')->group(function () {
     Route::get('laporan/detailLaporan', [LaporanController::class, 'detailLaporan'])->name('laporan.detailLaporan');
     Route::get('laporan/{id}/generatePdf', [LaporanController::class, 'generatePdf'])->name('laporan.generatePdf');
     Route::get('laporan/exportExcel', [LaporanController::class, 'exportExcel'])->name('laporan.exportExcel');
+});
+
+Route::group(['prefix' => 'firebase'], function () {
+    Route::post('/saveToken', [FirebaseController::class, 'saveToken'])->name('saveToken');
 });

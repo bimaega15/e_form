@@ -12,7 +12,12 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "diglactic/laravel-breadcrumbs": "^8.1",
         "fruitcake/laravel-cors": "^3.0",
+<<<<<<< HEAD
         "guzzlehttp/guzzle": "^7.2",
+=======
+        "google/apiclient": "^2.17",
+        "guzzlehttp/guzzle": "^7.9",
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
         "jenssegers/agent": "^2.6",
         "laravel/framework": "^9.19",
         "laravel/sanctum": "^3.0",

@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+use App\Models\AccessToken;
 use App\Models\Menu;
 use App\Models\Product;
 use App\Models\Setting;
@@ -13,6 +14,12 @@ use File;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Ramsey\Uuid\Uuid;
+<<<<<<< HEAD
+=======
+use Google\Client as GoogleClient;
+use GuzzleHttp\Client;
+
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
 
 
 class UtilsHelper
@@ -512,7 +519,6 @@ class UtilsHelper
 
     public static function transactionApprovelTtd($transactionApprovel, $getTransaction, $dataNamaJabatan)
     {
-        // dd($transactionApprovel, $getTransaction, $dataNamaJabatan);
         foreach ($transactionApprovel as $key => $item) {
             $namaJabatan = ucwords(strtolower($item->users->profile->jabatan->nama_jabatan));
             if ($dataNamaJabatan == 'Atasan') {
@@ -640,6 +646,7 @@ class UtilsHelper
         $purposeTransaction = $getTransaksi->purpose_transaction;
 
         $message = '';
+<<<<<<< HEAD
         if ($getTransaksi->status_transaction == 'menunggu') {
             $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
 
@@ -658,10 +665,37 @@ class UtilsHelper
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah direvisi oleh ' . $namaApprovel;
         }
         if ($num == 2) {
+=======
+        $title = '';
+        if ($getTransaksi->status_transaction == 'menunggu') {
+            $title = 'Pengajuan Baru';
+            $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' telah di ' . $statusDibuat . ' oleh ' . $namaProfile . ' dengan tujuan ' . $purposeTransaction . ' dengan status ' . $getTransaksi->status_transaction . ' dan menunggu approval dari ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'ditolak') {
+            $title = 'Pengajuan Ditolak';
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di tolak oleh ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'disetujui') {
+            $title = 'Pengajuan Disetujui';
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di setujui oleh ' . $namaApprovel;
+        }
+        if ($getTransaksi->status_transaction == 'selesai') {
+            $title = 'Pengajuan Selesai';
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah selesai';
+        }
+        if ($getTransaksi->status_transaction == 'direvisi') {
+            $title = 'Pengajuan Direvisi';
+            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah direvisi oleh ' . $namaApprovel;
+        }
+        if ($num == 2) {
+            $title = 'Pengajuan Dihapus';
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah dihapus oleh ' . $namaProfile;
         }
 
         $pushNotifikasi = [
+<<<<<<< HEAD
             'uuid' => $getTransaksi->id,
             'profile' => $getTransaksi->users->profile,
             'code' => $getTransaksi->code_transaction,
@@ -671,5 +705,108 @@ class UtilsHelper
             'users_id_view' => Auth::id(),
         ];
         return $pushNotifikasi;
+=======
+            'uuid' => strval($getTransaksi->id),
+            'image' => $getTransaksi->users->profile->gambar_profile,
+            'nama' => $namaProfile,
+            'code' => $getTransaksi->code_transaction,
+            'message' => $message,
+            'num' => strval($num),
+            'tanggal_transaction' => UtilsHelper::formatDate($getTransaksi->tanggal_transaction),
+            'users_id_view' => strval(Auth::id()),
+        ];
+
+        $notification = [
+            'title' => $title,
+            'body' => $message
+        ];
+
+        $accessToken = AccessToken::first();
+        $fcmToken = json_decode($accessToken->fcm_token, true) ?? [];
+        $filterActive = array_filter($fcmToken, function ($item) {
+            return $item['status'] == 1;
+        });
+        $fields = [];
+        foreach ($filterActive as $key => $item) {
+            $fields[] = [
+                'message' => [
+                    'token' => $item['fcm_token'],
+                    'notification' => $notification,
+                    'data' => $pushNotifikasi
+                ],
+            ];
+        }
+        return $fields;
+    }
+
+    public static function isTokenExpired($accessToken)
+    {
+        $token = json_decode($accessToken->token, true);
+        $expires_in = $token['expires_in'];
+        $expires_at = Carbon::parse($accessToken->created_at)->addSeconds($expires_in);
+
+        return Carbon::now()->greaterThanOrEqualTo($expires_at);
+    }
+
+    public static function generateAccessToken()
+    {
+        $path = public_path('firebase_credentials.json');
+        $credentials = json_decode(file_get_contents($path), true);
+
+        $client = new GoogleClient();
+        $client->setAuthConfig($credentials);
+        $client->addScope('https://www.googleapis.com/auth/firebase.messaging');
+
+        $accessToken = AccessToken::first();
+        if ($accessToken) {
+            if (UtilsHelper::isTokenExpired($accessToken)) {
+                $token = $client->fetchAccessTokenWithAssertion();
+                $accessToken->update([
+                    'token' => json_encode($token),
+                ]);
+            } else {
+                $token = json_decode($accessToken->token, true);
+            }
+        } else {
+            $token = $client->fetchAccessTokenWithAssertion();
+            AccessToken::create([
+                'token' => json_encode($token),
+            ]);
+        }
+        return $token;
+    }
+
+    public static function sendNotification($jsonData)
+    {
+        $generateToken = UtilsHelper::generateAccessToken();
+        $client = new Client();
+        $token = $generateToken['access_token'];
+        $url = 'https://fcm.googleapis.com/v1/projects/pushnotifikasi-d1aac/messages:send';
+
+        try {
+            // Lakukan request POST ke API eksternal
+            $response = $client->post($url, [
+                'headers' => [
+                    'Authorization' => "Bearer {$token}",
+                    'Accept' => 'application/json',
+                ],
+                'json' => $jsonData,
+            ]);
+
+            // Ambil respon dari API eksternal
+            $responseData = json_decode($response->getBody()->getContents(), true);
+
+            // Return response sukses
+            return [
+                'success' => true,
+                'data' => $responseData
+            ];
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => $e->getMessage()
+            ];
+        }
+>>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
     }
 }

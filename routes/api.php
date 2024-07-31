@@ -42,5 +42,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/produk', [ProductController::class, 'index'])->name('produk.index');
     Route::get('/setting/users/getUsersProfile', [SettingsController::class, 'getUsersProfile'])->name('settings.users.getUsersProfile');
-
 });

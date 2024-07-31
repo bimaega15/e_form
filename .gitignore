@@ -16,3 +16,5 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/public/firebase_credentials.json
+/public/firebase-messaging-sw.js
