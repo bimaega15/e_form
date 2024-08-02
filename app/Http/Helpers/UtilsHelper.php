@@ -749,10 +749,11 @@ class UtilsHelper
 
     public static function sendNotification($jsonData)
     {
+        $tokenId = 'eform-3c473';
         $generateToken = UtilsHelper::generateAccessToken();
         $client = new Client();
         $token = $generateToken['access_token'];
-        $url = 'https://fcm.googleapis.com/v1/projects/pushnotifikasi-d1aac/messages:send';
+        $url = 'https://fcm.googleapis.com/v1/projects/' . $tokenId . '/messages:send';
 
         try {
             // Lakukan request POST ke API eksternal

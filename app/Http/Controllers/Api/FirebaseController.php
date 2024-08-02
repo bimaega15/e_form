@@ -26,9 +26,9 @@ class FirebaseController extends Controller
             $dataDb = json_decode($dataFcmToken, true) ?? [];
             if ($dataFcmToken) {
                 $filterToken = array_filter($dataDb, function ($value) use ($fcmToken) {
-                    return $value['fcm_token'] != $fcmToken;
+                    return $value['fcm_token'] == $fcmToken;
                 });
-                if (count($filterToken) > 0) {
+                if (count($filterToken) == 0) {
                     array_push($dataDb, $data);
                     $accessToken->update([
                         'fcm_token' => json_encode($dataDb)
@@ -52,7 +52,6 @@ class FirebaseController extends Controller
                 ]);
             }
 
-            session()->put('fcmToken', $fcmToken);
             return response()->json([
                 'status' => '200',
                 'message' => 'Token berhasil disimpan',

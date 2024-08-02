@@ -8,13 +8,13 @@ import Alpine from "alpinejs";
 Alpine.start();
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDn5upER3uAbzD6DzbCi1uvitbx5-Bz2XY",
-    authDomain: "pushnotifikasi-d1aac.firebaseapp.com",
-    projectId: "pushnotifikasi-d1aac",
-    storageBucket: "pushnotifikasi-d1aac.appspot.com",
-    messagingSenderId: "250243402116",
-    appId: "1:250243402116:web:7d3529214fe97ebf9935d1",
-    measurementId: "G-DWYD7H76S6"
+    apiKey: "AIzaSyB-8Z79mr2iyxsHqiYBQ9_DFF8RZKqnwXU",
+    authDomain: "eform-3c473.firebaseapp.com",
+    projectId: "eform-3c473",
+    storageBucket: "eform-3c473.appspot.com",
+    messagingSenderId: "1022309641206",
+    appId: "1:1022309641206:web:fb2d1f58e202cce39a75d7"
+
 };
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
@@ -52,8 +52,6 @@ navigator.serviceWorker.register('/firebase-messaging-sw.js')
     .then((registration) => {
         requestPermission();
     });
-
-
 
 window._ = _;
 window.Alpine = Alpine

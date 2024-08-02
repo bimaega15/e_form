@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [LoginController::class, 'index'])->name('login.index');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout.index');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -45,4 +46,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/setting/users/getUsersProfile', [SettingsController::class, 'getUsersProfile'])->name('settings.users.getUsersProfile');
 
     Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->name('firebase.saveToken');
+    Route::post('/firebase/sendNotification', [FirebaseController::class, 'sendNotification'])->name('firebase.sendNotification');
 });

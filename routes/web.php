@@ -24,9 +24,8 @@ use App\Http\Helpers\UtilsHelper;
 Route::group(['middleware' => ['guest']], function () {
     Route::get('/', [AuthenticatedSessionController::class, 'create']);
 });
-Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->name('saveToken');
-Route::post('customLogout', [AuthenticatedSessionController::class, 'customLogout'])->name('customLogout');
 
+Route::post('customLogout', [AuthenticatedSessionController::class, 'customLogout'])->name('customLogout');
 Route::get('/broadcast', [SendNotifikasiController::class, 'broadcast'])->name('broadcast');
 
 Route::middleware('auth')->group(function () {
@@ -59,5 +58,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::group(['prefix' => 'firebase'], function () {
+    Route::get('/refreshToken', [FirebaseController::class, 'refreshToken'])->name('refreshToken');
     Route::post('/saveToken', [FirebaseController::class, 'saveToken'])->name('saveToken');
 });

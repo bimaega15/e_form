@@ -20,6 +20,7 @@
         "autonumeric": "^4.6.2",
         "bootstrap-timepicker": "^0.5.2",
         "firebase": "^10.12.4",
+        "firebase-admin": "^12.3.0",
         "laravel-echo": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",
         "sweetalert2": "^11.7.31",
