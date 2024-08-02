@@ -2,34 +2,6 @@ import _ from "lodash";
 import { initializeApp } from "firebase/app";
 import { getMessaging, getToken, onMessage } from "firebase/messaging";
 import axios from "axios";
-<<<<<<< HEAD
-import Echo from 'laravel-echo'
-import Pusher from 'pusher-js';
-import Alpine from "alpinejs";
-
-window.Alpine = Alpine
-window.Pusher = Pusher;
-window.Echo = new Echo({
-    broadcaster: import.meta.env.VITE_BROADCAST_DRIVER,
-    key: import.meta.env.VITE_PUSHER_APP_KEY,
-    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
-    forceTLS: true
-});
-
-Alpine.start();
-window.Echo.connector.pusher.connection.bind('connected', function () {
-    console.log('Connected to WebSocket');
-});
-
-window.Echo.connector.pusher.connection.bind('disconnected', function () {
-    console.log('Disconnected from WebSocket');
-});
-
-window.Echo.connector.pusher.connection.bind('error', function (err) {
-    console.error('WebSocket Error:', err);
-});
-
-=======
 import Alpine from "alpinejs";
 
 
@@ -82,7 +54,6 @@ navigator.serviceWorker.register('/firebase-messaging-sw.js')
 
 window._ = _;
 window.Alpine = Alpine
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
 window.axios = axios;
 window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
 
