@@ -7,11 +7,17 @@ use App\Http\Controllers\TransaksiController;
 use Illuminate\Support\Facades\Route;
 use App\Events\TestEvent;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use App\Http\Controllers\FirebaseController;
 use App\Http\Controllers\SendNotifikasiController;
 use App\Http\Helpers\UtilsHelper;
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+use App\Http\Controllers\FirebaseController;
+use App\Http\Controllers\SendNotifikasiController;
+use App\Http\Helpers\UtilsHelper;
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
 /*
 |--------------------------------------------------------------------------
@@ -31,6 +37,7 @@ Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->na
 Route::post('customLogout', [AuthenticatedSessionController::class, 'customLogout'])->name('customLogout');
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 Route::get('/broadcast', function () {
     event(new TestEvent('Hello, WebSocket!'));
     return 'Event has been broadcast!';
@@ -40,6 +47,10 @@ Route::get('/broadcast', function () {
 =======
 Route::get('/broadcast', [SendNotifikasiController::class, 'broadcast'])->name('broadcast');
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+Route::post('customLogout', [AuthenticatedSessionController::class, 'customLogout'])->name('customLogout');
+Route::get('/broadcast', [SendNotifikasiController::class, 'broadcast'])->name('broadcast');
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
 Route::middleware('auth')->group(function () {
 });
@@ -71,5 +82,9 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::group(['prefix' => 'firebase'], function () {
+<<<<<<< HEAD
+=======
+    Route::get('/refreshToken', [FirebaseController::class, 'refreshToken'])->name('refreshToken');
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
     Route::post('/saveToken', [FirebaseController::class, 'saveToken'])->name('saveToken');
 });

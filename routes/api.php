@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\Auth\ProfileController;
 use App\Http\Controllers\Api\Dashboard\TransaksiController;
+use App\Http\Controllers\Api\FirebaseController;
 use App\Http\Controllers\Api\Product\ProductController;
 use App\Http\Controllers\Api\Settings\SettingsController;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post('/login', [LoginController::class, 'index'])->name('login.index');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout.index');
 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
@@ -42,4 +44,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/produk', [ProductController::class, 'index'])->name('produk.index');
     Route::get('/setting/users/getUsersProfile', [SettingsController::class, 'getUsersProfile'])->name('settings.users.getUsersProfile');
+<<<<<<< HEAD
+=======
+
+    Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->name('firebase.saveToken');
+    Route::post('/firebase/sendNotification', [FirebaseController::class, 'sendNotification'])->name('firebase.sendNotification');
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 });

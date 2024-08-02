@@ -50,8 +50,11 @@
         </div>
     </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
     @push('custom_js')
         @if (session('clearLocalStorage'))
             <script>
@@ -59,5 +62,8 @@
             </script>
         @endif
     @endpush
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 </x-auth-layout>

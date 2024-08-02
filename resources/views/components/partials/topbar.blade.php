@@ -160,17 +160,24 @@
     <!-- END: Account Menu -->
 </div>
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
 
 
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+
+
+
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 @push('custom_js')
     <script>
         var asset = "{{ asset('/') }}";
         var body = $('body');
         var audio = new Audio(`${asset}notifikasi/clink.mp3`);
         var users_id_view = "{{ Auth::user()->id }}";
+<<<<<<< HEAD
 <<<<<<< HEAD
         $(document).ready(function() {
             const playNotifikasi = () => {
@@ -181,6 +188,10 @@
 
         $(document).ready(function() {
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+
+        $(document).ready(function() {
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
             const htmlNotifikasi = () => {
                 // get notifikasi to display in topbar
                 const storageName = 'notifikasi';
@@ -197,6 +208,7 @@
                                 <div class="cursor-pointer relative flex items-center ">
                                     <div class="w-12 h-12 flex-none image-fit mr-1">
 <<<<<<< HEAD
+<<<<<<< HEAD
                                         <img alt="${item.profile.gambar_profile}" class="rounded-full"
                                             src="${asset}upload/profile/${item.profile.gambar_profile}">
                                     </div>
@@ -204,13 +216,18 @@
                                         <div class="flex items-center">
                                             <a href="javascript:;" class="font-medium truncate mr-5">${item.profile.nama_profile}</a>
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                                         <img alt="${item.image}" class="rounded-full"
                                             src="${asset}upload/profile/${item.image}">
                                     </div>
                                     <div class="ml-2 overflow-hidden">
                                         <div class="flex items-center">
                                             <a href="javascript:;" class="font-medium truncate mr-5">${item.nama}</a>
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                                             <div class="text-xs text-slate-400 ml-auto whitespace-nowrap">${item.tanggal_transaction}</div>
                                         </div>
                                         <div class="w-fulltext-slate-500 mt-0.5"
@@ -257,6 +274,7 @@
             }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             Echo.channel('notif')
                 .listen('Notifikasi', (e) => {
                     const {
@@ -289,6 +307,8 @@
                     }
                 });
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
             const playNotifikasi = () => {
                 audio.play();
             }
@@ -328,7 +348,10 @@
 
 
             });
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
             body.on('click', '#notification--bullet', function(e) {
                 e.preventDefault();
@@ -336,11 +359,16 @@
                 const get_users_id_view = $(this).data('users_id_view');
                 const storageName = 'notifikasi';
 <<<<<<< HEAD
+<<<<<<< HEAD
                 const checkClassNotification = $('.notification-content.dropdown-menu').hasClass('show');
 =======
                 const checkClassNotification = $(
                     '.notification-content.dropdown-menu').hasClass('show');
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+                const checkClassNotification = $(
+                    '.notification-content.dropdown-menu').hasClass('show');
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
                 const storedData = localStorage.getItem(storageName);
                 if (storedData) {
@@ -352,21 +380,31 @@
                         }));
                         $(this).data('fresh', true);
 <<<<<<< HEAD
+<<<<<<< HEAD
                         localStorage.setItem(storageName, JSON.stringify(updatedNotifikasi));
 =======
                         localStorage.setItem(storageName, JSON.stringify(
                             updatedNotifikasi));
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+                        localStorage.setItem(storageName, JSON.stringify(
+                            updatedNotifikasi));
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                     }
                 }
                 htmlNotifikasi();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 if (!checkClassNotification && (get_users_id_view == users_id_view)) {
 =======
                 if (!checkClassNotification && (get_users_id_view ==
                         users_id_view)) {
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+                if (!checkClassNotification && (get_users_id_view ==
+                        users_id_view)) {
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                     $('#notification--bullet').removeClass('notification--bullet');
                     localStorage.removeItem(storageName);
                 }
@@ -377,21 +415,29 @@
 
                 // Jika klik terjadi di dalam elemen #notification--bullet atau dropdown menu, abaikan
 <<<<<<< HEAD
+<<<<<<< HEAD
                 if ($target.closest('#notification--bullet').length > 0 || $target.closest(
 =======
                 if ($target.closest('#notification--bullet').length > 0 || $target
                     .closest(
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+                if ($target.closest('#notification--bullet').length > 0 || $target
+                    .closest(
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                         '.notification-content.dropdown-menu').length > 0) {
                     return;
                 }
 
+<<<<<<< HEAD
 <<<<<<< HEAD
                 const get_users_id_view = $('#notification--bullet').data('users_id_view');
                 const storageName = 'notifikasi';
                 const checkClassNotification = $('#notification--bullet').data('fresh');
                 if (checkClassNotification && (get_users_id_view == users_id_view)) {
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                 const get_users_id_view = $('#notification--bullet').data(
                     'users_id_view');
                 const storageName = 'notifikasi';
@@ -399,16 +445,23 @@
                     'fresh');
                 if (checkClassNotification && (get_users_id_view ==
                         users_id_view)) {
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
                     $('#notification--bullet').data('fresh', false);
                     $('#notification--bullet').removeClass('notification--bullet');
                     localStorage.removeItem(storageName);
                 }
             });
 <<<<<<< HEAD
+<<<<<<< HEAD
         });
 =======
         })
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+        })
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
     </script>
 @endpush

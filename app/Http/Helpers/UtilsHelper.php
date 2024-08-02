@@ -15,11 +15,17 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Ramsey\Uuid\Uuid;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use Google\Client as GoogleClient;
 use GuzzleHttp\Client;
 
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+use Google\Client as GoogleClient;
+use GuzzleHttp\Client;
+
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
 
 class UtilsHelper
@@ -647,6 +653,7 @@ class UtilsHelper
 
         $message = '';
 <<<<<<< HEAD
+<<<<<<< HEAD
         if ($getTransaksi->status_transaction == 'menunggu') {
             $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
 
@@ -666,6 +673,8 @@ class UtilsHelper
         }
         if ($num == 2) {
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
         $title = '';
         if ($getTransaksi->status_transaction == 'menunggu') {
             $title = 'Pengajuan Baru';
@@ -690,11 +699,15 @@ class UtilsHelper
         }
         if ($num == 2) {
             $title = 'Pengajuan Dihapus';
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah dihapus oleh ' . $namaProfile;
         }
 
         $pushNotifikasi = [
+<<<<<<< HEAD
 <<<<<<< HEAD
             'uuid' => $getTransaksi->id,
             'profile' => $getTransaksi->users->profile,
@@ -706,6 +719,8 @@ class UtilsHelper
         ];
         return $pushNotifikasi;
 =======
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
             'uuid' => strval($getTransaksi->id),
             'image' => $getTransaksi->users->profile->gambar_profile,
             'nama' => $namaProfile,
@@ -726,6 +741,7 @@ class UtilsHelper
         $filterActive = array_filter($fcmToken, function ($item) {
             return $item['status'] == 1;
         });
+<<<<<<< HEAD
         $fields = [];
         foreach ($filterActive as $key => $item) {
             $fields[] = [
@@ -736,6 +752,24 @@ class UtilsHelper
                 ],
             ];
         }
+=======
+        $fields = [
+            'message' => [
+                'token' => session()->get('fcmToken'),
+                'notification' => $notification,
+                'data' => $pushNotifikasi
+            ],
+        ];
+        // foreach ($filterActive as $key => $item) {
+        //     $fields[] = [
+        //         'message' => [
+        //             'token' => $item['fcm_token'],
+        //             'notification' => $notification,
+        //             'data' => $pushNotifikasi
+        //         ],
+        //     ];
+        // }
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
         return $fields;
     }
 
@@ -778,10 +812,18 @@ class UtilsHelper
 
     public static function sendNotification($jsonData)
     {
+<<<<<<< HEAD
         $generateToken = UtilsHelper::generateAccessToken();
         $client = new Client();
         $token = $generateToken['access_token'];
         $url = 'https://fcm.googleapis.com/v1/projects/pushnotifikasi-d1aac/messages:send';
+=======
+        $tokenId = 'eform-3c473';
+        $generateToken = UtilsHelper::generateAccessToken();
+        $client = new Client();
+        $token = $generateToken['access_token'];
+        $url = 'https://fcm.googleapis.com/v1/projects/' . $tokenId . '/messages:send';
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
 
         try {
             // Lakukan request POST ke API eksternal
@@ -807,6 +849,9 @@ class UtilsHelper
                 'message' => $e->getMessage()
             ];
         }
+<<<<<<< HEAD
 >>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
+=======
+>>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
     }
 }
