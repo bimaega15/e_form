@@ -1,10 +1,14 @@
 // Define
 var form = $("#form-submit");
 var submitButton = document.getElementById("btn_submit");
+var rowData= $('.row_data').data('value');
+
 select2Standard('.select2',`#${modal_large}`);
 
 // Submit button handler
-getCodeProduct();
+if(!rowData){
+    getCodeProduct();
+}
 function getCodeProduct(){
     var output = null;
     $.ajax({
@@ -50,7 +54,7 @@ function submitData() {
         success: function (data) {
             notifAlert("Successfully", data, "success");
             datatable.ajax.reload();
-            modal_extra_large.hide();
+            modal_large_js.hide();
         },
         error: function (jqXHR, exception) {
             // Enable button

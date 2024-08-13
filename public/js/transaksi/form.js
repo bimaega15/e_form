@@ -6,6 +6,7 @@ var formApprovel = $("#form-submit-approvel");
 var submitButton = document.getElementById("btn_submit");
 var submitButtonApprovel = document.getElementById("btn_submit_approvel");
 var submitButtonFinishApprovel = document.getElementById("btn_submit_finishapprovel");
+var body = $('body');
 select2Standard('.select2', `#${modal_extra_large}`);
 
 var urlSelect2 = $(".select2ServerSide").data('url');
@@ -127,9 +128,9 @@ if (submitButton != null) {
         var arr_kurs_detail = [];
         var total_subtotal_detail = 0;
         $.each(row_data, function (i, v) {
-            var qty_detail = $(this).find('.qty_detail').val();
-            var price_detail = $(this).find('.price_detail').val();
-            var subtotal_detail = $(this).find('.subtotal_detail').val();
+            var qty_detail = removeCommas($(this).find('.qty_detail').val());
+            var price_detail = removeCommas($(this).find('.price_detail').val());
+            var subtotal_detail = removeCommas($(this).find('.subtotal_detail').val());
             var remarks_detail = $(this).find('.remarks_detail').val();
             var matauang_detail = $(this).find('.matauang_detail').val();
             var kurs_detail = $(this).find('.kurs_detail').val();
@@ -330,3 +331,4 @@ if (submitButtonFinishApprovel != null) {
         });
     });
 }
+

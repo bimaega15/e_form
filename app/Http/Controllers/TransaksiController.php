@@ -37,7 +37,7 @@ class TransaksiController extends Controller
     {
         // to notifikasi
         if ($request->ajax()) {
-            $data = Transaction::all();
+            $data = Transaction::orderBy('created_at', 'desc')->get();
             $resultData = [];
             foreach ($data as $key => $row) {
                 $mergeData = [];
@@ -225,6 +225,7 @@ class TransaksiController extends Controller
                 </div>';
 
                 $mergeData = array_merge($mergeData, [
+                    'is_expired' => $row->is_expired,
                     'action' => $action
                 ]);
 
@@ -344,8 +345,8 @@ class TransaksiController extends Controller
             ];
             OverBooking::create($dataOver);
         }
-
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
+        $usersIdFcm = $transaction->users_id_review;
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $usersIdFcm);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -471,7 +472,8 @@ class TransaksiController extends Controller
             OverBooking::where('transaction_id', $id)->update($dataOver);
         }
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
+        $transaction = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1, false, $transaction->users_id_review);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -486,7 +488,8 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
+        $getTransaksi = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -572,7 +575,8 @@ class TransaksiController extends Controller
             'status_transaction' => 'menunggu'
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $getTransaksi = Transaction::find($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $users_id_forward);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -599,7 +603,7 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 

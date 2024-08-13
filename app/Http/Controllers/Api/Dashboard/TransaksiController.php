@@ -253,7 +253,8 @@ class TransaksiController extends Controller
                 OverBooking::create($dataOver);
             }
 
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
+            $getTransaksi = Transaction::find($transaction_id);
+            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $getTransaksi->users_id_review);
             UtilsHelper::sendNotification($pushNotifikasi);
             // event(new Notifikasi($pushNotifikasi));
 
@@ -408,7 +409,8 @@ class TransaksiController extends Controller
                 OverBooking::where('transaction_id', $id)->update($dataOver);
             }
 
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
+            $getTransaksi = Transaction::find($id);
+            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1, false, $getTransaksi->users_id_review);
             UtilsHelper::sendNotification($pushNotifikasi);
             // event(new Notifikasi($pushNotifikasi));
 
@@ -430,7 +432,8 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
+        $getTransaksi = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -513,7 +516,7 @@ class TransaksiController extends Controller
             'status_transaction' => 'menunggu'
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $users_id_forward);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
@@ -544,7 +547,7 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 

@@ -46,13 +46,13 @@
                             <input type="text" class="form-control remarks_detail" placeholder="Remarks" name="remarks_detail" value="{{ $item->remarks_detail }}" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control qty_detail" placeholder="Qty" name="qty_detail" value="{{ $item->qty_detail }}" />
+                            <input type="text" class="form-control qty_detail" placeholder="Qty" name="qty_detail" value="{{ UtilsHelp::formatUang($item->qty_detail) }}" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control price_detail" placeholder="Harga Product" name="price_detail" value="{{ $item->price_detail }}" />
+                            <input type="text" class="form-control price_detail" placeholder="Harga Product" name="price_detail" value="{{ UtilsHelp::formatUang($item->price_detail) }}" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control subtotal_detail" placeholder="Sub Total Product" name="subtotal_detail" value="{{ $item->subtotal_detail }}" />
+                            <input type="text" class="form-control subtotal_detail" placeholder="Sub Total Product" name="subtotal_detail" value="{{ UtilsHelp::formatUang($item->subtotal_detail) }}" />
                         </th>
                         <th class="whitespace-nowrap">
                             <select name="matauang_detail" class="form-select select2 matauang_detail" id="">

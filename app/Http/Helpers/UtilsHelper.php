@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Ramsey\Uuid\Uuid;
 use Google\Client as GoogleClient;
+use Google\Service\SecurityCommandCenter\Access;
 use GuzzleHttp\Client;
 
 
@@ -332,23 +333,27 @@ class UtilsHelper
     {
         $code = 'PRD';
         $tanggal = date('Ymd');
-        $numberProduct = Product::all()->count();
-
+        $numberProduct = Product::count();
         $increment = '0001';
+        
         if ($numberProduct > 0) {
-            $latestProduct = Product::latest()->first();
-
-            $latestDate = $latestProduct->created_at;
-
-            if ($latestDate) {
-                $latestDate = $latestDate->format('Ymd');
-            }
-
-            if ($latestDate == $tanggal) {
-                $increment = str_pad((int)substr($latestProduct->code, -4) + 1, 4, '0', STR_PAD_LEFT);
+            $latestProduct = Product::latest('created_at')->first();
+            
+            if ($latestProduct) {
+                $latestDate = $latestProduct->created_at->format('Ymd');
+                
+                // Mengonversi tanggal menjadi timestamp untuk perbandingan
+                $tanggalTimestamp = strtotime($tanggal);
+                $latestDateTimestamp = strtotime($latestDate);
+                
+                if ($tanggalTimestamp >= $latestDateTimestamp) {
+                    $codeProduct = $latestProduct->code_product;
+                    $lastIncrement = (int)preg_replace('/\D/', '', substr($codeProduct, -4));
+                    $increment = str_pad($lastIncrement + 1, 4, '0', STR_PAD_LEFT); 
+                }
             }
         }
-
+        
         $newCode = $code . '-' . $tanggal . '-' . $increment;
         return $newCode;
     }
@@ -625,7 +630,7 @@ class UtilsHelper
                 break;
         }
     }
-    public static function pushNotifikasiSave($transaction_id, $num = 0)
+    public static function pushNotifikasiSave($transaction_id, $num = 0, $isTopic = false, $userIdFcm = 0)
     {
         // to notifikasi
         $uuidV4 = (string) Uuid::uuid4();
@@ -681,7 +686,7 @@ class UtilsHelper
             'message' => $message,
             'num' => strval($num),
             'tanggal_transaction' => UtilsHelper::formatDate($getTransaksi->tanggal_transaction),
-            'users_id_view' => strval(Auth::id()),
+            'users_id_view' => $isTopic ? strval(Auth::id()) : strval($userIdFcm),
         ];
 
         $notification = [
@@ -694,13 +699,33 @@ class UtilsHelper
         $filterActive = array_filter($fcmToken, function ($item) {
             return $item['status'] == 1;
         });
-        $fields = [
-            'message' => [
-                'topic' => 'pengajuan',
-                'notification' => $notification,
-                'data' => $pushNotifikasi
-            ],
-        ];
+        $fields = [];
+        if($isTopic){
+            $fields = [
+                'message' => [
+                    'topic' => 'pengajuan',
+                    'notification' => $notification,
+                    'data' => $pushNotifikasi
+                ],
+            ];
+        } else {
+            $getUsersToken = AccessToken::first();
+            $fcmToken = json_decode($getUsersToken->fcm_token, true);
+            $usersActive = array_filter($fcmToken, function ($item) use ($userIdFcm) {
+                return $item['user_id'] == $userIdFcm && $item['status'] == 1;
+            });
+            $getDataFcm = array_values($usersActive);
+            if (count($getDataFcm) > 0) {
+                $fields = [
+                    'message' => [
+                        'token' => $getDataFcm[0]['fcm_token'],
+                        'notification' => $notification,
+                        'data' => $pushNotifikasi
+                    ],
+                ];
+            }
+        }
+    
         // foreach ($filterActive as $key => $item) {
         //     $fields[] = [
         //         'message' => [
@@ -752,6 +777,13 @@ class UtilsHelper
 
     public static function sendNotification($jsonData)
     {
+        if(count($jsonData) == 0){
+            return [
+                'success' => false,
+                'message' => 'Data not found'
+            ];
+        }
+
         $tokenId = 'eform-3c473';
         $generateToken = UtilsHelper::generateAccessToken();
         $client = new Client();
@@ -782,5 +814,10 @@ class UtilsHelper
                 'message' => $e->getMessage()
             ];
         }
+    }
+
+  public static function formatUang($nominal)
+    {
+        return number_format($nominal, 0, '.', ',');
     }
 }

@@ -91,4 +91,5 @@
     </form>
 
     <script class="get_auto_code" data-url="{{ route('master.product.getAutoCode') }}"></script>
+    <script class="row_data" data-value="{{ isset($product) ? json_encode($product) : '' }}"></script>
     <script type="text/javascript" src="{{ asset('js/master/product/form.js') }}"></script>

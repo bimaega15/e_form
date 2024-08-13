@@ -24,7 +24,8 @@ class UsersController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Profile::query()->with('users', 'jabatan');
+            $data = Profile::query()->with('users', 'jabatan')
+            ->where('users_id', '!=', Auth::id());
             return DataTables::eloquent($data)
                 ->addColumn('gambar_profile', function ($row) {
                     $output = '
@@ -38,7 +39,9 @@ class UsersController extends Controller
                     $output = '-';
                     if ($row->usersid_atasan != null && $row->usersid_atasan != '') {
                         $getUsers = User::with('profile', 'profile.jabatan')->find($row->usersid_atasan);
-                        $output = $getUsers->profile->nama_profile . ' | ' . $getUsers->profile->jabatan->nama_jabatan;
+                        if($getUsers != null){
+                            $output = $getUsers->profile->nama_profile . ' | ' . $getUsers->profile->jabatan->nama_jabatan;
+                        }
                     }
 
                     return $output;

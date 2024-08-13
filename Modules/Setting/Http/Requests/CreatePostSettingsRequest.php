@@ -25,13 +25,13 @@ class CreatePostSettingsRequest extends FormRequest
             'logo_settings' => 'image|max:2048',
             'icon_settings' => 'image|max:2048',
 
-            'setting_acountemail' => 'required',
-            'setting_acountpassword' => 'required',
-            'setting_namapengirim' => 'required',
-            'setting_subject' => 'required',
-            'setting_contentemail' => 'required',
-            'setting_penutupemail' => 'required',
-            'setting_copyright' => 'required',
+            // 'setting_acountemail' => 'required',
+            // 'setting_acountpassword' => 'required',
+            // 'setting_namapengirim' => 'required',
+            // 'setting_subject' => 'required',
+            // 'setting_contentemail' => 'required',
+            // 'setting_penutupemail' => 'required',
+            // 'setting_copyright' => 'required',
         ];
     }
 
@@ -52,13 +52,13 @@ class CreatePostSettingsRequest extends FormRequest
             'longitude_settings.required' => 'Longitude wajib diisi',
             'latitude_settings.required' => 'Longitude wajib diisi',
 
-            'setting_acountemail.required' => 'Account email wajib diisi',
-            'setting_acountpassword.required' => 'Account password wajib diisi',
-            'setting_namapengirim.required' => 'Nama pengirim wajib diisi',
-            'setting_subject.required' => 'Subejct wajib diisi',
-            'setting_contentemail.required' => 'Content email wajib diisi',
-            'setting_penutupemail.required' => 'Penutup email wajib diisi',
-            'setting_copyright.required' => 'Copyright wajib diisi',
+            // 'setting_acountemail.required' => 'Account email wajib diisi',
+            // 'setting_acountpassword.required' => 'Account password wajib diisi',
+            // 'setting_namapengirim.required' => 'Nama pengirim wajib diisi',
+            // 'setting_subject.required' => 'Subejct wajib diisi',
+            // 'setting_contentemail.required' => 'Content email wajib diisi',
+            // 'setting_penutupemail.required' => 'Penutup email wajib diisi',
+            // 'setting_copyright.required' => 'Copyright wajib diisi',
         ];
     }
     /**

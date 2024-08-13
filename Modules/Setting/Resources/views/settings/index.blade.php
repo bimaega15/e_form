@@ -19,23 +19,7 @@
                 <div class="col-span-12 sm:col-span-12 mb-2">
                     <div id="link-tab" class="p-5">
                         <div class="preview">
-                            <ul class="nav nav-link-tabs" role="tablist">
-                                <li id="pengaturan_umum_tab" class="nav-item flex-1" role="presentation">
-                                    <button class="nav-link w-full py-2 active" data-tw-toggle="pill" data-tw-target="#pengaturan_umum" type="button" role="tab" aria-controls="pengaturan_umum" aria-selected="true"> PENGATURAN UMUM </button>
-                                </li>
-                                <li id="pengaturan_email_tab" class="nav-item flex-1" role="presentation">
-                                    <button class="nav-link w-full py-2" data-tw-toggle="pill" data-tw-target="#pengaturan_email" type="button" role="tab" aria-controls="pengaturan_email" aria-selected="false"> PENGATURAN EMAIL </button>
-                                </li>
-                            </ul>
-                            <div class="tab-content mt-5">
-                                <div id="pengaturan_umum" class="tab-pane leading-relaxed active" role="tabpanel" aria-labelledby="pengaturan_umum_tab">
-                                    @include('setting::settings.partials.umum')
-                                </div>
-
-                                <div id="pengaturan_email" class="tab-pane leading-relaxed" role="tabpanel" aria-labelledby="pengaturan_email_tab">
-                                    @include('setting::settings.partials.email')
-                                </div>
-                            </div>
+                            @include('setting::settings.partials.umum')
                         </div>
                     </div>
                 </div>

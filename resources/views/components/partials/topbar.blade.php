@@ -241,6 +241,7 @@
             }
 
             onMessage(messaging, (payload) => {
+                console.log('payload', payload);
                 const {
                     data
                 } = payload;
@@ -298,6 +299,7 @@
                 }
                 htmlNotifikasi();
 
+                console.log(checkClassNotification, get_users_id_view, users_id_view);
                 if (!checkClassNotification && (get_users_id_view ==
                         users_id_view)) {
                     $('#notification--bullet').removeClass('notification--bullet');

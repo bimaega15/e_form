@@ -136,7 +136,6 @@
     <script src="{{ asset('js/modal.js') }}"></script>
     <script src="{{ asset('library/') }}/DataTables/datatables.min.js"></script>
     <script src="{{ asset('library/photoviewer-master/dist/photoviewer.min.js') }}"></script>
-    <script src="{{ asset('library/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('plugins/autonumeric/dist/autoNumeric.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

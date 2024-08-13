@@ -55,8 +55,7 @@ $(document).ready(function () {
 
     var body = $("body");
 
-    body.on('click', '.btn-filter', function (e) {
-        e.preventDefault();
+    const getFilter = () => {
         is_transaksi_expired = false;
         if ($('input[name="is_transaksi_expired"]').is(":checked")) {
             is_transaksi_expired = true;
@@ -76,7 +75,16 @@ $(document).ready(function () {
         tanggalAkhirFormatted = tanggalAkhir.getFullYear() + '-' +
             ('0' + (tanggalAkhir.getMonth() + 1)).slice(-2) + '-' +
             ('0' + tanggalAkhir.getDate()).slice(-2);
-
+        
+        return {
+            is_transaksi_expired,
+            tanggalAwalFormatted,
+            tanggalAkhirFormatted,
+        };
+    }
+    body.on('click', '.btn-filter', function (e) {
+        e.preventDefault();
+        getFilter();
         initDatatable();
     })
 
@@ -125,7 +133,13 @@ $(document).ready(function () {
     });
 
     body.on('click', '.btn-report-excel', function () {
-        var urlExcel = $('.url_excel').data('url');
+        const filterData = getFilter();
+        const is_transaksi_expired = filterData.is_transaksi_expired;
+        const tanggal_awal = filterData.tanggalAwalFormatted;
+        const tanggal_akhir = filterData.tanggalAkhirFormatted;
+
+        const setUrl = `${url_root}/laporan/exportExcel?is_transaksi_expired=${is_transaksi_expired}&tanggal_awal=${tanggal_awal}&tanggal_akhir=${tanggal_akhir}`;
+        var urlExcel = setUrl;
         window.location.href = urlExcel;
     })
 
@@ -150,20 +164,21 @@ $(document).ready(function () {
             </thead>
             <tbody>`;
         data.map((item, index) => {
+            const isExpired = item.is_expired;
             output += `
             <tr>
-                <td>${index + 1}</td>
-                <td>${item.pengajuan_transaction}</td>
-                <td>${item.status_transaction}</td>
-                <td>${item.oleh_transaction}</td>
-                <td>${item.code_transaction}</td>
-                <td>${item.tanggal_transaction}</td>
-                <td>${item.expired_transaction}</td>
-                <td>${item.paymentterms_transaction}</td>
-                <td>${item.metode_pembayaran_id}</td>
-                <td>${item.totalproduct_transaction}</td>
-                <td>${item.totalprice_transaction}</td>
-                <td>${item.action}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${index + 1}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.pengajuan_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.status_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.oleh_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.code_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.tanggal_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.expired_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.paymentterms_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.metode_pembayaran_id}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.totalproduct_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.totalprice_transaction}</td>
+                <td ${isExpired ? 'style="background-color: #FFA1D7;"' : ''}>${item.action}</td>
             </tr>
             `;
         })
@@ -220,6 +235,27 @@ $(document).ready(function () {
             $('#dataTableTransaction' + users_id).DataTable();
         }
     })
+
+    body.on("click", ".btn-edit", function (e) {
+        e.preventDefault();
+
+        showModalFormExtraLarge(
+            $(this).attr("href"),
+            { id: $(this).data("id") },
+            "Ubah Data",
+            "get"
+        );
+    });
+
+     // handle btn delete
+     function handleDelete(element) {
+        basicDeleteConfirmDatatable($(element).data("url"), null, null, '', initDatatable, false);
+    }
+
+    body.on("click", ".btn-delete", function (e) {
+        e.preventDefault();
+        handleDelete(this);
+    });
 });
 
 

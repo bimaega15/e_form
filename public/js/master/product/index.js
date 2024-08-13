@@ -29,8 +29,8 @@ $(document).ready(function () {
                     searchable: true,
                 },
                 {
-                    data: "quantity_product",
-                    name: "quantity_product",
+                    data: "qty_detail",
+                    name: "qty_detail",
                     searchable: true,
                 },
                 { data: "action", orderable: false, searchable: false },
