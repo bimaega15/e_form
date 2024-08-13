@@ -35,9 +35,16 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
+
         // to notifikasi
         if ($request->ajax()) {
-            $data = Transaction::orderBy('created_at', 'desc')->get();
+            $getRoles = UtilsHelper::getRoles();
+            $data = Transaction::orderBy('created_at', 'desc');
+            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+                $users_id = Auth::id();
+                $data->where('users_id', $users_id);
+            }
+            $data = $data->get();
             $resultData = [];
             foreach ($data as $key => $row) {
                 $mergeData = [];

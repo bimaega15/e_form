@@ -28,6 +28,7 @@ class LaporanController extends Controller
             $tanggal_akhir = $request->input('tanggal_akhir');
             $is_transaksi_expired = $request->input('is_transaksi_expired');
 
+            $getRoles = UtilsHelper::getRoles();
             $data = Transaction::query()->with('users.profile.jabatan');
             if ($tanggal_awal != null) {
                 $data->where('tanggal_transaction', '>=', $tanggal_awal);
@@ -38,6 +39,10 @@ class LaporanController extends Controller
             if ($is_transaksi_expired == 'true') {
                 $data->where('status_transaction', '!=', 'disetujui')
                     ->where('expired_transaction', '<', now());
+            }
+            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+                $users_id = Auth::id();
+                $data->where('users_id', $users_id);
             }
             $data = $data->groupBy('users_id')
                 ->select('users_id', DB::raw('COUNT(*) as total_transactions'), DB::raw('SUM(subtotal_transaction) as total_subtotal'))->get();
@@ -218,6 +223,7 @@ class LaporanController extends Controller
         $tanggal_akhir = $request->input('tanggal_akhir');
         $is_transaksi_expired = $request->input('is_transaksi_expired');
 
+        $getRoles = UtilsHelper::getRoles();
         $data = Transaction::query()->orderBy('created_at', 'desc');
         if ($tanggal_awal != null) {
             $data->where('tanggal_transaction', '>=', $tanggal_awal);
@@ -229,6 +235,11 @@ class LaporanController extends Controller
             $data->where('status_transaction', '!=', 'disetujui')
                 ->where('expired_transaction', '<', now());
         }
+        if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+            $users_id = Auth::id();
+            $data->where('users_id', $users_id);
+        }
+
         $query = $data->get();
         $no = 0;
         $keyNumber = 1;
@@ -291,6 +302,7 @@ class LaporanController extends Controller
         $tanggal_akhir = $request->input('tanggal_akhir');
         $is_transaksi_expired = $request->input('is_transaksi_expired');
 
+        $getRoles = UtilsHelper::getRoles();
         $data = Transaction::query()->orderBy('created_at', 'desc');
         if ($tanggal_awal != null) {
             $data->where('tanggal_transaction', '>=', $tanggal_awal);
@@ -303,6 +315,10 @@ class LaporanController extends Controller
                 ->where('expired_transaction', '<', now());
         }
         if($users_id != null){
+            $data->where('users_id', $users_id);
+        }
+        if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+            $users_id = Auth::id();
             $data->where('users_id', $users_id);
         }
         $data = $data->get();

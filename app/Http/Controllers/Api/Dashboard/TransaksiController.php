@@ -54,6 +54,7 @@ class TransaksiController extends Controller
                 ->where('users_id', Auth::id())
                 ->get()->count();
 
+            $getRoles = UtilsHelper::getRoles();
             $dataDashboard = Transaction::with([
                 'usersApproval' => function ($query) {
                     $query
@@ -99,9 +100,12 @@ class TransaksiController extends Controller
                         ->whereRaw('users.id = transaction.users_id_review');
                 }, 'approvalBy')
                 ->orderBy('transaction.tanggal_transaction', 'desc')
-                ->limit(5)
-                ->get();
-
+                ->limit(5);
+            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+                $users_id = Auth::id();
+                $dataDashboard->where('users_id', $users_id);
+            }
+            $dataDashboard = $dataDashboard->get();
 
             return response()->json([
                 'status' => 200,
@@ -445,8 +449,17 @@ class TransaksiController extends Controller
     // approval
     public function viewApproval($id)
     {
+        $getRoles = UtilsHelper::getRoles();
         $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
-        $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
+        $getTransactionRequest = TransactionDetail::with('transaction', 'products')
+        ->where('transaction_id', $id);
+        if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+            $users_id = Auth::id();
+            $getTransactionRequest->whereHas('transaction', function ($query) use ($users_id) {
+                $query->where('users_id', $users_id);
+            });
+        }
+        $getTransactionRequest = $getTransactionRequest->get();
         $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)
             ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
             ->join('profile', 'profile.users_id', '=', 'users.id')

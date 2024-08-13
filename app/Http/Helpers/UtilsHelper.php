@@ -30,6 +30,15 @@ class UtilsHelper
         $getUser = User::with('profile', 'profile.jabatan', 'profile.unit')->find($users_id);
         return $getUser;
     }
+    public static function getRoles()
+    {
+        $myRoles = UtilsHelper::myProfile()->roles;
+        $roles = '';
+        if(count($myRoles) > 0){
+            $roles = $myRoles[0]->name;
+        };
+        return $roles;
+    }
     public static function getCheckJabatan($users_id)
     {
         if ($users_id == null) {
