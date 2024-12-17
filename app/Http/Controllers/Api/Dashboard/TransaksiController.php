@@ -1,452 +1,518 @@
 <?php
 
-namespace App\Http\Controllers\Api\Dashboard;
+namespace App\Http\Controllers;
 
 use App\Events\Notifikasi;
-use App\Http\Controllers\Controller;
+use App\Events\TestEvent;
 use App\Http\Helpers\UtilsHelper;
+use App\Http\Requests\CreateForwardRequest;
 use App\Http\Requests\CreateTransaksiPutRequest;
 use App\Http\Requests\CreateTransaksiRequest;
 use App\Models\DataStatis;
 use App\Models\MetodePembayaran;
 use App\Models\OverBooking;
 use App\Models\Product;
+use Illuminate\Contracts\Support\Renderable;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 use App\Models\Transaction;
 use App\Models\TransactionApprovel;
 use App\Models\TransactionDetail;
 use App\Models\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Exception;
+use DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
 
 class TransaksiController extends Controller
 {
+    public $jenisOverBooking;
+    public function __construct()
+    {
+        $this->jenisOverBooking = Config::get('datastatis.overbooking');
+    }
+
     public function index(Request $request)
     {
-        //
-        try {
-            $tanggal_awal = $request->input('tanggal_awal');
-            $tanggal_akhir = $request->input('tanggal_akhir');
-            $is_transaksi_expired = $request->input('is_transaksi_expired');
 
-            $totalWaiting = Transaction::where('status_transaction', 'menunggu')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-            $totalSuccess = Transaction::where('status_transaction', 'disetujui')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-            $totalReject = Transaction::where('status_transaction', 'ditolak')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-
-            $totalWaitingAccesor = TransactionApprovel::where('status_transaction', 'menunggu')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-            $totalSuccessAccesor = TransactionApprovel::where('status_transaction', 'disetujui')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-            $totalRejectAccesor = TransactionApprovel::where('status_transaction', 'ditolak')
-                ->where('users_id', Auth::id())
-                ->get()->count();
-
-            $dataDashboard = Transaction::with([
-                'usersApproval' => function ($query) {
-                    $query
-                        ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
-                        ->join('profile', 'profile.users_id', '=', 'users.id')
-                        ->leftJoin('users as forward_users', 'forward_users.id', '=', 'transaction_approvel.users_id_forward')
-                        ->leftJoin('profile as forward_profile', 'forward_profile.users_id', '=', 'forward_users.id')
-                        ->leftJoin('jabatan as forward_jabatan', 'forward_jabatan.id', '=', 'forward_profile.jabatan_id')
-                        ->select('transaction_approvel.id', 'transaction_approvel.transaction_id', 'transaction_approvel.tanggal_approvel as tanggalApprovel', 'transaction_approvel.keterangan_approvel as keteranganApprovel', 'transaction_approvel.status_transaction as statusTransaction', 'transaction_approvel.users_id_forward', 'transaction_approvel.users_id', 'profile.nama_profile as requestPeople', 'forward_users.name as forwardPeople', 'forward_users.email as forwardEmailPeople', 'forward_jabatan.nama_jabatan as forwardJabatan', 'profile.gambar_profile as profileApprovel');
-                },
-                'products' => function ($query) {
-                    $query->join('products', 'products.id', '=', 'transaction_detail.products_id')
-                        ->select('transaction_detail.id', 'transaction_detail.transaction_id', 'products.name_product as name', 'transaction_detail.qty_detail as qty', 'transaction_detail.price_detail as price', 'transaction_detail.subtotal_detail as totalPrice', 'transaction_detail.remarks_detail as remarks', 'transaction_detail.subtotal_detail as subTotal', 'transaction_detail.matauang_detail as currency', 'transaction_detail.kurs_detail as curs', 'products.code_product', 'products.capacity_product', 'products.id as products_id');
-                },
-                'transactionApprovel',
-                'transactionApprovel.users',
-                'transactionApprovel.users.profile',
-                'transactionApprovel.users.profile.jabatan',
-                'transactionApprovel.usersForward',
-                'transactionApprovel.usersForward.profile',
-                'transactionApprovel.usersForward.profile.jabatan',
-                'overBooking',
-                'usersReview',
-                'usersReview.profile',
-                'usersReview.profile.jabatan'
-            ])
-                ->join('users', 'users.id', '=', 'transaction.users_id')
-                ->join('profile', 'profile.users_id', '=', 'users.id')
-                ->join('jabatan', 'jabatan.id', '=', 'profile.jabatan_id')
-                ->join('unit', 'unit.id', '=', 'profile.unit_id')
-                ->join('category_office', 'category_office.id', '=', 'profile.category_office_id')
-                ->join('metode_pembayaran', 'transaction.metode_pembayaran_id', '=', 'metode_pembayaran.id')
-                ->where('transaction.users_id', Auth::id())
-                ->orWhereIn('transaction.users_id', function ($query) {
-                    $query->select('users_id')
-                        ->from('transaction_approvel')
-                        ->where('users_id', Auth::id());
-                });
-            if ($tanggal_awal != null) {
-                $dataDashboard->where('transaction.tanggal_transaction', '>=', $tanggal_awal);
+        // to notifikasi
+        if ($request->ajax()) {
+            $getRoles = UtilsHelper::getRoles();
+            $data = Transaction::orderBy('created_at', 'desc');
+            if (($getRoles != null || $getRoles != '') && $getRoles != 'Admin') {
+                $users_id = Auth::id();
+                $data->where('users_id', $users_id);
             }
-            if ($tanggal_akhir != null) {
-                $dataDashboard->where('transaction.tanggal_transaction', '<=', $tanggal_akhir);
-            }
-            if ($is_transaksi_expired == 'true') {
-                $dataDashboard->where('transaction.status_transaction', '!=', 'disetujui')
-                    ->where('transaction.expired_transaction', '<', now());
-            }
-            $dataDashboard = $dataDashboard->select('transaction.code_transaction as noReq', 'transaction.tanggal_transaction as reqDate', 'profile.nama_profile as reqBy', 'jabatan.nama_jabatan as position', 'category_office.nama_category_office as categoryOffice', 'transaction.paidto_transaction as paidTo', 'metode_pembayaran.nama_metode_pembayaran as paymentMethod', 'transaction.expired_transaction as expDate', 'transaction.purpose_transaction as purposeTransaction', 'transaction.purposedivisi_transaction as purposeDivisi', 'transaction.totalproduct_transaction as totalProduct', 'transaction.totalprice_transaction as totalAmount', 'transaction.isppn_transaction as ppn', 'transaction.valueppn_transaction as amountPpn', 'transaction.status_transaction as status', 'transaction.attachment_transaction as attachment', 'transaction.id', 'profile.gambar_profile as gambarProfile', 'unit.nama_unit as unitName', 'profile.alamat_profile as address', 'transaction.paymentterms_transaction as paymentTerms', 'transaction.overbooking_transaction', 'transaction.metode_pembayaran_id', 'transaction.nomorvirtual_transaction', 'transaction.accept_transaction', 'transaction.bank_transaction', 'transaction.totalppn_transaction', 'transaction.subtotal_transaction', 'transaction.users_id_review', 'transaction.is_expired')
-                ->selectSub(function ($query) {
-                    // Subquery to get approvalBy from the related table
-                    $query->select('name')->from('users')
-                        ->whereRaw('users.id = transaction.users_id_review');
-                }, 'approvalBy')
-                ->orderBy('transaction.tanggal_transaction', 'desc')
-                ->limit(5)
-                ->get();
+            $data = $data->get();
+            $resultData = [];
+            foreach ($data as $key => $row) {
+                $mergeData = [];
+                $mergeData = array_merge($mergeData, [
+                    'id' => $row->id,
+                ]);
 
+                $codeTransaction = '<a href="' . route('transaksi.viewTransactionDetail', $row->id) . '" class="text-primary btn-detail-transaksi">' . $row->code_transaction . '</a>';
+                $mergeData = array_merge($mergeData, [
+                    'code_transaction' => $codeTransaction,
+                ]);
 
-            return response()->json([
-                'status' => 200,
-                'message' => "Berhasil ambil data",
-                'result' => [
-                    'totalWaiting' => $totalWaiting,
-                    'totalSuccess' => $totalSuccess,
-                    'totalReject' => $totalReject,
+                $dateNow = $row->tanggal_transaction;
+                $tanggal = Carbon::parse($dateNow);
+                $tanggalTransaction = $tanggal->format('j F Y');
+                $mergeData = array_merge($mergeData, [
+                    'tanggal_transaction' => $tanggalTransaction,
+                ]);
 
-                    'totalWaitingAccesor' => $totalWaitingAccesor,
-                    'totalSuccessAccesor' => $totalSuccessAccesor,
-                    'totalRejectAccesor' => $totalRejectAccesor,
+                $dateNow = $row->expired_transaction;
+                $tanggal = Carbon::parse($dateNow);
+                $expiredTransaction = $tanggal->format('j F Y');
+                $mergeData = array_merge($mergeData, [
+                    'expired_transaction' => $expiredTransaction,
+                ]);
+                $mergeData = array_merge($mergeData, [
+                    'paymentterms_transaction' => $row->paymentterms_transaction,
+                ]);
 
-                    'data' => $dataDashboard,
-                ],
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan data',
-                'result' => $e->getMessage()
-            ], 500);
-        }
-    }
+                $totalProductTransaction = number_format($row->totalproduct_transaction, 0, ',', '.');
+                $mergeData = array_merge($mergeData, [
+                    'totalproduct_transaction' => $totalProductTransaction,
+                ]);
 
-    public function getPaginate(Request $request)
-    {
-        try {
-            $transaction = new Transaction();
-            $paginate = $transaction->getTransactionData(
-                $request->input('status_transaction'),
-                $request->input('search'),
-                $request
-            );
-            return response()->json([
-                'status' => 200,
-                'message' => 'berhasil ambil data',
-                'result' => $paginate
-            ], 200);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan data',
-                'result' => $e->getMessage()
-            ], 500);
-        }
-    }
-
-    public function store(Request $request)
-    {
-        try {
-            //
-            $validator = Validator::make($request->all(), [
-                'code_transaction' => 'required|unique:transaction,code_transaction',
-                'tanggal_transaction' => 'required',
-                'metode_pembayaran_id' => 'required',
-                'expired_transaction' => 'required',
-                'purpose_transaction' => 'required',
-                'attachment_transaction' => 'max:2048',
-            ], [
-                'required' => ':attribute wajib diisi',
-                'unique' => ':attribute harus unik',
-                'image' => ':attribute harus berupa gambar',
-                'max' => ':attribute tidak boleh lebih dari :max',
-            ]);
-            if ($validator->fails()) {
-                return response()->json([
-                    'status' => 400,
-                    'message' => 'invalid form validation',
-                    'result' => $validator->errors()
-                ], 400);
-            }
-
-            $getAtasan = User::with('profile')->find(Auth::id());
-            $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', null, 'transaction', 'attachment_transaction');
-            $overbooking_transaction = $request->input('overbooking_transaction');
-
-            $transaction = Transaction::create([
-                'code_transaction' => $request->input('code_transaction'),
-                'tanggal_transaction' => $request->input('tanggal_transaction'),
-                'paidto_transaction' => $request->input('paidto_transaction'),
-                'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
-                'paymentterms_transaction' => $request->input('paymentterms_transaction'),
-                'expired_transaction' => $request->input('expired_transaction'),
-                'purpose_transaction' => $request->input('purpose_transaction'),
-                'totalproduct_transaction' => $request->input('totalproduct_transaction'),
-                'totalprice_transaction' => $request->input('totalprice_transaction'),
-                'totalppn_transaction' => $request->input('totalppn_transaction'),
-                'subtotal_transaction' => $request->input('subtotal_transaction'),
-                'users_id_review' => $getAtasan->profile->usersid_atasan,
-                'status_transaction' => 'menunggu',
-                'users_id' => Auth::id(),
-
-                'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
-                'isppn_transaction' => $request->input('isppn_transaction'),
-                'valueppn_transaction' => $request->input('valueppn_transaction'),
-                'attachment_transaction' => $attachment_transaction,
-
-                'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
-                'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
-                'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
-
-                'overbooking_transaction' => $overbooking_transaction,
-            ]);
-            $transaction_id = $transaction->id;
-
-            $jenis_over_booking = $request->input('jenis_over_booking');
-            $darirekening_booking = $request->input('darirekening_booking');
-            $pemilikrekening_booking = $request->input('pemilikrekening_booking');
-            $tujuanrekening_booking = $request->input('tujuanrekening_booking');
-            $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
-            $nominal_booking = $request->input('nominal_booking');
-
-            if ($overbooking_transaction != 1) {
-                $products_id = json_decode($request->input('products_id'), true);
-                $qty_detail = json_decode($request->input('qty_detail'), true);
-                $price_detail = json_decode($request->input('price_detail'), true);
-                $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
-                $remarks_detail = json_decode($request->input('remarks_detail'), true);
-                $matauang_detail = json_decode($request->input('matauang_detail'), true);
-                $kurs_detail = json_decode($request->input('kurs_detail'), true);
-
-                $dataDetail = [];
-                foreach ($products_id as $key => $value) {
-                    $dataDetail[] = [
-                        'transaction_id' => $transaction_id,
-                        'products_id' => $products_id[$key],
-                        'qty_detail' => $qty_detail[$key],
-                        'price_detail' => $price_detail[$key],
-                        'subtotal_detail' => $subtotal_detail[$key],
-                        'remarks_detail' => $remarks_detail[$key],
-                        'matauang_detail' => $matauang_detail[$key],
-                        'kurs_detail' => $kurs_detail[$key],
-                    ];
+                $ppn = $row->valueppn_transaction;
+                $totalPrice = 0;
+                if ($ppn != null) {
+                    $totalPrice = $row->totalprice_transaction * $ppn / 100;
                 }
-                TransactionDetail::insert($dataDetail);
+                $totalPrice = $totalPrice + $row->totalprice_transaction;
+                $totalPriceTransaction = number_format($totalPrice, 0, ',', '.');
+                $mergeData = array_merge($mergeData, [
+                    'totalprice_transaction' => $totalPriceTransaction,
+                ]);
+
+                $color = '';
+                $keterangan = '';
+                if ($row->status_transaction == 'menunggu') {
+                    $color = 'text-primary font-bold';
+                    $keterangan = 'Menunggu Approval';
+                }
+                if ($row->status_transaction == 'ditolak') {
+                    $color = 'text-danger font-bold';
+                    $keterangan = 'Ditolak';
+                }
+                if ($row->status_transaction == 'disetujui') {
+                    $color = 'text-success font-bold';
+                    $keterangan = 'Disetujui';
+                }
+                if ($row->status_transaction == 'direvisi') {
+                    $color = 'text-info font-bold';
+                    $keterangan = 'Direvisi';
+                }
+                $statusTransaction = '<span class="' . $color . '">' . $keterangan . '</span>';
+                $mergeData = array_merge($mergeData, [
+                    'status_transaction' => $statusTransaction,
+                ]);
+
+                $usersIdAtasan = $row->users_id_review;
+                $getUsers = User::with('profile', 'profile.jabatan')->find($usersIdAtasan);
+                $color = '';
+                $profileText = $getUsers->profile->nama_profile . ' ' . $getUsers->profile->jabatan->nama_jabatan;
+                if ($row->status_transaction == 'menunggu') {
+                    $color = 'text-primary font-bold';
+                }
+                if ($row->status_transaction == 'ditolak') {
+                    $color = 'text-danger font-bold';
+                }
+                if ($row->status_transaction == 'disetujui') {
+                    $color = 'text-success font-bold';
+                }
+                if ($row->status_transaction == 'direvisi') {
+                    $color = 'text-info font-bold';
+                }
+                $olehTransaction = '<span class="' . $color . '">' . $profileText . '</span>';
+                $mergeData = array_merge($mergeData, [
+                    'oleh_transaction' => $olehTransaction,
+                ]);
+
+
+                $metodePembayaran = MetodePembayaran::find($row->metode_pembayaran_id);
+                $metodePembayaranId = $metodePembayaran->nama_metode_pembayaran;
+                $mergeData = array_merge($mergeData, [
+                    'metode_pembayaran_id' => $metodePembayaranId,
+                ]);
+
+                $profileText = $row->users->profile->nama_profile . ' ' . $row->users->profile->jabatan->nama_jabatan;
+                $pengajuanTransaction = '<a href="' . route('transaksi.viewTransactionPengajuan', $row->id) . '" class="text-primary btn-detail-pengajuan">' . $profileText . '</a>';
+                $mergeData = array_merge($mergeData, [
+                    'pengajuan_transaction' => $pengajuanTransaction,
+                ]);
+
+
+                $transactionApprovel = $row->transactionApprovel()->count();
+                $usersReview = $row->users_id_review;
+                $idLogin = Auth::id();
+                $buttonReview = false;
+
+                $buttonNext = false;
+                if ($row->status_transaction == 'menunggu') {
+                    $buttonNext = true;
+                }
+                if ($row->status_transaction == 'ditolak') {
+                    $buttonNext = false;
+                }
+                if ($row->status_transaction == 'disetujui') {
+                    $buttonNext = false;
+                }
+
+                if ($usersReview == $idLogin && $buttonNext) {
+                    $buttonReview = true;
+                }
+
+                $isAdmin = Auth::user()->hasRole('Admin');
+                $listButton = '';
+
+                if (($buttonReview || $isAdmin) && ($row->status_transaction != 'disetujui' && $row->status_transaction != 'ditolak') && $row->is_expired != true || $row->status_transaction == 'direvisi') {
+                    $listButton = '
+                    <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewApproval', $row->id) . '" class="dropdown-item btn-approval">Approve Pengajuan</a> </li>';
+                }
+
+                $buttonHistory = false;
+                $listButtonHistory = '';
+                $getTransactionApprovel = TransactionApprovel::where('transaction_id', $row->id)
+                    ->where('users_id', Auth::id())
+                    ->orWhere('users_id_forward', Auth::id())
+                    ->get()->count();
+                if ($getTransactionApprovel > 0) {
+                    $buttonHistory = true;
+                }
+
+                if ($buttonHistory || $isAdmin) {
+                    $listButtonHistory = '
+                    <li> <a data-id="' . $row->id . '" href="' . route('transaksi.viewHistory', $row->id) . '" class="dropdown-item btn-history">History Pengajuan</a> </li>
+                    ';
+                }
+
+                $buttonDelete = '';
+                if ($transactionApprovel == null) {
+                    $buttonDelete = '
+                <li> <a href="#" data-url="' . url('transaksi/' . $row->id . '?_method=delete') . '" class="dropdown-item btn-delete">Delete Data</a> </li>
+                ';
+                }
+
+                $buttonEdit = '';
+                if ($transactionApprovel == null || $row->status_transaction == 'direvisi') {
+                    $buttonEdit = '
+                    <li> <a href="' . route('transaksi.edit', $row->id) . '" class="dropdown-item btn-edit">Edit Data</a> </li>
+                ';
+                }
+
+                $generatePdf = '';
+                if ($row->status_transaction == 'disetujui') {
+                    $generatePdf = '
+                    <a target="_blank" data-id="' . $row->id . '" href="' . route('laporan.generatePdf', $row->id) . '" class="btn btn-danger btn-generate mt-1">PDF</a>
+                    ';
+                }
+
+                $output = '
+            <div class="dropdown"> <button class="dropdown-toggle btn btn-primary" aria-expanded="false" data-tw-toggle="dropdown">Action</button>
+                <div class="dropdown-menu w-40">
+                    <ul class="dropdown-content">
+                        ' . $buttonEdit . '
+                        ' . $buttonDelete . '
+                        ' . $listButton . '
+                        ' . $listButtonHistory . '
+                    </ul>
+                </div>
+            </div>
+            ';
+
+                $action = '
+                <div class="text-center">
+                ' . $output . ' ' . $generatePdf . '
+                </div>';
+
+                $mergeData = array_merge($mergeData, [
+                    'is_expired' => $row->is_expired,
+                    'action' => $action
+                ]);
+
+                array_push($resultData, $mergeData);
             }
-
-            if ($overbooking_transaction == 1) {
-                $dataOver = [
-                    'transaction_id' => $transaction_id,
-                    'jenis_over_booking' => $jenis_over_booking,
-                    'darirekening_booking' => $darirekening_booking,
-                    'pemilikrekening_booking' => $pemilikrekening_booking,
-                    'tujuanrekening_booking' => $tujuanrekening_booking,
-                    'pemiliktujuan_booking' => $pemiliktujuan_booking,
-                    'nominal_booking' => $nominal_booking,
-                ];
-                OverBooking::create($dataOver);
-            }
-
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
-            UtilsHelper::sendNotification($pushNotifikasi);
-            // event(new Notifikasi($pushNotifikasi));
-
             return response()->json([
-                'status' => 201,
-                'message' => 'Berhasil insert data',
-                'result' => $request->all()
-            ], 201);
-        } catch (Exception $e) {
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan data',
-                'result' => $e->getMessage()
-            ], 500);
-            Log::info(response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan data',
-                'result' => $e->getMessage()
-            ], 500));
+                'data' => $resultData,
+            ], 200);
         }
+
+        return view('one.transaksi.index');
     }
 
-    public function edit($id)
-    {
-        $transaction = new Transaction();
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil ambil data',
-            'result' => $transaction->editTransaction($id),
-        ], 200);
-    }
-
-    public function static()
+    /**
+     * Show the form for creating a new resource.
+     * @return Renderable
+     */
+    public function create()
     {
         $metodePembayaran = MetodePembayaran::all();
-        $product = Product::all();
-        $users = User::with('profile', 'profile.jabatan', 'profile.unit', 'profile.categoryOffice')->get();
-        $jenisOverBooking = Config::get('datastatis.overbooking');
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
         $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
-        $rekening = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        $jenisOverBooking = $this->jenisOverBooking;
 
-
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil ambil data',
-            'result' => [
-                'metodePembayaran' => $metodePembayaran,
-                'product' => $product,
-                'users' => $users,
-                'jenisOverBooking' => $jenisOverBooking,
-                'mataUang' => $mataUang,
-                'rekening' => $rekening
-            ]
-        ], 200);
+        return view('one.transaksi.form', [
+            'metodePembayaran' => $metodePembayaran,
+            'product' => Product::all(),
+            'bankPenerima' => $bankPenerima,
+            'mataUang' => $mataUang,
+            'jenisOverBooking' => $jenisOverBooking
+        ]);
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Store a newly created resource in storage.
+     * @param Request $request
+     * @return Renderable
+     */
+    public function store(CreateTransaksiRequest $request)
     {
         //
-        $validator = Validator::make($request->all(), [
-            'code_transaction' => 'required|unique:transaction,code_transaction,' . request()->route('id'),
-            'tanggal_transaction' => 'required',
-            'metode_pembayaran_id' => 'required',
-            'expired_transaction' => 'required',
-            'purpose_transaction' => 'required',
-            'attachment_transaction' => 'max:2048',
-        ], [
-            'required' => ':attribute wajib diisi',
-            'unique' => ':attribute harus unik',
-            'image' => ':attribute harus berupa gambar',
-            'max' => ':attribute tidak boleh lebih dari :max',
+        $getAtasan = User::with('profile')->find(Auth::id());
+        $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', null, 'transaction', 'attachment_transaction');
+        $overbooking_transaction = $request->input('overbooking_transaction');
+
+        $transaction = Transaction::create([
+            'code_transaction' => $request->input('code_transaction'),
+            'tanggal_transaction' => $request->input('tanggal_transaction'),
+            'paidto_transaction' => $request->input('paidto_transaction'),
+            'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
+            'paymentterms_transaction' => $request->input('paymentterms_transaction'),
+            'expired_transaction' => $request->input('expired_transaction'),
+            'purpose_transaction' => $request->input('purpose_transaction'),
+            'totalproduct_transaction' => $request->input('totalproduct_transaction'),
+            'totalprice_transaction' => $request->input('totalprice_transaction'),
+            'totalppn_transaction' => $request->input('totalppn_transaction'),
+            'subtotal_transaction' => $request->input('subtotal_transaction'),
+            'users_id_review' => $getAtasan->profile->usersid_atasan,
+            'status_transaction' => 'menunggu',
+            'users_id' => Auth::id(),
+
+            'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
+            'isppn_transaction' => $request->input('isppn_transaction'),
+            'valueppn_transaction' => $request->input('valueppn_transaction'),
+            'attachment_transaction' => $attachment_transaction,
+
+            'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+            'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+            'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
+
+            'overbooking_transaction' => $overbooking_transaction,
+
         ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'invalid form validation',
-                'result' => $validator->errors()
-            ], 400);
-        }
+        $transaction_id = $transaction->id;
 
-        try {
-            $overbooking_transaction = $request->input('overbooking_transaction');
+        $jenis_over_booking = $request->input('jenis_over_booking');
+        $darirekening_booking = $request->input('darirekening_booking');
+        $pemilikrekening_booking = $request->input('pemilikrekening_booking');
+        $tujuanrekening_booking = $request->input('tujuanrekening_booking');
+        $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
+        $nominal_booking = $request->input('nominal_booking');
 
-            $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', $id, 'transaction', 'attachment_transaction');
-            Transaction::find($id)->update([
-                'code_transaction' => $request->input('code_transaction'),
-                'tanggal_transaction' => $request->input('tanggal_transaction'),
-                'paidto_transaction' => $request->input('paidto_transaction'),
-                'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
-                'paymentterms_transaction' => $request->input('paymentterms_transaction'),
-                'expired_transaction' => $request->input('expired_transaction'),
-                'purpose_transaction' => $request->input('purpose_transaction'),
-                'totalproduct_transaction' => $request->input('totalproduct_transaction'),
-                'totalprice_transaction' => $request->input('totalprice_transaction'),
-                'totalppn_transaction' => $request->input('totalppn_transaction'),
-                'subtotal_transaction' => $request->input('subtotal_transaction'),
+        if ($overbooking_transaction != true) {
+            $products_id = json_decode($request->input('products_id'), true);
+            $qty_detail = json_decode($request->input('qty_detail'), true);
+            $price_detail = json_decode($request->input('price_detail'), true);
+            $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
+            $remarks_detail = json_decode($request->input('remarks_detail'), true);
+            $matauang_detail = json_decode($request->input('matauang_detail'), true);
+            $kurs_detail = json_decode($request->input('kurs_detail'), true);
 
-                'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
-                'isppn_transaction' => $request->input('isppn_transaction'),
-                'valueppn_transaction' => $request->input('valueppn_transaction'),
-                'attachment_transaction' => $attachment_transaction,
-
-                'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
-                'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
-                'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
-                'overbooking_transaction' => $overbooking_transaction
-            ]);
-            $transactionDetail = TransactionDetail::where('transaction_id', $id)->get()->count();
-            if ($transactionDetail > 0) {
-                TransactionDetail::where('transaction_id', $id)->delete();
-            }
-
-            $jenis_over_booking = $request->input('jenis_over_booking');
-            $darirekening_booking = $request->input('darirekening_booking');
-            $pemilikrekening_booking = $request->input('pemilikrekening_booking');
-            $tujuanrekening_booking = $request->input('tujuanrekening_booking');
-            $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
-            $nominal_booking = $request->input('nominal_booking');
-            if ($overbooking_transaction != 1) {
-                $products_id = json_decode($request->input('products_id'), true);
-                $qty_detail = json_decode($request->input('qty_detail'), true);
-                $price_detail = json_decode($request->input('price_detail'), true);
-                $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
-                $remarks_detail = json_decode($request->input('remarks_detail'), true);
-                $matauang_detail = json_decode($request->input('matauang_detail'), true);
-                $kurs_detail = json_decode($request->input('kurs_detail'), true);
-
-                $dataDetail = [];
-                foreach ($products_id as $key => $value) {
-                    $dataDetail[] = [
-                        'transaction_id' => $id,
-                        'products_id' => $products_id[$key],
-                        'qty_detail' => $qty_detail[$key],
-                        'price_detail' => $price_detail[$key],
-                        'subtotal_detail' => $subtotal_detail[$key],
-                        'remarks_detail' => $remarks_detail[$key],
-                        'matauang_detail' => $matauang_detail[$key],
-                        'kurs_detail' => $kurs_detail[$key],
-                    ];
-                }
-                TransactionDetail::insert($dataDetail);
-            } else {
-                $dataOver = [
-                    'transaction_id' => $id,
-                    'jenis_over_booking' => $jenis_over_booking,
-                    'darirekening_booking' => $darirekening_booking,
-                    'pemilikrekening_booking' => $pemilikrekening_booking,
-                    'tujuanrekening_booking' => $tujuanrekening_booking,
-                    'pemiliktujuan_booking' => $pemiliktujuan_booking,
-                    'nominal_booking' => $nominal_booking,
+            $dataDetail = [];
+            foreach ($products_id as $key => $value) {
+                $dataDetail[] = [
+                    'transaction_id' => $transaction_id,
+                    'products_id' => $products_id[$key],
+                    'qty_detail' => $qty_detail[$key],
+                    'price_detail' => $price_detail[$key],
+                    'subtotal_detail' => $subtotal_detail[$key],
+                    'remarks_detail' => $remarks_detail[$key],
+                    'matauang_detail' => $matauang_detail[$key],
+                    'kurs_detail' => $kurs_detail[$key],
                 ];
-                OverBooking::where('transaction_id', $id)->update($dataOver);
             }
-
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
-            UtilsHelper::sendNotification($pushNotifikasi);
-            // event(new Notifikasi($pushNotifikasi));
-
-            return response()->json([
-                'status' => 200,
-                'message' => 'Berhasil ubah data',
-                'result' => $request->all()
-            ], 200);
-        } catch (Exception $e) {
-            Log::info($e->getMessage());
-            return response()->json([
-                'status' => 500,
-                'message' => 'Terjadi kesalahan data',
-                'result' => $e->getMessage()
-            ], 500);
+            TransactionDetail::insert($dataDetail);
         }
+
+        if ($overbooking_transaction == true) {
+            $dataOver = [
+                'transaction_id' => $transaction_id,
+                'jenis_over_booking' => $jenis_over_booking,
+                'darirekening_booking' => $darirekening_booking,
+                'pemilikrekening_booking' => $pemilikrekening_booking,
+                'tujuanrekening_booking' => $tujuanrekening_booking,
+                'pemiliktujuan_booking' => $pemiliktujuan_booking,
+                'nominal_booking' => $nominal_booking,
+            ];
+            OverBooking::create($dataOver);
+        }
+        $usersIdFcm = $transaction->users_id_review;
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $usersIdFcm);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+
+        return response()->json('Berhasil menambahkan data', 201);
     }
 
+    /**
+     * Show the specified resource.
+     * @param int $id
+     * @return Renderable
+     */
+    public function show($id)
+    {
+        return view('one.transaksi.form');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     * @param int $id
+     * @return Renderable
+     */
+    public function edit(Request $request, $id)
+    {
+
+        if ($request->ajax()) {
+            $typeRequest = $request->input('typeRequest');
+            if ($typeRequest == 'from_json') {
+                return response()->json(true);
+            }
+        }
+        $transaction = Transaction::find($id);
+        $metodePembayaran = MetodePembayaran::all();
+        $product = Product::all();
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+        $jenisOverBooking = $this->jenisOverBooking;
+
+
+        return view('one.transaksi.form', compact('transaction', 'metodePembayaran', 'product', 'bankPenerima', 'mataUang', 'jenisOverBooking'));
+    }
+
+    /**
+     * Update the specified resource in storage.
+     * @param Request $request
+     * @param int $id
+     * @return Renderable
+     */
+    public function update(CreateTransaksiPutRequest $request, $id)
+    {
+        //
+        $attachment_transaction = UtilsHelper::uploadFile($request->file('attachment_transaction'), 'transaction', $id, 'transaction', 'attachment_transaction');
+
+        $overbooking_transaction = $request->input('overbooking_transaction');
+
+        $transaction = Transaction::find($id)->update([
+            'code_transaction' => $request->input('code_transaction'),
+            'tanggal_transaction' => $request->input('tanggal_transaction'),
+            'paidto_transaction' => $request->input('paidto_transaction'),
+            'metode_pembayaran_id' => $request->input('metode_pembayaran_id'),
+            'paymentterms_transaction' => $request->input('paymentterms_transaction'),
+            'expired_transaction' => $request->input('expired_transaction'),
+            'purpose_transaction' => $request->input('purpose_transaction'),
+            'totalproduct_transaction' => $request->input('totalproduct_transaction'),
+            'totalprice_transaction' => $request->input('totalprice_transaction'),
+            'totalppn_transaction' => $request->input('totalppn_transaction'),
+            'subtotal_transaction' => $request->input('subtotal_transaction'),
+
+            'purposedivisi_transaction' => $request->input('purposedivisi_transaction'),
+            'isppn_transaction' => $request->input('isppn_transaction'),
+            'valueppn_transaction' => $request->input('valueppn_transaction'),
+            'attachment_transaction' => $attachment_transaction,
+
+            'nomorvirtual_transaction' => $request->input('nomorvirtual_transaction') == 'null' ? null : $request->input('nomorvirtual_transaction'),
+            'accept_transaction' => $request->input('accept_transaction') == 'null' ? null : $request->input('accept_transaction'),
+            'bank_transaction' => $request->input('bank_transaction') == 'null' ? null : $request->input('bank_transaction'),
+            'overbooking_transaction' => $overbooking_transaction
+        ]);
+        $transactionDetail = TransactionDetail::where('transaction_id', $id)->get()->count();
+        if ($transactionDetail > 0) {
+            TransactionDetail::where('transaction_id', $id)->delete();
+        }
+
+        $jenis_over_booking = $request->input('jenis_over_booking');
+        $darirekening_booking = $request->input('darirekening_booking');
+        $pemilikrekening_booking = $request->input('pemilikrekening_booking');
+        $tujuanrekening_booking = $request->input('tujuanrekening_booking');
+        $pemiliktujuan_booking = $request->input('pemiliktujuan_booking');
+        $nominal_booking = $request->input('nominal_booking');
+
+        if ($overbooking_transaction != true) {
+            $products_id = json_decode($request->input('products_id'), true);
+            $qty_detail = json_decode($request->input('qty_detail'), true);
+            $price_detail = json_decode($request->input('price_detail'), true);
+            $subtotal_detail = json_decode($request->input('subtotal_detail'), true);
+            $remarks_detail = json_decode($request->input('remarks_detail'), true);
+            $matauang_detail = json_decode($request->input('matauang_detail'), true);
+            $kurs_detail = json_decode($request->input('kurs_detail'), true);
+
+            $dataDetail = [];
+            foreach ($products_id as $key => $value) {
+                $dataDetail[] = [
+                    'transaction_id' => $id,
+                    'products_id' => $products_id[$key],
+                    'qty_detail' => $qty_detail[$key],
+                    'price_detail' => $price_detail[$key],
+                    'subtotal_detail' => $subtotal_detail[$key],
+                    'remarks_detail' => $remarks_detail[$key],
+                    'matauang_detail' => $matauang_detail[$key],
+                    'kurs_detail' => $kurs_detail[$key],
+                ];
+            }
+            TransactionDetail::insert($dataDetail);
+        } else {
+            $dataOver = [
+                'transaction_id' => $id,
+                'jenis_over_booking' => $jenis_over_booking,
+                'darirekening_booking' => $darirekening_booking,
+                'pemilikrekening_booking' => $pemilikrekening_booking,
+                'tujuanrekening_booking' => $tujuanrekening_booking,
+                'pemiliktujuan_booking' => $pemiliktujuan_booking,
+                'nominal_booking' => $nominal_booking,
+            ];
+            OverBooking::where('transaction_id', $id)->update($dataOver);
+        }
+
+        $transaction = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1, false, $transaction->users_id_review);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+
+        return response()->json('Berhasil mengubah data', 200);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     * @param int $id
+     * @return Renderable
+     */
     public function destroy($id)
     {
         //
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
+        $getTransaksi = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
         UtilsHelper::deleteFile($id, 'transaction', 'transaction', 'attachment_transaction');
         Transaction::destroy($id);
+
         return response()->json('Berhasil menghapus data', 200);
+    }
+
+    public function getProduct($id)
+    {
+        return response()->json([
+            'status' => 200,
+            'messasge' => 'Berhasil ambil data',
+            'result' => Product::with('typeProduct')->find($id),
+        ], 200);
     }
 
     // approval
@@ -454,58 +520,51 @@ class TransaksiController extends Controller
     {
         $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
         $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
-        $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)
-            ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
-            ->join('profile', 'profile.users_id', '=', 'users.id')
-            ->join('jabatan', 'profile.jabatan_id', '=', 'jabatan.id')
-            ->leftJoin('users as forward_users', 'forward_users.id', '=', 'transaction_approvel.users_id_forward')
-            ->select('transaction_approvel.*', 'profile.nama_profile as acc_approval', 'forward_users.name as forward_approval', 'jabatan.nama_jabatan as acc_jabatan')
-            ->get();
+        $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)->get();
+        $countTransactionApprove = $getTransactionApprove->count();
+        $setJabatan = UtilsHelper::setJabatan($countTransactionApprove);
+        $getOverBooking = OverBooking::where('transaction_id', $id)->first();
 
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil ambil data',
-            'result' => [
-                'getTransaction' => $getTransaction,
-                'getTransactionRequest' => $getTransactionRequest,
-                'getTransactionApprove' => $getTransactionApprove,
-                'getOverBooking' => $getTransaction->overBooking
-            ]
-        ], 200);
+
+        return view('one.transaksi.viewApproval', [
+            'getTransaction' => $getTransaction,
+            'getOverBooking' => $getOverBooking,
+            'getTransactionRequest' => $getTransactionRequest,
+            'getTransactionApprove' => $getTransactionApprove,
+            'setJabatan' => $setJabatan
+        ]);
+    }
+
+    public function viewTransactionPengajuan($id)
+    {
+        $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
+
+        return view('one.transaksi.viewTransactionPengajuan', [
+            'getTransaction' => $getTransaction,
+        ]);
+    }
+    public function viewTransactionDetail($id)
+    {
+        $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
+        $getOverBooking = OverBooking::where('transaction_id', $id)->first();
+        $getTransaction = Transaction::find($id);
+        return view('one.transaksi.viewTransactionDetail', [
+            'getTransactionRequest' => $getTransactionRequest,
+            'getOverBooking' => $getOverBooking,
+            'getTransaction' => $getTransaction
+        ]);
     }
 
     public function viewHistory($id)
     {
-        $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)
-            ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
-            ->join('profile', 'profile.users_id', '=', 'users.id')
-            ->join('jabatan', 'profile.jabatan_id', '=', 'jabatan.id')
-            ->leftJoin('users as forward_users', 'forward_users.id', '=', 'transaction_approvel.users_id_forward')
-            ->select('transaction_approvel.*', 'profile.nama_profile as acc_approval', 'forward_users.name as forward_approval', 'jabatan.nama_jabatan as acc_jabatan')
-            ->get();
-
-        return response()->json([
-            'status' => 200,
-            'message' => 'Berhasil ambil data',
-            'result' => $getTransactionApprove
-        ], 200);
+        $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)->get();
+        return view('one.transaksi.viewHistory', [
+            'getTransactionApprove' => $getTransactionApprove,
+        ]);
     }
 
-    public function forwardApproval(Request $request)
+    public function forwardApproval(CreateForwardRequest $request)
     {
-        $validator = Validator::make($request->all(), [
-            'users_id_forward' => 'required',
-        ], [
-            'required' => ':attribute wajib diisi',
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'message' => 'invalid form validation',
-                'result' => $validator->errors()
-            ], 400);
-        }
-
         $transaction_id = $request->input('transaction_id');
         $users_id_forward = $request->input('users_id_forward');
         $data = [
@@ -523,15 +582,12 @@ class TransaksiController extends Controller
             'status_transaction' => 'menunggu'
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $getTransaksi = Transaction::find($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $users_id_forward);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
-        return response()->json([
-            'status' => 201,
-            'message' => 'Berhasil approve form',
-            'result' => $request->all()
-        ], 201);
+        return response()->json('Berhasil approve form', 201);
     }
 
     public function finishApproval(Request $request)
@@ -554,14 +610,23 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
 
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
 
-        return response()->json([
-            'status' => 201,
-            'message' => 'Berhasil approve form',
-            'result' => $request->all()
-        ]);
+        return response()->json('Berhasil approve form', 201);
+    }
+
+    public function changeBuy(Request $request)
+    {
+        $metode_pembayaran = $request->input('metode_pembayaran');
+        $bankPenerima = DataStatis::byJenisreferensiDatastatis('rekening')->get();
+        return view('one.transaksi.changeBuy', compact('metode_pembayaran', 'bankPenerima'))->render();
+    }
+
+    public function getMataUang()
+    {
+        $mataUang = DataStatis::byJenisreferensiDatastatis('mata_uang')->get();
+        return response()->json($mataUang);
     }
 }
