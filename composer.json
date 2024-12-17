@@ -12,22 +12,13 @@
         "barryvdh/laravel-dompdf": "^2.0",
         "diglactic/laravel-breadcrumbs": "^8.1",
         "fruitcake/laravel-cors": "^3.0",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
         "guzzlehttp/guzzle": "^7.2",
-=======
         "google/apiclient": "^2.17",
         "guzzlehttp/guzzle": "^7.9",
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
         "google/apiclient": "^2.17",
         "guzzlehttp/guzzle": "^7.9",
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
         "google/apiclient": "^2.17",
         "guzzlehttp/guzzle": "^7.9",
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         "jenssegers/agent": "^2.6",
         "kreait/firebase-php": "^6.9",
         "laravel/framework": "^9.19",
