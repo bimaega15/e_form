@@ -14,26 +14,10 @@ use File;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Ramsey\Uuid\Uuid;
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
+
 use Google\Client as GoogleClient;
 use GuzzleHttp\Client;
-
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-use Google\Client as GoogleClient;
-use GuzzleHttp\Client;
-
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-use Google\Client as GoogleClient;
 use Google\Service\SecurityCommandCenter\Access;
-use GuzzleHttp\Client;
-
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
-
 
 class UtilsHelper
 {
@@ -654,11 +638,7 @@ class UtilsHelper
                 break;
         }
     }
-<<<<<<< HEAD
-    public static function pushNotifikasiSave($transaction_id, $num = 0)
-=======
     public static function pushNotifikasiSave($transaction_id, $num = 0, $isTopic = false, $userIdFcm = 0)
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
     {
         // to notifikasi
         $uuidV4 = (string) Uuid::uuid4();
@@ -676,9 +656,7 @@ class UtilsHelper
         $purposeTransaction = $getTransaksi->purpose_transaction;
 
         $message = '';
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         if ($getTransaksi->status_transaction == 'menunggu') {
             $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
 
@@ -697,11 +675,7 @@ class UtilsHelper
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah direvisi oleh ' . $namaApprovel;
         }
         if ($num == 2) {
-=======
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
         $title = '';
         if ($getTransaksi->status_transaction == 'menunggu') {
             $title = 'Pengajuan Baru';
@@ -726,20 +700,12 @@ class UtilsHelper
         }
         if ($num == 2) {
             $title = 'Pengajuan Dihapus';
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah dihapus oleh ' . $namaProfile;
         }
 
         $pushNotifikasi = [
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
+
             'uuid' => $getTransaksi->id,
             'profile' => $getTransaksi->users->profile,
             'code' => $getTransaksi->code_transaction,
@@ -749,14 +715,11 @@ class UtilsHelper
             'users_id_view' => Auth::id(),
         ];
         return $pushNotifikasi;
-=======
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
+
             'title' => $title,
             'body' => $message,
             'key' => strval($getTransaksi->id) . '-' . strval($num),
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
             'uuid' => strval($getTransaksi->id),
             'image' => $getTransaksi->users->profile->gambar_profile,
             'nama' => $namaProfile,
@@ -764,11 +727,7 @@ class UtilsHelper
             'message' => $message,
             'num' => strval($num),
             'tanggal_transaction' => UtilsHelper::formatDate($getTransaksi->tanggal_transaction),
-<<<<<<< HEAD
-            'users_id_view' => strval(Auth::id()),
-=======
             'users_id_view' => $isTopic ? strval(Auth::id()) : strval($userIdFcm),
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         ];
 
         $notification = [
@@ -781,27 +740,23 @@ class UtilsHelper
         $filterActive = array_filter($fcmToken, function ($item) {
             return $item['status'] == 1;
         });
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         $fields = [];
         foreach ($filterActive as $key => $item) {
             $fields[] = [
                 'message' => [
                     'token' => $item['fcm_token'],
-=======
+
         $fields = [];
         if($isTopic){
             $fields = [
                 'message' => [
                     'topic' => 'pengajuan',
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
                     'notification' => $notification,
                     'data' => $pushNotifikasi
                 ],
             ];
-<<<<<<< HEAD
-        }
-=======
         $fields = [
             'message' => [
                 'token' => session()->get('fcmToken'),
@@ -809,7 +764,7 @@ class UtilsHelper
                 'data' => $pushNotifikasi
             ],
         ];
-=======
+
         } else {
             $getUsersToken = AccessToken::first();
             $fcmToken = json_decode($getUsersToken->fcm_token, true);
@@ -828,7 +783,6 @@ class UtilsHelper
             }
         }
     
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         // foreach ($filterActive as $key => $item) {
         //     $fields[] = [
         //         'message' => [
@@ -838,10 +792,7 @@ class UtilsHelper
         //         ],
         //     ];
         // }
-<<<<<<< HEAD
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
         return $fields;
     }
 
@@ -884,14 +835,12 @@ class UtilsHelper
 
     public static function sendNotification($jsonData)
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
+
         $generateToken = UtilsHelper::generateAccessToken();
         $client = new Client();
         $token = $generateToken['access_token'];
         $url = 'https://fcm.googleapis.com/v1/projects/pushnotifikasi-d1aac/messages:send';
-=======
-=======
+
         if(count($jsonData) == 0){
             return [
                 'success' => false,
@@ -899,16 +848,12 @@ class UtilsHelper
             ];
         }
 
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         $tokenId = 'eform-3c473';
         $generateToken = UtilsHelper::generateAccessToken();
         $client = new Client();
         $token = $generateToken['access_token'];
         $url = 'https://fcm.googleapis.com/v1/projects/' . $tokenId . '/messages:send';
-<<<<<<< HEAD
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
 
         try {
             // Lakukan request POST ke API eksternal
@@ -934,17 +879,12 @@ class UtilsHelper
                 'message' => $e->getMessage()
             ];
         }
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
+
     }
 
   public static function formatUang($nominal)
     {
         return number_format($nominal, 0, '.', ',');
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
+
     }
 }
