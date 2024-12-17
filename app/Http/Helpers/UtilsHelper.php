@@ -33,7 +33,7 @@ class UtilsHelper
     {
         $myRoles = UtilsHelper::myProfile()->roles;
         $roles = '';
-        if(count($myRoles) > 0){
+        if (count($myRoles) > 0) {
             $roles = $myRoles[0]->name;
         };
         return $roles;
@@ -343,25 +343,25 @@ class UtilsHelper
         $tanggal = date('Ymd');
         $numberProduct = Product::count();
         $increment = '0001';
-        
+
         if ($numberProduct > 0) {
             $latestProduct = Product::latest('created_at')->first();
-            
+
             if ($latestProduct) {
                 $latestDate = $latestProduct->created_at->format('Ymd');
-                
+
                 // Mengonversi tanggal menjadi timestamp untuk perbandingan
                 $tanggalTimestamp = strtotime($tanggal);
                 $latestDateTimestamp = strtotime($latestDate);
-                
+
                 if ($tanggalTimestamp >= $latestDateTimestamp) {
                     $codeProduct = $latestProduct->code_product;
                     $lastIncrement = (int)preg_replace('/\D/', '', substr($codeProduct, -4));
-                    $increment = str_pad($lastIncrement + 1, 4, '0', STR_PAD_LEFT); 
+                    $increment = str_pad($lastIncrement + 1, 4, '0', STR_PAD_LEFT);
                 }
             }
         }
-        
+
         $newCode = $code . '-' . $tanggal . '-' . $increment;
         return $newCode;
     }
@@ -638,6 +638,7 @@ class UtilsHelper
                 break;
         }
     }
+
     public static function pushNotifikasiSave($transaction_id, $num = 0, $isTopic = false, $userIdFcm = 0)
     {
         // to notifikasi
@@ -656,26 +657,6 @@ class UtilsHelper
         $purposeTransaction = $getTransaksi->purpose_transaction;
 
         $message = '';
-
-        if ($getTransaksi->status_transaction == 'menunggu') {
-            $statusDibuat = $num == 0 ? 'dibuat' : ($num == 1 ? 'diubah' : ($num == 2 ? 'dihapus' : ''));
-
-            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' telah di ' . $statusDibuat . ' oleh ' . $namaProfile . ' dengan tujuan ' . $purposeTransaction . ' dengan status ' . $getTransaksi->status_transaction . ' dan menunggu approval dari ' . $namaApprovel;
-        }
-        if ($getTransaksi->status_transaction == 'ditolak') {
-            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di tolak oleh ' . $namaApprovel;
-        }
-        if ($getTransaksi->status_transaction == 'disetujui') {
-            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah di setujui oleh ' . $namaApprovel;
-        }
-        if ($getTransaksi->status_transaction == 'selesai') {
-            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah selesai';
-        }
-        if ($getTransaksi->status_transaction == 'direvisi') {
-            $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah direvisi oleh ' . $namaApprovel;
-        }
-        if ($num == 2) {
-
         $title = '';
         if ($getTransaksi->status_transaction == 'menunggu') {
             $title = 'Pengajuan Baru';
@@ -700,26 +681,13 @@ class UtilsHelper
         }
         if ($num == 2) {
             $title = 'Pengajuan Dihapus';
-
             $message = 'Pengajuan dengan code ' . $getTransaksi->code_transaction . ' dengan tujuan ' . $purposeTransaction . ' telah dihapus oleh ' . $namaProfile;
         }
 
         $pushNotifikasi = [
-
-            'uuid' => $getTransaksi->id,
-            'profile' => $getTransaksi->users->profile,
-            'code' => $getTransaksi->code_transaction,
-            'message' => $message,
-            'num' => $num,
-            'tanggal_transaction' => UtilsHelper::formatDate($getTransaksi->tanggal_transaction),
-            'users_id_view' => Auth::id(),
-        ];
-        return $pushNotifikasi;
-
             'title' => $title,
             'body' => $message,
             'key' => strval($getTransaksi->id) . '-' . strval($num),
-
             'uuid' => strval($getTransaksi->id),
             'image' => $getTransaksi->users->profile->gambar_profile,
             'nama' => $namaProfile,
@@ -740,31 +708,15 @@ class UtilsHelper
         $filterActive = array_filter($fcmToken, function ($item) {
             return $item['status'] == 1;
         });
-
         $fields = [];
-        foreach ($filterActive as $key => $item) {
-            $fields[] = [
-                'message' => [
-                    'token' => $item['fcm_token'],
-
-        $fields = [];
-        if($isTopic){
+        if ($isTopic) {
             $fields = [
                 'message' => [
                     'topic' => 'pengajuan',
-
                     'notification' => $notification,
                     'data' => $pushNotifikasi
                 ],
             ];
-        $fields = [
-            'message' => [
-                'token' => session()->get('fcmToken'),
-                'notification' => $notification,
-                'data' => $pushNotifikasi
-            ],
-        ];
-
         } else {
             $getUsersToken = AccessToken::first();
             $fcmToken = json_decode($getUsersToken->fcm_token, true);
@@ -782,7 +734,7 @@ class UtilsHelper
                 ];
             }
         }
-    
+
         // foreach ($filterActive as $key => $item) {
         //     $fields[] = [
         //         'message' => [
@@ -792,7 +744,6 @@ class UtilsHelper
         //         ],
         //     ];
         // }
-
         return $fields;
     }
 
@@ -841,7 +792,7 @@ class UtilsHelper
         $token = $generateToken['access_token'];
         $url = 'https://fcm.googleapis.com/v1/projects/pushnotifikasi-d1aac/messages:send';
 
-        if(count($jsonData) == 0){
+        if (count($jsonData) == 0) {
             return [
                 'success' => false,
                 'message' => 'Data not found'
@@ -879,12 +830,10 @@ class UtilsHelper
                 'message' => $e->getMessage()
             ];
         }
-
     }
 
-  public static function formatUang($nominal)
+    public static function formatUang($nominal)
     {
         return number_format($nominal, 0, '.', ',');
-
     }
 }
