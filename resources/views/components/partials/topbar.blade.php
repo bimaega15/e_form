@@ -159,50 +159,17 @@
     </div>
     <!-- END: Account Menu -->
 </div>
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
 
 
 
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-
-
-
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-
-
-
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 @push('custom_js')
     <script>
         var asset = "{{ asset('/') }}";
         var body = $('body');
         var audio = new Audio(`${asset}notifikasi/clink.mp3`);
         var users_id_view = "{{ Auth::user()->id }}";
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        $(document).ready(function() {
-            const playNotifikasi = () => {
-                audio.play();
-            }
-
-=======
 
         $(document).ready(function() {
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-
-        $(document).ready(function() {
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-
-        $(document).ready(function() {
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
             const htmlNotifikasi = () => {
                 // get notifikasi to display in topbar
                 const storageName = 'notifikasi';
@@ -218,33 +185,12 @@
                                 <div class="notification-content__title">Notifikasi</div>
                                 <div class="cursor-pointer relative flex items-center ">
                                     <div class="w-12 h-12 flex-none image-fit mr-1">
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                                        <img alt="${item.profile.gambar_profile}" class="rounded-full"
-                                            src="${asset}upload/profile/${item.profile.gambar_profile}">
-                                    </div>
-                                    <div class="ml-2 overflow-hidden">
-                                        <div class="flex items-center">
-                                            <a href="javascript:;" class="font-medium truncate mr-5">${item.profile.nama_profile}</a>
-=======
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                                         <img alt="${item.image}" class="rounded-full"
                                             src="${asset}upload/profile/${item.image}">
                                     </div>
                                     <div class="ml-2 overflow-hidden">
                                         <div class="flex items-center">
                                             <a href="javascript:;" class="font-medium truncate mr-5">${item.nama}</a>
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                                             <div class="text-xs text-slate-400 ml-auto whitespace-nowrap">${item.tanggal_transaction}</div>
                                         </div>
                                         <div class="w-fulltext-slate-500 mt-0.5"
@@ -290,51 +236,11 @@
                 }
             }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-            Echo.channel('notif')
-                .listen('Notifikasi', (e) => {
-                    const {
-                        data
-                    } = e;
-                    data.read = false;
-                    $('#notification--bullet').data('users_id_view', data.users_id_view);
-
-                    let pushNotifikasi = [];
-                    const storageName = 'notifikasi';
-                    const storedData = localStorage.getItem(storageName);
-                    if (storedData) {
-                        pushNotifikasi = JSON.parse(storedData);
-                        if (pushNotifikasi.length > 0) {
-                            pushNotifikasi = pushNotifikasi.filter(item =>
-                                (item.uuid !== data.uuid) &&
-                                (item.num !== data.num));
-                        }
-                    }
-                    pushNotifikasi.push(data);
-                    localStorage.setItem(storageName, JSON.stringify(pushNotifikasi));
-
-                    const storedDataItem = localStorage.getItem(storageName);
-                    if (storedDataItem) {
-                        const notifikasi = JSON.parse(storedDataItem);
-                        if (notifikasi.length > 0) {
-                            htmlNotifikasi();
-                            playNotifikasi();
-                        }
-                    }
-                });
-=======
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
             const playNotifikasi = () => {
                 audio.play();
             }
 
             onMessage(messaging, (payload) => {
-                console.log('payload', payload);
                 const {
                     data
                 } = payload;
@@ -349,17 +255,11 @@
                 if (storedData) {
                     pushNotifikasi = JSON.parse(storedData);
                     if (pushNotifikasi.length > 0) {
-<<<<<<< HEAD
-                        pushNotifikasi = pushNotifikasi.filter(item =>
-                            (item.uuid !== data.uuid) &&
-                            (item.num !== data.num));
-=======
                         const filterNotifikasi = pushNotifikasi
                             .filter(item => (item.key != data.key));
                         if (filterNotifikasi.length > 0) {
                             pushNotifikasi = filterNotifikasi;
                         }
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     }
                 }
                 pushNotifikasi.push(data);
@@ -373,39 +273,15 @@
                         playNotifikasi();
                     }
                 }
-<<<<<<< HEAD
-
-
             });
-<<<<<<< HEAD
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-            });
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
             body.on('click', '#notification--bullet', function(e) {
                 e.preventDefault();
 
                 const get_users_id_view = $(this).data('users_id_view');
                 const storageName = 'notifikasi';
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                const checkClassNotification = $('.notification-content.dropdown-menu').hasClass('show');
-=======
                 const checkClassNotification = $(
                     '.notification-content.dropdown-menu').hasClass('show');
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-                const checkClassNotification = $(
-                    '.notification-content.dropdown-menu').hasClass('show');
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-                const checkClassNotification = $(
-                    '.notification-content.dropdown-menu').hasClass('show');
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
                 const storedData = localStorage.getItem(storageName);
                 if (storedData) {
@@ -416,43 +292,14 @@
                             read: true
                         }));
                         $(this).data('fresh', true);
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                        localStorage.setItem(storageName, JSON.stringify(updatedNotifikasi));
-=======
                         localStorage.setItem(storageName, JSON.stringify(
                             updatedNotifikasi));
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-                        localStorage.setItem(storageName, JSON.stringify(
-                            updatedNotifikasi));
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-                        localStorage.setItem(storageName, JSON.stringify(
-                            updatedNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     }
                 }
                 htmlNotifikasi();
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if (!checkClassNotification && (get_users_id_view == users_id_view)) {
-=======
                 if (!checkClassNotification && (get_users_id_view ==
                         users_id_view)) {
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-                if (!checkClassNotification && (get_users_id_view ==
-                        users_id_view)) {
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-                console.log(checkClassNotification, get_users_id_view, users_id_view);
-                if (!checkClassNotification && (get_users_id_view ==
-                        users_id_view)) {
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     $('#notification--bullet').removeClass('notification--bullet');
                     localStorage.removeItem(storageName);
                 }
@@ -462,38 +309,12 @@
                 const $target = $(event.target);
 
                 // Jika klik terjadi di dalam elemen #notification--bullet atau dropdown menu, abaikan
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                if ($target.closest('#notification--bullet').length > 0 || $target.closest(
-=======
                 if ($target.closest('#notification--bullet').length > 0 || $target
                     .closest(
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-                if ($target.closest('#notification--bullet').length > 0 || $target
-                    .closest(
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-                if ($target.closest('#notification--bullet').length > 0 || $target
-                    .closest(
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                         '.notification-content.dropdown-menu').length > 0) {
                     return;
                 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-                const get_users_id_view = $('#notification--bullet').data('users_id_view');
-                const storageName = 'notifikasi';
-                const checkClassNotification = $('#notification--bullet').data('fresh');
-                if (checkClassNotification && (get_users_id_view == users_id_view)) {
-=======
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                 const get_users_id_view = $('#notification--bullet').data(
                     'users_id_view');
                 const storageName = 'notifikasi';
@@ -501,30 +322,11 @@
                     'fresh');
                 if (checkClassNotification && (get_users_id_view ==
                         users_id_view)) {
-<<<<<<< HEAD
-<<<<<<< HEAD
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     $('#notification--bullet').data('fresh', false);
                     $('#notification--bullet').removeClass('notification--bullet');
                     localStorage.removeItem(storageName);
                 }
             });
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-        });
-=======
         })
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-        })
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
-        })
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
     </script>
 @endpush

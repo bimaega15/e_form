@@ -26,10 +26,6 @@
     <link rel="stylesheet" href="{{ asset('library/') }}/DataTables/datatables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
     <link rel="stylesheet" href="{{ asset('library/photoviewer-master/dist/photoviewer.min.css') }}">
-<<<<<<< HEAD
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
     <style>
         .my-popup-class {
@@ -140,6 +136,7 @@
     <script src="{{ asset('js/modal.js') }}"></script>
     <script src="{{ asset('library/') }}/DataTables/datatables.min.js"></script>
     <script src="{{ asset('library/photoviewer-master/dist/photoviewer.min.js') }}"></script>
+    <script src="{{ asset('library/ckeditor/ckeditor.js') }}"></script>
     <script src="{{ asset('plugins/autonumeric/dist/autoNumeric.min.js') }}"></script>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>

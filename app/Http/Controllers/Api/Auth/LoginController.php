@@ -57,13 +57,10 @@ class LoginController extends Controller
                         'roles' => $getRoles,
                         'token' => $token
                     ];
-<<<<<<< HEAD
-=======
                     if ($fcmToken != null) {
                         $firebaseController = new FirebaseController();
                         $firebaseController->setActiveFcmToken($request, $checkEmail->id);
                     }
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     return response()->json([
                         'status' => 200,
                         'message' => "Berhasil login",
@@ -89,11 +86,6 @@ class LoginController extends Controller
             ], 500);
         }
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
     public function logout(Request $request)
     {
@@ -118,8 +110,4 @@ class LoginController extends Controller
             'message' => 'Berhasil logout'
         ], 200);
     }
-<<<<<<< HEAD
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 }

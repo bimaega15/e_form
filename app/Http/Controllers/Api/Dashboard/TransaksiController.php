@@ -54,7 +54,6 @@ class TransaksiController extends Controller
                 ->where('users_id', Auth::id())
                 ->get()->count();
 
-            $getRoles = UtilsHelper::getRoles();
             $dataDashboard = Transaction::with([
                 'usersApproval' => function ($query) {
                     $query
@@ -69,7 +68,17 @@ class TransaksiController extends Controller
                     $query->join('products', 'products.id', '=', 'transaction_detail.products_id')
                         ->select('transaction_detail.id', 'transaction_detail.transaction_id', 'products.name_product as name', 'transaction_detail.qty_detail as qty', 'transaction_detail.price_detail as price', 'transaction_detail.subtotal_detail as totalPrice', 'transaction_detail.remarks_detail as remarks', 'transaction_detail.subtotal_detail as subTotal', 'transaction_detail.matauang_detail as currency', 'transaction_detail.kurs_detail as curs', 'products.code_product', 'products.capacity_product', 'products.id as products_id');
                 },
-                'transactionApprovel', 'transactionApprovel.users', 'transactionApprovel.users.profile',  'transactionApprovel.users.profile.jabatan', 'transactionApprovel.usersForward', 'transactionApprovel.usersForward.profile', 'transactionApprovel.usersForward.profile.jabatan', 'overBooking', 'usersReview', 'usersReview.profile', 'usersReview.profile.jabatan'
+                'transactionApprovel',
+                'transactionApprovel.users',
+                'transactionApprovel.users.profile',
+                'transactionApprovel.users.profile.jabatan',
+                'transactionApprovel.usersForward',
+                'transactionApprovel.usersForward.profile',
+                'transactionApprovel.usersForward.profile.jabatan',
+                'overBooking',
+                'usersReview',
+                'usersReview.profile',
+                'usersReview.profile.jabatan'
             ])
                 ->join('users', 'users.id', '=', 'transaction.users_id')
                 ->join('profile', 'profile.users_id', '=', 'users.id')
@@ -100,18 +109,9 @@ class TransaksiController extends Controller
                         ->whereRaw('users.id = transaction.users_id_review');
                 }, 'approvalBy')
                 ->orderBy('transaction.tanggal_transaction', 'desc')
-<<<<<<< HEAD
                 ->limit(5)
                 ->get();
 
-=======
-                ->limit(5);
-            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
-                $users_id = Auth::id();
-                $dataDashboard->where('users_id', $users_id);
-            }
-            $dataDashboard = $dataDashboard->get();
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
             return response()->json([
                 'status' => 200,
@@ -263,15 +263,9 @@ class TransaksiController extends Controller
                 OverBooking::create($dataOver);
             }
 
-<<<<<<< HEAD
             $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
-            event(new Notifikasi($pushNotifikasi));
-=======
-            $getTransaksi = Transaction::find($transaction_id);
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $getTransaksi->users_id_review);
             UtilsHelper::sendNotification($pushNotifikasi);
             // event(new Notifikasi($pushNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
             return response()->json([
                 'status' => 201,
@@ -424,15 +418,9 @@ class TransaksiController extends Controller
                 OverBooking::where('transaction_id', $id)->update($dataOver);
             }
 
-<<<<<<< HEAD
             $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
-            event(new Notifikasi($pushNotifikasi));
-=======
-            $getTransaksi = Transaction::find($id);
-            $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1, false, $getTransaksi->users_id_review);
             UtilsHelper::sendNotification($pushNotifikasi);
             // event(new Notifikasi($pushNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
             return response()->json([
                 'status' => 200,
@@ -452,15 +440,9 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
-<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
-        event(new Notifikasi($pushNotifikasi));
-=======
-        $getTransaksi = Transaction::find($id);
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         UtilsHelper::deleteFile($id, 'transaction', 'transaction', 'attachment_transaction');
         Transaction::destroy($id);
@@ -470,17 +452,8 @@ class TransaksiController extends Controller
     // approval
     public function viewApproval($id)
     {
-        $getRoles = UtilsHelper::getRoles();
         $getTransaction = Transaction::with('users', 'users.profile', 'users.profile.jabatan', 'users.profile.unit', 'users.profile.categoryOffice', 'metodePembayaran')->find($id);
-        $getTransactionRequest = TransactionDetail::with('transaction', 'products')
-        ->where('transaction_id', $id);
-        if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
-            $users_id = Auth::id();
-            $getTransactionRequest->whereHas('transaction', function ($query) use ($users_id) {
-                $query->where('users_id', $users_id);
-            });
-        }
-        $getTransactionRequest = $getTransactionRequest->get();
+        $getTransactionRequest = TransactionDetail::with('transaction', 'products')->where('transaction_id', $id)->get();
         $getTransactionApprove = TransactionApprovel::where('transaction_id', $id)
             ->join('users', 'users.id', '=', 'transaction_approvel.users_id')
             ->join('profile', 'profile.users_id', '=', 'users.id')
@@ -550,14 +523,9 @@ class TransaksiController extends Controller
             'status_transaction' => 'menunggu'
         ]);
 
-<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
-        event(new Notifikasi($pushNotifikasi));
-=======
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $users_id_forward);
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         return response()->json([
             'status' => 201,
@@ -586,14 +554,9 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
 
-<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
-        event(new Notifikasi($pushNotifikasi));
-=======
-        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, Auth::id());
         UtilsHelper::sendNotification($pushNotifikasi);
         // event(new Notifikasi($pushNotifikasi));
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         return response()->json([
             'status' => 201,

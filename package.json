@@ -19,20 +19,8 @@
     "dependencies": {
         "autonumeric": "^4.6.2",
         "bootstrap-timepicker": "^0.5.2",
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
-        "firebase": "^10.12.4",
->>>>>>> 3adc26b1aacfea81e4c724cc8f0fd8d73b9c2bd4
-=======
-        "firebase": "^10.12.4",
         "firebase-admin": "^12.3.0",
->>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
-=======
         "firebase": "^10.12.4",
-        "firebase-admin": "^12.3.0",
->>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         "laravel-echo": "^1.16.1",
         "pusher-js": "^8.4.0-rc2",
         "sweetalert2": "^11.7.31",
