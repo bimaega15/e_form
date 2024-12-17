@@ -292,3 +292,19 @@ function select2Server(selector, parent, routing, passData = {}) {
         templateSelection: formatRepoSelection,
     });
 }
+
+const formatNumber = (value) => {
+    value = String(value);
+    value = value.replace(/,/g, "");
+    if (value !== "" && value !== "0" && value !== null) {
+        value = value.replace(/^0+/, '');
+        value = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
+    return value;
+};
+
+const removeCommas = (value) => {
+    value = String(value);
+    value = value.replace(/,/g, "");
+    return value;
+};

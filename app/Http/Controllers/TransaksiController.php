@@ -35,9 +35,19 @@ class TransaksiController extends Controller
 
     public function index(Request $request)
     {
+<<<<<<< HEAD
+=======
+
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
         // to notifikasi
         if ($request->ajax()) {
-            $data = Transaction::all();
+            $getRoles = UtilsHelper::getRoles();
+            $data = Transaction::orderBy('created_at', 'desc');
+            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+                $users_id = Auth::id();
+                $data->where('users_id', $users_id);
+            }
+            $data = $data->get();
             $resultData = [];
             foreach ($data as $key => $row) {
                 $mergeData = [];
@@ -225,6 +235,7 @@ class TransaksiController extends Controller
                 </div>';
 
                 $mergeData = array_merge($mergeData, [
+                    'is_expired' => $row->is_expired,
                     'action' => $action
                 ]);
 
@@ -344,6 +355,10 @@ class TransaksiController extends Controller
             ];
             OverBooking::create($dataOver);
         }
+        $usersIdFcm = $transaction->users_id_review;
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $usersIdFcm);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
 
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0);
         event(new Notifikasi($pushNotifikasi));
@@ -470,8 +485,15 @@ class TransaksiController extends Controller
             OverBooking::where('transaction_id', $id)->update($dataOver);
         }
 
+<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1);
         event(new Notifikasi($pushNotifikasi));
+=======
+        $transaction = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 1, false, $transaction->users_id_review);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         return response()->json('Berhasil mengubah data', 200);
     }
@@ -484,8 +506,15 @@ class TransaksiController extends Controller
     public function destroy($id)
     {
         //
+<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2);
         event(new Notifikasi($pushNotifikasi));
+=======
+        $getTransaksi = Transaction::find($id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($id, 2, false, Auth::id());
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         UtilsHelper::deleteFile($id, 'transaction', 'transaction', 'attachment_transaction');
         Transaction::destroy($id);
@@ -569,8 +598,15 @@ class TransaksiController extends Controller
             'status_transaction' => 'menunggu'
         ]);
 
+<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
         event(new Notifikasi($pushNotifikasi));
+=======
+        $getTransaksi = Transaction::find($transaction_id);
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, $users_id_forward);
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         return response()->json('Berhasil approve form', 201);
     }
@@ -595,8 +631,14 @@ class TransaksiController extends Controller
             'status_transaction' => $type
         ]);
 
+<<<<<<< HEAD
         $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id);
         event(new Notifikasi($pushNotifikasi));
+=======
+        $pushNotifikasi = UtilsHelper::pushNotifikasiSave($transaction_id, 0, false, Auth::id());
+        UtilsHelper::sendNotification($pushNotifikasi);
+        // event(new Notifikasi($pushNotifikasi));
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         return response()->json('Berhasil approve form', 201);
     }

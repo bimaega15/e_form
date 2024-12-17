@@ -3,9 +3,13 @@
 namespace App\Http\Controllers;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 use App\Http\Helpers\UtilsHelper;
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+use App\Http\Helpers\UtilsHelper;
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 use App\Models\AccessToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +18,10 @@ class FirebaseController extends Controller
 {
     //
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
     protected $messaging;
     public function __construct()
     {
@@ -27,7 +34,10 @@ class FirebaseController extends Controller
         return response()->json($refreshToken);
     }
 
+<<<<<<< HEAD
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
     public function saveToken(Request $request)
     {
         $fcmToken = $request->input('fcmToken');
@@ -43,6 +53,7 @@ class FirebaseController extends Controller
         if ($dataFcmToken) {
             $filterToken = array_filter($dataDb, function ($value) use ($fcmToken) {
 <<<<<<< HEAD
+<<<<<<< HEAD
                 return $value['fcm_token'] != $fcmToken;
             });
             if (count($filterToken) > 0) {
@@ -51,6 +62,11 @@ class FirebaseController extends Controller
             });
             if (count($filterToken) == 0) {
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+                return trim($value['fcm_token']) == $fcmToken;
+            });
+            if (count($filterToken) == 0) {
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                 array_push($dataDb, $data);
                 $accessToken->update([
                     'fcm_token' => json_encode($dataDb)
@@ -74,19 +90,26 @@ class FirebaseController extends Controller
             ]);
         }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
         $subscribed = $this->subscribeToTopic();
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+        $subscribed = $this->subscribeToTopic();
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 
         session()->put('fcmToken', $fcmToken);
         return response()->json([
             'status' => 'success',
             'message' => 'Token saved successfully.',
 <<<<<<< HEAD
+<<<<<<< HEAD
             'data' => $dataDb,
         ]);
     }
 =======
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
             'data' => [
                 'token' => $dataDb,
                 'subscribed' => $subscribed,
@@ -110,5 +133,8 @@ class FirebaseController extends Controller
         $topic = 'pengajuan';
         return $this->messaging->subscribeToTopic($topic, $registrationTokens);
     }
+<<<<<<< HEAD
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 }

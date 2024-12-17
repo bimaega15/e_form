@@ -81,6 +81,7 @@ class ProductController extends Controller
         $data = array_merge(
             $data,
             [
+                'code_product' => UtilsHelper::generateCodeProduct(),
                 'gambar_product' => $gambar_product,
             ],
         );
@@ -124,7 +125,6 @@ class ProductController extends Controller
         $data = array_merge(
             $data,
             [
-                'code_product' => UtilsHelper::generateCodeProduct(),
                 'gambar_product' => $gambar_product,
             ],
         );
@@ -149,23 +149,12 @@ class ProductController extends Controller
     public function getAutoCode()
     {
         try {
-            //code...
-            $number = Product::select(DB::raw('max(code_product) as code_product'))->first();
-            if ($number != '' && $number != null) {
-                $getCodeProduct = ($number->code_product);
-                $getCodeProduct = str_replace('P', '', $getCodeProduct);
-                $getCodeProduct = (int)  $getCodeProduct;
-                $getCodeProduct++;
-                $getAutoNumber = 'P' . sprintf("%03s", $getCodeProduct);
-            } else {
-                $getAutoNumber = 'P001';
-            }
-
+            $number = UtilsHelper::generateCodeProduct();
             if ($number) {
                 return response()->json([
                     'status' => 200,
                     'message' => 'Berhasil ambil data',
-                    'result' => $getAutoNumber
+                    'result' => $number,
                 ], 200);
             } else {
                 return response()->json([

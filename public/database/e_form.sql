@@ -11,11 +11,29 @@
  Target Server Version : 100428 (10.4.28-MariaDB)
  File Encoding         : 65001
 
- Date: 16/07/2024 21:21:24
+ Date: 02/08/2024 23:40:56
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for access_tokens
+-- ----------------------------
+DROP TABLE IF EXISTS `access_tokens`;
+CREATE TABLE `access_tokens`  (
+  `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT,
+  `token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
+  `fcm_token` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of access_tokens
+-- ----------------------------
+INSERT INTO `access_tokens` VALUES (1, '{\"access_token\":\"ya29.c.c0ASRK0Gb47lOm_pqPS80S2bjBm7HsUgGMjHJ0NDsVO02lWQvnhP7xwpiXvaPh1MzVBbuKrtKuh6lxGwpI-zoHTUjMqhmuDjXrI4F3sON4iwC60x-_sL0pjaBF1AxFieNO8xx6HTWfqnCCwYcofviUOtDex2aL9M8manZRf_2fdocBidj0EvAzilUFzgWNjCgSoMXdMA2fr0gMfwxrThUsEtHZ_oQNOX6UFCQ1QeAULkj-YbN5rMFo6hXS1LCLrp0Z90FWm1jIrcu4k2ep7P3XXVVzucweQyx3dOQoAPno0vZ0OQUarOkHKGtOq1UjU8hpd-ZY5NfqLg_dWaSuCrOGCixquQwDHrERlEN4IkakYszwfDhLc68YO-cdT385A0yWk7prebF5QU2fd8w0U4VdfOusjs6lOhZfoSbSbugSxu24WpXghp0fUxju9Z_io02Xe2dW6ltq1jyX76Qebo7j5ikb14ZdhZkxd6_gpnv7Yv9nxMjWf0O6IY_smWka7gZOVtMcRjm_sOpnx4W7hZOtIrxskkcxs5YwQuyX_u_hSX5fO0kuMJdUpS4_t6RJo8OisW6Jt1dmWJpyw3fefwu_f56kd2Qsvqgy3Rg1YU8u7riYmuQBWwJ9JWOlSdcpYy0qRefgUvl02zOtzcdzBp49ItVqijbz_atQo3isefZJBY4IrIY1JuiR96YwudM43gWFqg5xY3pUhmbbRIfRosbY4seJO19yS99tywn0-QeBX333b3gIoh6qs9ddw6ecZpFs8MQh8gg-8nwy_Ruc7apVStwmR6Sdy3sjfgVbVh38bZvcmSs5yu3OkSYB_6Rppw3QMZ7pdiWW7e_2qtmZk5U5lSR-pjzd9RUOSojF6vo6WbvBOqkczQe_1OuWVrJtIqQO-gvsnwd2h5y4-cudyYvRjg1WRiwjtZoVafbmRgpB-iVqORYozIpqX-xl5Yq7t_l_bIJdObZu5h1Wkdvl4f3vqq8hpceneY57nIwVu9enzz0zwjc_e1wFnu0\",\"expires_in\":3599,\"token_type\":\"Bearer\",\"created\":1722614515}', '[{\"fcm_token\":\"fnNaKUfdlviSp2t0dIrBWu:APA91bFAuHAYHs5dWSG81edKqQO1W-53j-tTB3s5GgExKZYH6N9n4IvMe1UQSrD0Vl4wAYRf5i60oSTXqOI4-dQqKn27HwlZ1BNbuzCdISZx6-DknkE6QuTXXvTitSj-6C0Y6fnMF2Ke\",\"user_id\":1,\"status\":0},{\"fcm_token\":\"fnNaKUfdlviSp2t0dIrBWu:APA91bFAuHAYHs5dWSG81edKqQO1W-53j-tTB3s5GgExKZYH6N9n4IvMe1UQSrD0Vl4wAYRf5i60oSTXqOI4-dQqKn27HwlZ1BNbuzCdISZx6-DknkE6QuTXXvTitSj-6C0Y6fnMF2Ke\",\"user_id\":1,\"status\":1},{\"fcm_token\":\"fE2B7VK-WRXenZfw9jR7OC:APA91bFVuj9YSt-m0b0m_Jdr1pjDIeNO9uwuSbIfVxjPRVklzvjiam4085vrLvrWwHZIwRmCKfEKjiFsdG1CwTUZKjVvGj81VYxZ6Tejwd7X47lfu_dVBMJYTxTWN59x8veW-iJC_w0o\",\"user_id\":1,\"status\":1},{\"fcm_token\":\"dAnS298M_v-xwi7WU2lYwU:APA91bHlUVp-IGyvEF7L8irTfm5lv9C4ZrVYB5e-szEPHV3GNPSY2B34ObnD5MGgd9n3eCwcb7fe4vOU0MqwPUHbMFQhG0aayVQK6Znj_LDiF_a6KVWxqLErCRmrmXsvkVpiJCJjWgEA\",\"user_id\":1,\"status\":1},{\"fcm_token\":\"dzqPYk805g7xgY-USss3y0:APA91bHgVxV-nx_WqkLy7BRDTipAwQuClllinReR1Dq_V7xzGYVcc5aspvfXb-oMwFyw-lQHPvtnFhjXEBHDWBxHbf0GdAS39D-y56gS2w6TVbdnWcFSXSR_HRRyci6vwH7fYFI-F4oT\",\"user_id\":1,\"status\":0},{\"fcm_token\":\"cC4G0f3J74o8gDe0iAq1Eu:APA91bE0na0GMk2yoVTQ1LmZqXatZsKBcmkeeLy78IbpFlyNC7AxZHGM2RaOtwgmCEHsb_wgthQpFpNI0KWwnwNqS2oABahpXz574_8SqrTBY4Iid2Tm_APPByBghQ5opmHClOqErGDr\",\"user_id\":1,\"status\":1}]', '2024-07-30 09:40:20', '2024-08-02 23:01:55');
 
 -- ----------------------------
 -- Table structure for category_office
@@ -27,7 +45,7 @@ CREATE TABLE `category_office`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of category_office
@@ -49,7 +67,7 @@ CREATE TABLE `data_statis`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 439 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 439 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of data_statis
@@ -504,7 +522,7 @@ CREATE TABLE `failed_jobs`  (
   `failed_at` timestamp NOT NULL DEFAULT current_timestamp,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `failed_jobs_uuid_unique`(`uuid` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of failed_jobs
@@ -523,7 +541,7 @@ CREATE TABLE `jabatan`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of jabatan
@@ -549,7 +567,7 @@ CREATE TABLE `jabatan_unit`  (
   INDEX `jabatan_unit_unit_id_foreign`(`unit_id` ASC) USING BTREE,
   CONSTRAINT `jabatan_unit_jabatan_id_foreign` FOREIGN KEY (`jabatan_id`) REFERENCES `jabatan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `jabatan_unit_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of jabatan_unit
@@ -571,7 +589,7 @@ CREATE TABLE `menu`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 28 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of menu
@@ -607,7 +625,7 @@ CREATE TABLE `metode_pembayaran`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of metode_pembayaran
@@ -625,7 +643,7 @@ CREATE TABLE `migrations`  (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 47 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of migrations
@@ -668,6 +686,8 @@ INSERT INTO `migrations` VALUES (40, '2023_12_24_230945_add_column_to_transactio
 INSERT INTO `migrations` VALUES (41, '2023_12_29_081854_add_column_to_transaction', 15);
 INSERT INTO `migrations` VALUES (42, '2023_12_29_082013_create_over_bookings_table', 15);
 INSERT INTO `migrations` VALUES (43, '2024_02_08_142906_add_column_to_over_booking_table', 16);
+INSERT INTO `migrations` VALUES (44, '0000_00_00_000000_create_websockets_statistics_entries_table', 17);
+INSERT INTO `migrations` VALUES (46, '2024_07_30_093256_create_access_tokens_table', 18);
 
 -- ----------------------------
 -- Table structure for model_has_permissions
@@ -680,7 +700,7 @@ CREATE TABLE `model_has_permissions`  (
   PRIMARY KEY (`permission_id`, `model_id`, `model_type`) USING BTREE,
   INDEX `model_has_permissions_model_id_model_type_index`(`model_id` ASC, `model_type` ASC) USING BTREE,
   CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of model_has_permissions
@@ -943,7 +963,7 @@ CREATE TABLE `model_has_roles`  (
   PRIMARY KEY (`role_id`, `model_id`, `model_type`) USING BTREE,
   INDEX `model_has_roles_model_id_model_type_index`(`model_id` ASC, `model_type` ASC) USING BTREE,
   CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of model_has_roles
@@ -971,7 +991,7 @@ CREATE TABLE `notes`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `notes_users_id_foreign`(`users_id` ASC) USING BTREE,
   CONSTRAINT `notes_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of notes
@@ -998,16 +1018,17 @@ CREATE TABLE `over_booking`  (
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `over_booking_transaction_id_foreign`(`transaction_id` ASC) USING BTREE,
   CONSTRAINT `over_booking_transaction_id_foreign` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of over_booking
 -- ----------------------------
-INSERT INTO `over_booking` VALUES (16, 49, 'Rekening ke Rekening', '38292387', 'Pemilik Rekening - edit', '38297238', 'Pemilik Tujuan - edit', 100000, '2024-02-11 08:44:51', '2024-02-11 14:42:48');
+INSERT INTO `over_booking` VALUES (16, 49, 'Rekening ke Rekening', '38292387', 'Pemilik Rekening - edit', '38297238', 'Pemilik Tujuan - edit', 100000, '2024-02-11 08:44:51', '2024-08-02 23:01:54');
 INSERT INTO `over_booking` VALUES (17, 53, 'Rekening ke Rekening', '82397', 'Bima', '8239327', 'Ega', 3000000, '2024-02-14 11:35:01', '2024-02-14 11:35:01');
-INSERT INTO `over_booking` VALUES (18, 54, 'Rekening ke Rekening', '23389237', 'pemilik rekening gua', '89873298', 'bca', 300000, '2024-02-14 15:05:27', '2024-02-14 15:05:27');
-INSERT INTO `over_booking` VALUES (19, 56, 'Rekening ke Rekening', '5233', 'BBm', '325233', 'boimwe', 3000000, '2024-02-15 19:47:49', '2024-02-15 19:47:49');
-INSERT INTO `over_booking` VALUES (20, 57, 'Rekening ke Rekening', '32897', 'Bos bi', '328973', 'Bima', 3223523, '2024-02-15 19:52:22', '2024-02-15 19:52:22');
+INSERT INTO `over_booking` VALUES (18, 54, 'Rekening ke Rekening', '23389237', 'pemilik rekening gua', '89873298', 'bca', 300000, '2024-02-14 15:05:27', '2024-08-02 22:59:56');
+INSERT INTO `over_booking` VALUES (19, 56, 'Rekening ke Rekening', '5233', 'BBm', '325233', 'boimwe', 3000000, '2024-02-15 19:47:49', '2024-08-02 22:57:17');
+INSERT INTO `over_booking` VALUES (20, 57, 'Rekening ke Rekening', '32897', 'Bos bi', '328973', 'Bima', 3223523, '2024-02-15 19:52:22', '2024-08-02 22:34:20');
+INSERT INTO `over_booking` VALUES (21, 61, 'Rekening ke Rekening', '32789328', 'Ga ada mungkin begitu', '38283298', 'BCA', 200000, '2024-07-20 20:30:03', '2024-08-02 22:21:01');
 
 -- ----------------------------
 -- Table structure for password_resets
@@ -1018,7 +1039,7 @@ CREATE TABLE `password_resets`  (
   `token` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`email`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of password_resets
@@ -1036,7 +1057,7 @@ CREATE TABLE `permissions`  (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `permissions_name_guard_name_unique`(`name` ASC, `guard_name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 511 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 511 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of permissions
@@ -1187,7 +1208,7 @@ CREATE TABLE `personal_access_tokens`  (
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `personal_access_tokens_token_unique`(`token` ASC) USING BTREE,
   INDEX `personal_access_tokens_tokenable_type_tokenable_id_index`(`tokenable_type` ASC, `tokenable_id` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 118 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 135 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of personal_access_tokens
@@ -1309,6 +1330,23 @@ INSERT INTO `personal_access_tokens` VALUES (114, 'App\\Models\\User', 1, '1', '
 INSERT INTO `personal_access_tokens` VALUES (115, 'App\\Models\\User', 1, '1', '7b2e1f4677cf781b9277a5852792ac873d639dafc7680bd48a2071ead4d6fe3e', '[\"*\"]', NULL, NULL, '2024-02-14 21:43:07', '2024-02-14 21:43:07');
 INSERT INTO `personal_access_tokens` VALUES (116, 'App\\Models\\User', 1, '1', '06171355c098e0a2dad7dfd683268503b710e590cd619a24042a006341512915', '[\"*\"]', '2024-04-18 16:05:26', NULL, '2024-02-14 21:45:45', '2024-04-18 16:05:26');
 INSERT INTO `personal_access_tokens` VALUES (117, 'App\\Models\\User', 1, '1', 'cd589f61cd7d2a3726637c1e01059798e12100e9289fc85b3224338f9f6ce8cc', '[\"*\"]', '2024-02-16 08:12:38', NULL, '2024-02-15 23:19:01', '2024-02-16 08:12:38');
+INSERT INTO `personal_access_tokens` VALUES (118, 'App\\Models\\User', 1, '1', '1639306c28203bc3477b568e4cef2c4ee97afe3807bbf901bdd4f0729ca40811', '[\"*\"]', '2024-07-27 18:56:51', NULL, '2024-07-21 12:01:05', '2024-07-27 18:56:51');
+INSERT INTO `personal_access_tokens` VALUES (119, 'App\\Models\\User', 1, '1', '7f7bafebf89a5461a4ddc0e516ff369db6f5a76df0e15142e8519c9ab1e18c83', '[\"*\"]', '2024-07-21 12:17:34', NULL, '2024-07-21 12:15:22', '2024-07-21 12:17:34');
+INSERT INTO `personal_access_tokens` VALUES (120, 'App\\Models\\User', 1, '1', 'f24424fd2bb457e06354f8f39e07315d6a99a7a64f86f58f10ce849e03d7869e', '[\"*\"]', '2024-07-27 23:13:20', NULL, '2024-07-27 23:13:15', '2024-07-27 23:13:20');
+INSERT INTO `personal_access_tokens` VALUES (121, 'App\\Models\\User', 1, '1', '2ca37a66387da36e6d6734ab6d8c0c560beef57ec51acc98c362fd3dac6d7b7b', '[\"*\"]', '2024-07-31 07:37:11', NULL, '2024-07-27 23:13:17', '2024-07-31 07:37:11');
+INSERT INTO `personal_access_tokens` VALUES (122, 'App\\Models\\User', 1, '1', '4407a7f60227857a916165ab35bf22cb974ff319054bf3efe2ad51934b614ffd', '[\"*\"]', '2024-07-31 07:52:10', NULL, '2024-07-31 07:40:55', '2024-07-31 07:52:10');
+INSERT INTO `personal_access_tokens` VALUES (123, 'App\\Models\\User', 1, '1', 'cff4c2d28d6d5315f52bd4b4dc21a6c135d6a82b400e9aed4c1ffcb954456421', '[\"*\"]', '2024-07-31 07:55:40', NULL, '2024-07-31 07:52:26', '2024-07-31 07:55:40');
+INSERT INTO `personal_access_tokens` VALUES (124, 'App\\Models\\User', 1, '1', '5993a2add77b6ea46427b689650afe9c9060f1e45056f2e0fdc0fe26c7bda058', '[\"*\"]', '2024-07-31 07:57:27', NULL, '2024-07-31 07:55:51', '2024-07-31 07:57:27');
+INSERT INTO `personal_access_tokens` VALUES (125, 'App\\Models\\User', 1, '1', '4d63c31571efffe7574164be0da4404056cc4e1c6453bc4f72735869e3da2ca1', '[\"*\"]', '2024-08-01 10:40:32', NULL, '2024-07-31 07:57:37', '2024-08-01 10:40:32');
+INSERT INTO `personal_access_tokens` VALUES (126, 'App\\Models\\User', 1, '1', '09c353a4a0337c5ded9dd0df757abb629fac8fd11d956571de8d39f5f193717d', '[\"*\"]', '2024-08-01 10:14:46', NULL, '2024-08-01 10:04:18', '2024-08-01 10:14:46');
+INSERT INTO `personal_access_tokens` VALUES (127, 'App\\Models\\User', 1, '1', '392e937b124dbdf85a9b6e2b6d792dbb393b22b827dd2787ec5d66a1a4bc4e43', '[\"*\"]', '2024-08-01 10:46:22', NULL, '2024-08-01 10:41:05', '2024-08-01 10:46:22');
+INSERT INTO `personal_access_tokens` VALUES (128, 'App\\Models\\User', 1, '1', 'd0a58324b52b5fe72d86d2396c2c0913f20b6abd3fd864badd668f73a5c40d8a', '[\"*\"]', '2024-08-01 10:49:38', NULL, '2024-08-01 10:46:40', '2024-08-01 10:49:38');
+INSERT INTO `personal_access_tokens` VALUES (129, 'App\\Models\\User', 1, '1', '41739750f07ac005e71365ca4eea02be6252e7d51b1f52b44dfd74a0ce595693', '[\"*\"]', '2024-08-01 10:56:29', NULL, '2024-08-01 10:51:01', '2024-08-01 10:56:29');
+INSERT INTO `personal_access_tokens` VALUES (130, 'App\\Models\\User', 1, '1', '60e4af9cd79f98a97504ed0f9aaa7176b535816e4f870887865a8db49621f248', '[\"*\"]', '2024-08-01 11:08:12', NULL, '2024-08-01 11:06:47', '2024-08-01 11:08:12');
+INSERT INTO `personal_access_tokens` VALUES (131, 'App\\Models\\User', 1, '1', 'c6646da2ef31d0dbed0f93a7a26b5a3ef920d11b22032e28738a256a5474714b', '[\"*\"]', '2024-08-01 11:28:45', NULL, '2024-08-01 11:08:26', '2024-08-01 11:28:45');
+INSERT INTO `personal_access_tokens` VALUES (132, 'App\\Models\\User', 1, '1', '18fd76867f6ef1698957552d98b1d0ce34c02be3dc861d90922c6206c77d8e52', '[\"*\"]', NULL, NULL, '2024-08-02 21:17:53', '2024-08-02 21:17:53');
+INSERT INTO `personal_access_tokens` VALUES (133, 'App\\Models\\User', 1, '1', '0498a87e0cd360802e517da2fd3d60e2006228444e852b5824d9a10fe8d929da', '[\"*\"]', NULL, NULL, '2024-08-02 21:20:20', '2024-08-02 21:20:20');
+INSERT INTO `personal_access_tokens` VALUES (134, 'App\\Models\\User', 1, '1', 'f37348abb9622c3f452329b7b7b32eb9a24b0606fc7007df3588f8ae422604bc', '[\"*\"]', NULL, NULL, '2024-08-02 21:30:55', '2024-08-02 21:30:55');
 
 -- ----------------------------
 -- Table structure for products
@@ -1333,7 +1371,7 @@ CREATE TABLE `products`  (
   `updated_at` timestamp NULL DEFAULT NULL,
   `gambar_product` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 30 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of products
@@ -1397,7 +1435,7 @@ CREATE TABLE `profile`  (
   CONSTRAINT `profile_jabatan_id_foreign` FOREIGN KEY (`jabatan_id`) REFERENCES `jabatan` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `profile_unit_id_foreign` FOREIGN KEY (`unit_id`) REFERENCES `unit` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `profile_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 14 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of profile
@@ -1419,7 +1457,7 @@ CREATE TABLE `role_has_permissions`  (
   INDEX `role_has_permissions_role_id_foreign`(`role_id` ASC) USING BTREE,
   CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT,
   CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE ON UPDATE RESTRICT
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of role_has_permissions
@@ -1684,7 +1722,7 @@ CREATE TABLE `roles`  (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `roles_name_guard_name_unique`(`name` ASC, `guard_name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of roles
@@ -1729,7 +1767,7 @@ CREATE TABLE `settings`  (
   INDEX `settings_zonawaktu_settings_foreign`(`zonawaktu_settings` ASC) USING BTREE,
   CONSTRAINT `settings_bahasa_settings_foreign` FOREIGN KEY (`bahasa_settings`) REFERENCES `data_statis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `settings_zonawaktu_settings_foreign` FOREIGN KEY (`zonawaktu_settings`) REFERENCES `data_statis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of settings
@@ -1772,19 +1810,22 @@ CREATE TABLE `transaction`  (
   INDEX `transaction_users_id_foreign`(`users_id` ASC) USING BTREE,
   CONSTRAINT `transaction_metode_pembayaran_id_foreign` FOREIGN KEY (`metode_pembayaran_id`) REFERENCES `metode_pembayaran` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `transaction_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 59 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 63 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of transaction
 -- ----------------------------
-INSERT INTO `transaction` VALUES (49, '2389237', '2024-02-11', 'Bayar Bima', 11, 17, '2024-02-28', 'Tujuan Transaksi gue', 1, 135000, 'menunggu', 6, '2024-02-11 08:44:51', '2024-02-11 14:42:48', 1, 'Purpose Divisi Gue', 1, 'default.png', 35, NULL, NULL, NULL, 35000, 100000, NULL, 1);
-INSERT INTO `transaction` VALUES (50, '82874928', '2024-02-11', 'Bima', 11, 17, '2024-02-28', '3289723', 6, 135000, 'menunggu', 6, '2024-02-11 14:43:54', '2024-02-11 14:43:54', 1, 'Divi', 0, 'default.png', 0, NULL, NULL, NULL, 0, 45000, NULL, 0);
+INSERT INTO `transaction` VALUES (49, '2389237', '2024-02-11', 'Hello Bro 1 _ bro 1', 11, 17, '2024-02-28', 'Tujuan Transaksi gue', 0, 135000, 'menunggu', 6, '2024-02-11 08:44:51', '2024-08-02 23:01:54', 1, 'Purpose Divisi Gue', 1, 'default.png', 35, NULL, NULL, NULL, 35000, 100000, NULL, 1);
+INSERT INTO `transaction` VALUES (50, '82874928', '2024-02-11', 'p edit 2', 11, 17, '2024-02-28', '3289723', 6, 135000, 'menunggu', 6, '2024-02-11 14:43:54', '2024-08-02 23:01:28', 1, 'Divi', 0, 'default.png', 0, NULL, NULL, NULL, 0, 135000, NULL, 0);
 INSERT INTO `transaction` VALUES (53, '8239723', '2024-02-14', 'Bima', 11, 0, '2024-02-14', 'Beli Suara', 1, 3750000, 'disetujui', 1, '2024-02-14 11:35:01', '2024-02-14 14:10:18', 1, 'Divisi', 1, 'default.png', 25, NULL, NULL, NULL, 750000, 3000000, NULL, 1);
-INSERT INTO `transaction` VALUES (54, '892789723', '2024-02-14', 'Bima', 11, 15, '2024-02-29', 'Transaksi saat ini', 1, 300000, 'menunggu', 6, '2024-02-14 15:05:27', '2024-02-14 15:05:27', 1, 'Divisi', 0, 'default.png', 0, NULL, NULL, NULL, 0, 300000, NULL, 1);
+INSERT INTO `transaction` VALUES (54, '892789723', '2024-02-14', 'bim bim15', 11, 15, '2024-02-29', 'Transaksi saat ini', 0, 300000, 'menunggu', 6, '2024-02-14 15:05:27', '2024-08-02 22:59:56', 1, 'Divisi', 0, 'default.png', 0, NULL, NULL, NULL, 0, 300000, NULL, 1);
 INSERT INTO `transaction` VALUES (55, '89479827', '2024-02-15', 'BimaEga', 11, 14, '2024-02-29', 'Tujuan transaksi gue ini mas bro', 28, 1593750, 'disetujui', 1, '2024-02-15 10:34:00', '2024-02-15 11:33:19', 1, 'Tujuan divisi gue ini mas bro', 1, 'default.png', 25, NULL, NULL, NULL, 318750, 315000, NULL, 0);
-INSERT INTO `transaction` VALUES (56, '23523', '2024-02-15', 'Bima', 11, 0, '2024-02-15', 'terserah', 1, 3750000, 'menunggu', 6, '2024-02-15 19:47:49', '2024-02-15 19:47:49', 1, 'hanya test', 1, 'default.png', 25, NULL, NULL, NULL, 750000, 3000000, NULL, 1);
-INSERT INTO `transaction` VALUES (57, '3248732', '2024-02-15', 'Bima', 11, 0, '2024-02-15', 'Tersera', 1, 3223523, 'menunggu', 6, '2024-02-15 19:52:22', '2024-02-15 19:52:22', 1, 'Guue', 0, '1708001542-images.jpeg', 0, NULL, NULL, NULL, 0, 3223523, NULL, 1);
+INSERT INTO `transaction` VALUES (56, '23523', '2024-02-15', 'Bima get Print L', 11, 0, '2024-02-15', 'terserah', 0, 3750000, 'menunggu', 6, '2024-02-15 19:47:49', '2024-08-02 22:57:17', 1, 'hanya test', 1, 'default.png', 25, NULL, NULL, NULL, 750000, 3000000, NULL, 1);
+INSERT INTO `transaction` VALUES (57, '3248732', '2024-02-15', 'Bima Edit Check PM', 11, 0, '2024-02-15', 'Tersera', 0, 3223523, 'menunggu', 6, '2024-02-15 19:52:22', '2024-08-02 22:34:20', 1, 'Guue', 0, '1708001542-images.jpeg', 0, NULL, NULL, NULL, 0, 3223523, NULL, 1);
 INSERT INTO `transaction` VALUES (58, '329823', '2024-04-18', 'Rizky', 11, 0, '2024-04-18', 'Beli kebutuhan kantor', 5, 102000, 'menunggu', 7, '2024-04-18 16:03:00', '2024-04-18 16:04:57', 1, 'Beli untuk divisi IT', 1, 'default.png', 20, NULL, NULL, NULL, 17000, 35000, NULL, 0);
+INSERT INTO `transaction` VALUES (60, '238239082308', '2024-07-20', 'coba test 1', 11, 0, '2024-07-20', 'tujuan transaksi mas bro', 8878, 1660186, 'menunggu', 6, '2024-07-20 18:36:47', '2024-08-02 22:09:29', 1, NULL, 0, 'default.png', NULL, NULL, NULL, NULL, 0, 1660186, NULL, 0);
+INSERT INTO `transaction` VALUES (61, 'REQ-2024-07-20-238239082309', '2024-07-20', 'edit lagi again bro push again', 11, 0, '2024-07-20', 'Beli tujuan transaksi', 0, 248000, 'menunggu', 6, '2024-07-20 20:30:03', '2024-08-02 22:21:01', 1, 'tujuan dari ini test', 1, 'default.png', 24, NULL, NULL, NULL, 48000, 200000, NULL, 1);
+INSERT INTO `transaction` VALUES (62, 'REQ-2024-07-21-238239082310', '2024-07-21', 'Bima Ega Edit', 11, 0, '2024-07-21', 'Apa ini', 2, 6250, 'menunggu', 6, '2024-07-21 21:10:12', '2024-08-02 22:18:28', 1, '23898', 1, '1721571012-webcam-toy-photo1.jpg', 25, NULL, NULL, NULL, 1250, 5000, NULL, 0);
 
 -- ----------------------------
 -- Table structure for transaction_approvel
@@ -1805,7 +1846,7 @@ CREATE TABLE `transaction_approvel`  (
   INDEX `transaction_approvel_users_id_foreign`(`users_id` ASC) USING BTREE,
   CONSTRAINT `transaction_approvel_transaction_id_foreign` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `transaction_approvel_users_id_foreign` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of transaction_approvel
@@ -1848,17 +1889,19 @@ CREATE TABLE `transaction_detail`  (
   INDEX `transaction_detail_products_id_foreign`(`products_id` ASC) USING BTREE,
   CONSTRAINT `transaction_detail_products_id_foreign` FOREIGN KEY (`products_id`) REFERENCES `products` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `transaction_detail_transaction_id_foreign` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE = InnoDB AUTO_INCREMENT = 122 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 143 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of transaction_detail
 -- ----------------------------
-INSERT INTO `transaction_detail` VALUES (77, 50, 2, 3, 45000, 'Remarks-b', NULL, NULL, 15000, 'USD', 5.5);
-INSERT INTO `transaction_detail` VALUES (78, 50, 3, 3, 90000, 'Remarks-a', NULL, NULL, 30000, 'USD', 50);
 INSERT INTO `transaction_detail` VALUES (118, 55, 2, 3, 900000, 'Remarks-b', NULL, NULL, 300000, 'USD', 5.5);
 INSERT INTO `transaction_detail` VALUES (119, 55, 3, 25, 375000, 'Remarks-a', NULL, NULL, 15000, 'USD', 3.5);
 INSERT INTO `transaction_detail` VALUES (120, 58, 2, 3, 45000, 'Remarks-b', NULL, NULL, 15000, 'USD', 4.5);
 INSERT INTO `transaction_detail` VALUES (121, 58, 3, 2, 40000, 'Remarks-b', NULL, NULL, 20000, 'USD', 3.5);
+INSERT INTO `transaction_detail` VALUES (135, 60, 2, 8878, 1660186, 'roij', NULL, NULL, 187, 'USD', 2.5);
+INSERT INTO `transaction_detail` VALUES (138, 62, 2, 2, 5000, 'remarks', NULL, NULL, 2500, 'USD', 2.5);
+INSERT INTO `transaction_detail` VALUES (141, 50, 2, 3, 45000, 'Remarks-b', NULL, NULL, 15000, 'USD', 5.5);
+INSERT INTO `transaction_detail` VALUES (142, 50, 3, 3, 90000, 'Remarks-a', NULL, NULL, 30000, 'USD', 50);
 
 -- ----------------------------
 -- Table structure for type_product
@@ -1870,7 +1913,7 @@ CREATE TABLE `type_product`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of type_product
@@ -1890,7 +1933,7 @@ CREATE TABLE `unit`  (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of unit
@@ -1913,15 +1956,34 @@ CREATE TABLE `users`  (
   `updated_at` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE,
   UNIQUE INDEX `users_email_unique`(`email` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 11 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of users
 -- ----------------------------
-INSERT INTO `users` VALUES (1, 'Admin', 'admin@gmail.com', NULL, '$2y$10$kJAhr7CcYymm14mQKkNS.eY6q8x32btBPuDtGTWEg3UHIds8mXy/S', NULL, NULL, '2024-07-16 21:20:38');
+INSERT INTO `users` VALUES (1, 'Admin', 'admin@gmail.com', NULL, '$2y$10$QbIsdxOh252pu6.96HiZXur6K3yGBPwHpUMYseFbBO9KTYqsRZ5We', NULL, NULL, '2024-07-28 18:49:04');
 INSERT INTO `users` VALUES (6, 'Profile Bimaega45', 'bimaega45@gmail.com', NULL, '$2y$10$dWeTIB5RHX2gR0cGqzwNLepHAmNv/ErxQValLtpJ5snK6qRGq3ovy', NULL, '2023-11-29 02:16:40', '2023-12-03 10:45:55');
 INSERT INTO `users` VALUES (7, 'Profile Bimaegatesting', 'bimaegatesting@gmail.com', NULL, '$2y$10$a8U.CBbOsQuOUFn1M7MqPufBYrnGgAHBnzzpVhtVemjUV7FImShi2', NULL, '2023-12-02 02:53:41', '2023-12-03 05:20:44');
 INSERT INTO `users` VALUES (9, 'BimaEgaAtasan', 'bimaegaatasan@gmail.com', NULL, '$2y$10$jBWLnB4snoCTbfXTckWP9OJ4iduAgcXwCgQ52rNNsMCEROkn9Wa0S', NULL, '2023-12-02 22:10:29', '2023-12-17 17:54:33');
 INSERT INTO `users` VALUES (10, 'users jabatan 15', 'userjabatan15@gmail.com', NULL, '$2y$10$J2FenFszwPFrYnROdD.nUO0fTHIAXzdLSJ3bY3.b2IV8U9RMtI6d.', NULL, '2023-12-17 17:16:06', '2023-12-17 17:16:06');
+
+-- ----------------------------
+-- Table structure for websockets_statistics_entries
+-- ----------------------------
+DROP TABLE IF EXISTS `websockets_statistics_entries`;
+CREATE TABLE `websockets_statistics_entries`  (
+  `id` int UNSIGNED NOT NULL AUTO_INCREMENT,
+  `app_id` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `peak_connection_count` int NOT NULL,
+  `websocket_message_count` int NOT NULL,
+  `api_message_count` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of websockets_statistics_entries
+-- ----------------------------
 
 SET FOREIGN_KEY_CHECKS = 1;

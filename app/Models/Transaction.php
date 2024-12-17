@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Helpers\UtilsHelper;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Client\Request;
@@ -58,7 +59,7 @@ class Transaction extends Model
         $tanggal_akhir = $request->input('tanggal_akhir');
         $is_transaksi_expired = $request->input('is_transaksi_expired');
         
-
+        $getRoles = UtilsHelper::getRoles();
         $data = Transaction::with([
             'usersApproval' => function ($query) {
                 $query
@@ -107,8 +108,12 @@ class Transaction extends Model
                 $query->select('name')->from('users')
                     ->whereRaw('users.id = transaction.users_id_review');
             }, 'approvalBy')
-            ->orderBy('transaction.tanggal_transaction','desc')
-            ->paginate(10);
+            ->orderBy('transaction.tanggal_transaction','desc');
+            if(($getRoles != null || $getRoles != '') && $getRoles != 'Admin'){
+                $users_id = Auth::id();
+                $data->where('transaction.users_id', $users_id);
+            }
+            $data = $data->paginate(10);
             return $data;
     }
 

@@ -45,9 +45,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/produk', [ProductController::class, 'index'])->name('produk.index');
     Route::get('/setting/users/getUsersProfile', [SettingsController::class, 'getUsersProfile'])->name('settings.users.getUsersProfile');
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 
     Route::post('/firebase/saveToken', [FirebaseController::class, 'saveToken'])->name('firebase.saveToken');
     Route::post('/firebase/sendNotification', [FirebaseController::class, 'sendNotification'])->name('firebase.sendNotification');
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 });

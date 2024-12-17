@@ -28,7 +28,16 @@ var initDatatable = () => {
                     { data: 'totalproduct_transaction' },
                     { data: 'totalprice_transaction' },
                     { data: 'action' },
-                ]
+                ],
+                rowCallback: function(row, data, index) {
+                    if(data.is_expired !== undefined){
+                        if (data.is_expired == 1) {
+                            $('td', row).each(function(i, el) {
+                                $(el).css('background-color', '#FFA1D7');
+                            });
+                        }
+                    }
+                }
             });
 
         }
@@ -189,13 +198,13 @@ $(document).ready(function () {
                             <input type="text" class="form-control remarks_detail" placeholder="Remarks" name="remarks_detail" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control qty_detail" placeholder="Qty" name="qty_detail" />
+                            <input type="text" class="form-control qty_detail" placeholder="Qty" name="qty_detail" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control price_detail" placeholder="Harga Product" name="price_detail" />
+                            <input type="text" class="form-control price_detail" placeholder="Harga Product" name="price_detail" />
                         </th>
                         <th class="whitespace-nowrap">
-                            <input type="number" class="form-control subtotal_detail" placeholder="Sub Total Product" name="subtotal_detail" />
+                            <input type="text" class="form-control subtotal_detail" placeholder="Sub Total Product" name="subtotal_detail" />
                         </th>
                         <th class="whitespace-nowrap">
                             <select name="matauang_detail" class="form-select select2 matauang_detail" id="">
@@ -235,10 +244,10 @@ $(document).ready(function () {
     body.on("input", ".qty_detail", function () {
         var row_data = $(this).closest(".row_data").data("id");
 
-        var qty = $(this).val();
-        var price_detail = $(
+        var qty = removeCommas($(this).val());
+        var price_detail = removeCommas($(
             '.row_data[data-id="' + row_data + '"] .price_detail'
-        ).val();
+        ).val());
 
         var error = false;
         if (qty < 0) {
@@ -263,19 +272,22 @@ $(document).ready(function () {
         var subTotal = 0;
         if (!error) {
             subTotal = qty * price_detail;
+            subTotal = formatNumber(subTotal);
             $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(
                 subTotal
             );
         }
+        qty = formatNumber(qty);
+        $(this).val(qty);
     });
 
     body.on("input", ".price_detail", function () {
         var row_data = $(this).closest(".row_data").data("id");
 
-        var price_detail = $(this).val();
-        var qty_detail = $(
+        var price_detail = removeCommas($(this).val());
+        var qty_detail = removeCommas($(
             '.row_data[data-id="' + row_data + '"] .qty_detail'
-        ).val();
+        ).val());
 
         var error = false;
         if (qty_detail < 0) {
@@ -300,10 +312,14 @@ $(document).ready(function () {
         var subTotal = 0;
         if (!error) {
             subTotal = qty_detail * price_detail;
+            subTotal = formatNumber(subTotal);
             $('.row_data[data-id="' + row_data + '"] .subtotal_detail').val(
                 subTotal
             );
         }
+
+        price_detail = formatNumber(price_detail);
+        $(this).val(price_detail);
     });
 
     body.on("click", "#isppn_transaction", function () {

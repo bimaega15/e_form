@@ -9,6 +9,7 @@ Alpine.start();
 
 const firebaseConfig = {
 <<<<<<< HEAD
+<<<<<<< HEAD
     apiKey: "AIzaSyDn5upER3uAbzD6DzbCi1uvitbx5-Bz2XY",
     authDomain: "pushnotifikasi-d1aac.firebaseapp.com",
     projectId: "pushnotifikasi-d1aac",
@@ -17,6 +18,8 @@ const firebaseConfig = {
     appId: "1:250243402116:web:7d3529214fe97ebf9935d1",
     measurementId: "G-DWYD7H76S6"
 =======
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
     apiKey: "AIzaSyB-8Z79mr2iyxsHqiYBQ9_DFF8RZKqnwXU",
     authDomain: "eform-3c473.firebaseapp.com",
     projectId: "eform-3c473",
@@ -24,7 +27,10 @@ const firebaseConfig = {
     messagingSenderId: "1022309641206",
     appId: "1:1022309641206:web:fb2d1f58e202cce39a75d7"
 
+<<<<<<< HEAD
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
 };
 const app = initializeApp(firebaseConfig);
 const messaging = getMessaging(app);
@@ -38,9 +44,13 @@ function requestPermission() {
             if (!getTokenStorage) {
                 getToken(messaging, { vapidKey: vapidKey }).then((currentToken) => {
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
                     console.log("Token received: ", currentToken);
 >>>>>>> d4d7d73b6e1cc8c8023ace5575307e7e3bc9702e
+=======
+                    console.log("Token received: ", currentToken);
+>>>>>>> 100a138f5f976700e0719b8141930b09e6d6a8c8
                     window.localStorage.setItem("fcmToken", currentToken);
                     axios.post("/firebase/saveToken", {
                         fcmToken: currentToken,
